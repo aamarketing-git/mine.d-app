@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>MINE.d - 오륜미네랄 다이어트</title>
+
+<!-- PWA / iOS home screen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MINE.d">
+<meta name="theme-color" content="#1F4A3D">
+
+<!-- App icon (inline SVG) -->
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="%232D5F4F"/><text x="96" y="125" font-size="92" font-weight="900" fill="%23E8DCA6" text-anchor="middle" font-family="system-ui,sans-serif">M</text></svg>'>
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="%232D5F4F"/><text x="96" y="125" font-size="92" font-weight="900" fill="%23E8DCA6" text-anchor="middle" font-family="system-ui,sans-serif">M</text></svg>'>
+
+<!-- Manifest as data URI -->
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"MINE.d - 오륜미네랄 다이어트","short_name":"MINE.d","start_url":".","display":"standalone","background_color":"%23FAF2DA","theme_color":"%232D5F4F","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%5C"http://www.w3.org/2000/svg%5C" viewBox=%5C"0 0 192 192%5C"><rect width=%5C"192%5C" height=%5C"192%5C" rx=%5C"42%5C" fill=%5C"%232D5F4F%5C"/><text x=%5C"96%5C" y=%5C"125%5C" font-size=%5C"92%5C" font-weight=%5C"900%5C" fill=%5C"%23E8DCA6%5C" text-anchor=%5C"middle%5C" font-family=%5C"system-ui,sans-serif%5C">M</text></svg>","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"}]}'>
+
+<!-- Pretendard -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" rel="stylesheet">
+
+<!-- React + ReactDOM (UMD) -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Tailwind (CDN, run-time) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Babel standalone for in-browser JSX -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    background: #F0D89A;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  #root { min-height: 100vh; min-height: 100dvh; }
+  .loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh; flex-direction: column; gap: 12px;
+    color: #1F4A3D;
+  }
+  .loading-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #1F4A3D;
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="loading">
+    <div class="loading-dot"></div>
+    <div style="font-weight: 700; font-size: 22px;">MINE.d</div>
+    <div style="font-size: 14px; color: #888;">로딩 중...</div>
+  </div>
+</div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+const { createRoot } = ReactDOM;
+
+// ============================================================
+// ICONS (inline SVG, lucide-style)
+// ============================================================
+const makeIcon = (paths) => (props) => {
+  const { size = 24, color = 'currentColor', strokeWidth = 2, fill = 'none', className, style } = props || {};
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size}
+      viewBox="0 0 24 24" fill={fill} stroke={color} strokeWidth={strokeWidth}
+      strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      {paths}
+    </svg>
+  );
+};
+
+const Users = makeIcon(<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>);
+const BookOpen = makeIcon(<><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>);
+const Activity = makeIcon(<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.5.5 0 0 1-.96 0L9.24 2.18a.5.5 0 0 0-.96 0l-2.35 8.36A2 2 0 0 1 4 12H2"/>);
+const Plus = makeIcon(<><path d="M5 12h14"/><path d="M12 5v14"/></>);
+const Heart = makeIcon(<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>);
+const MessageCircle = makeIcon(<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>);
+const TrendingDown = makeIcon(<><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></>);
+const TrendingUp = makeIcon(<><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></>);
+const Trash2 = makeIcon(<><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></>);
+const X = makeIcon(<><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>);
+const Sparkles = makeIcon(<><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></>);
+const ChevronDown = makeIcon(<path d="m6 9 6 6 6-6"/>);
+const ArrowRight = makeIcon(<><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></>);
+const Pencil = makeIcon(<><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></>);
+const User = makeIcon(<><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>);
+
+// ============================================================
+// HELPERS
+// ============================================================
+const todayKey = () => new Date().toISOString().slice(0, 10);
+const fmtDate = (iso) => {
+  const d = new Date(iso);
+  return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+};
+const fmtTime = (ts) => {
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 60) return '방금 전';
+  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+  return `${Math.floor(diff / 86400)}일 전`;
+};
+
+// localStorage wrappers
+const safeGet = (key) => {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+  catch { return null; }
+};
+const safeSet = (key, value) => {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch (e) { console.error(e); }
+};
+const safeDelete = (key) => {
+  try { localStorage.removeItem(key); } catch {}
+};
+
+// Seed demo community posts on first launch
+const seedDemo = () => {
+  if (localStorage.getItem('mined:seeded')) return;
+  const now = Date.now();
+  const day = 86400000;
+  safeSet('community:posts', [
+    { id: 'd1', author: '디톡스가즈아', text: '1-DAY 디톡스 완주 인증합니다! 🎉\n생각보다 어렵지 않았어요. 내일 비포/애프터 비교해볼게요',
+      weightLoss: 0.8, ts: now - day*0.3, likes: 22, likedBy: [], comments: [] },
+    { id: 'd2', author: '미네랄러버', text: '디톡스 3일차! 부기가 확실히 빠진 게 느껴져요 👍',
+      weightLoss: 1.5, ts: now - day*1, likes: 12, likedBy: [],
+      comments: [{ id: 11, author: '건강한일상', text: '저도 도전 시작했어요!', ts: now - day*0.5 }] },
+    { id: 'd3', author: '슬리밍퀸', text: '단것을 끊는 게 진짜 힘들었는데\n미네랄 워터 마시면서 견디고 있어요. 오후 3시가 고비에요 😅',
+      weightLoss: 2.3, ts: now - day*2, likes: 15, likedBy: [], comments: [] },
+    { id: 'd4', author: '건강한일상', text: '오륜미네랄 한 달 도전 시작합니다. 화이팅!',
+      ts: now - day*3, likes: 8, likedBy: [], comments: [] },
+  ]);
+  localStorage.setItem('mined:seeded', '1');
+};
+seedDemo();
+
+// ============================================================
+// DATA
+// ============================================================
+const SCHEDULE = [
+  { id: 1, time: '06:00', period: '새벽', title: '모닝 웨이크업',
+    amount: 400, mineral: '원액 130ml + 물 270ml',
+    meal: '공복 — 아무것도 먹지 마세요',
+    mealSub: '위장이 비어야 흡수율이 최대입니다',
+    icon: '🌅',
+    science: '수면 중 6~8시간 동안 수분이 빠져나간 상태입니다. 공복에서 미네랄 워터를 마시면 장 흡수율이 최대 40% 높아집니다. 마그네슘과 칼슘이 빠르게 혈류로 진입해 세포 수화를 시작합니다.',
+    psychology: '하루의 첫 행동이 건강한 선택이면, 뇌는 "오늘은 건강한 날"이라는 프레이밍을 형성합니다. 행동경제학의 초두효과 — 첫 잔이 하루 전체의 방향을 결정합니다.',
+    tip: '일어나자마자 핸드폰보다 미네랄 워터를 먼저 손에 쥐세요. 10분에 걸쳐 천천히.',
+    keyword: '초두효과' },
+  { id: 2, time: '09:00', period: '아침', title: '클린 브렉퍼스트',
+    amount: 400, mineral: '원액 130ml + 물 270ml',
+    meal: '삶은 달걀 1개 + 아보카도 반 개',
+    mealSub: '또는 견과류 한 줌으로 대체 가능',
+    icon: '🥑',
+    science: '미네랄은 음식 영양소 흡수를 돕는 보조인자 역할을 합니다. 아연과 마그네슘은 300개 이상의 효소 반응에 관여하며 아침 대사를 활성화합니다.',
+    psychology: '"박탈이 아닌 대체"라는 인식을 만듭니다. 완전한 단식은 실패율이 높지만, 미네랄+클린식은 "먹으면서 디톡스한다"는 심리적 안전감을 줍니다.',
+    tip: '식사 중간중간 미네랄 워터를 한 모금씩 곁들이세요. 30분에 걸쳐.',
+    keyword: '안전감' },
+  { id: 3, time: '12:00', period: '점심', title: '미드데이 리차지',
+    amount: 500, mineral: '원액 170ml + 물 330ml',
+    meal: '샐러드 + 닭가슴살 + 현미밥 반 공기',
+    mealSub: '오늘 하루 중 가장 든든하게 드세요',
+    icon: '🥗',
+    science: '12~14시는 체내 대사율이 가장 높은 시간대입니다. 칼륨과 나트륨의 전해질 균형이 오후 피로감을 방지합니다.',
+    psychology: '하루의 정중앙, 절반을 완수했다는 성취감 — 진행 효과. 게이지가 50%를 넘으면 완주 동기가 급격히 상승합니다.',
+    tip: '미네랄 워터는 식전 200ml, 식후 300ml로 나눠 드세요.',
+    keyword: '진행효과' },
+  { id: 4, time: '15:00', period: '오후', title: '애프터눈 부스트',
+    amount: 500, mineral: '원액 170ml + 물 330ml',
+    meal: '사과 반 개 or 블루베리 한 줌',
+    mealSub: '무가당 요거트로 대체 가능',
+    icon: '🫐',
+    science: '오후 2~4시는 코르티솔이 떨어지며 에너지 저하가 오는 시간입니다. 마그네슘은 ATP 에너지 생산에 직접 관여해 집중력을 유지시킵니다.',
+    psychology: '오후 3시는 "유혹의 시간". 카페라떼·빵·과자 대신 미네랄+과일을 선택하는 순간, 뇌는 "나는 의지력 있는 사람"이라는 자아상을 강화합니다.',
+    tip: '커피가 마시고 싶다면 아메리카노 한 잔은 OK. 설탕·시럽은 금물.',
+    keyword: '자기효능감' },
+  { id: 5, time: '18:00', period: '저녁', title: '이브닝 클렌즈',
+    amount: 500, mineral: '원액 170ml + 물 330ml',
+    meal: '된장국 + 나물 반찬 또는 수프',
+    mealSub: '따뜻한 국물 요리를 추천합니다',
+    icon: '🍲',
+    science: '저녁에는 부교감신경이 활성화되며 소화·흡수 기능이 전환됩니다. 따뜻한 국물과 미네랄 워터를 병행하면 체온 유지와 미네랄 흡수 효율이 동시에 높아집니다.',
+    psychology: '저녁 식사는 "보상"의 시간. 따뜻한 국물 요리를 허용함으로써 디톡스가 고행이 아닌 자기 돌봄이라는 인식을 강화합니다.',
+    tip: '국물 요리에 미네랄 워터를 넣어 조리하면 맛과 섭취가 자연스럽습니다.',
+    keyword: '자기돌봄' },
+  { id: 6, time: '21:00', period: '밤', title: '나이트 리커버리',
+    amount: 400, mineral: '원액 130ml + 물 270ml',
+    meal: '허브티 또는 미네랄 워터만',
+    mealSub: '취침 2시간 전에 마무리하세요',
+    icon: '🌙',
+    science: '수면 중 성장호르몬 분비와 세포 재생이 일어납니다. 마그네슘은 GABA 수용체를 활성화해 자연스러운 이완을 돕습니다.',
+    psychology: '마지막 잔의 "완결" 쾌감 — 시작한 것을 끝냈을 때 도파민이 분비됩니다. 이 경험이 내일도 계속하고 싶게 만드는 동력입니다.',
+    tip: '너무 늦으면 수면 중 화장실에 갈 수 있어요. 21시 이전에 마무리.',
+    keyword: '완결효과' },
+];
+const TOTAL_ML = 2700;
+
+const STATE_ITEMS = [
+  { key: 'condition', label: '컨디션' },
+  { key: 'swelling', label: '부기' },
+  { key: 'fatigue', label: '피로감' },
+  { key: 'skin', label: '피부 상태' },
+  { key: 'energy', label: '에너지' },
+  { key: 'sleep', label: '수면의 질' },
+  { key: 'bowel', label: '아침배변 쾌적함' },
+  { key: 'focus', label: '집중력' },
+  { key: 'noSweets', label: '단것 없이 괜찮음' },
+  { key: 'digestion', label: '소화력' },
+];
+const GENDER_OPTIONS = [
+  { value: 'female', label: '여성' },
+  { value: 'male', label: '남성' },
+  { value: 'other', label: '비공개' },
+];
+const TAB_BG = {
+  community: '#F0D89A',
+  guide: '#C8B6DD',
+  record: '#E8B5B5',
+};
+
+// ============================================================
+// MAIN APP
+// ============================================================
+function App() {
+  const [tab, setTab] = useState('community');
+
+  return (
+    <div className="min-h-screen w-full flex justify-center transition-colors duration-300"
+      style={{ background: TAB_BG[tab] }}>
+      <div className="w-full max-w-[440px] min-h-screen relative flex flex-col transition-colors duration-300"
+        style={{ background: TAB_BG[tab] }}>
+        <header className="px-6 pt-12 pb-5 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(212,180,104,0.35)' }}>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#1F4A3D' }}>
+            <Sparkles size={22} color="#D4B468" strokeWidth={2.4} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[30px] font-bold tracking-tight leading-none" style={{ color: '#0A0A0A' }}>MINE.d</div>
+            <div className="text-[19px] font-bold mt-1.5 tracking-[-0.01em]" style={{ color: '#1F4A3D' }}>오륜미네랄 다이어트 시작</div>
+          </div>
+        </header>
+
+        <main className="flex-1 pb-32">
+          {tab === 'community' && <CommunityTab />}
+          {tab === 'guide' && <GuideTab />}
+          {tab === 'record' && <RecordTab />}
+        </main>
+
+        <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] border-t transition-colors duration-300"
+          style={{ background: TAB_BG[tab], borderColor: 'rgba(0,0,0,0.06)' }}>
+          <div className="flex">
+            <TabBtn active={tab === 'community'} onClick={() => setTab('community')} icon={Users} label="커뮤니티" />
+            <TabBtn active={tab === 'guide'} onClick={() => setTab('guide')} icon={BookOpen} label="다이어트" />
+            <TabBtn active={tab === 'record'} onClick={() => setTab('record')} icon={Activity} label="나의 기록" />
+          </div>
+          <div style={{ height: 'max(1.5rem, env(safe-area-inset-bottom))' }} />
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+function TabBtn({ active, onClick, icon: Icon, label }) {
+  return (
+    <button onClick={onClick} className="flex-1 flex flex-col items-center gap-1 py-3 transition-all relative"
+      style={{ color: active ? '#1F4A3D' : '#9A9A9A' }}>
+      {active && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2.5px] w-10 rounded-b-full"
+          style={{ background: '#D4B468' }} />
+      )}
+      <Icon size={22} strokeWidth={active ? 2.4 : 1.8} />
+      <span className="text-[14px] font-semibold tracking-tight">{label}</span>
+    </button>
+  );
+}
+
+// ============================================================
+// COMMUNITY
+// ============================================================
+function CommunityTab() {
+  const [posts, setPosts] = useState([]);
+  const [showWrite, setShowWrite] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const profile = safeGet('profile:info');
+    let n = profile?.nickname || safeGet('user:name');
+    if (!n) {
+      n = '익명' + Math.floor(Math.random() * 1000);
+      safeSet('user:name', n);
+    }
+    setUserName(n);
+    const list = safeGet('community:posts') || [];
+    setPosts(list.sort((a, b) => b.ts - a.ts));
+  }, []);
+
+  const addPost = (text, weightLoss) => {
+    const post = {
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      author: userName, text, weightLoss, ts: Date.now(),
+      likes: 0, likedBy: [], comments: [],
+    };
+    const next = [post, ...posts];
+    setPosts(next);
+    safeSet('community:posts', next);
+  };
+
+  const toggleLike = (id) => {
+    const next = posts.map((p) => {
+      if (p.id !== id) return p;
+      const liked = (p.likedBy || []).includes(userName);
+      return { ...p,
+        likedBy: liked ? p.likedBy.filter((n) => n !== userName) : [...(p.likedBy || []), userName],
+        likes: liked ? p.likes - 1 : p.likes + 1 };
+    });
+    setPosts(next);
+    safeSet('community:posts', next);
+  };
+
+  const addComment = (id, text) => {
+    const next = posts.map((p) =>
+      p.id === id ? { ...p, comments: [...(p.comments || []), { id: Date.now(), author: userName, text, ts: Date.now() }] } : p
+    );
+    setPosts(next);
+    safeSet('community:posts', next);
+  };
+
+  return (
+    <div className="px-5">
+      <div className="rounded-2xl p-4 mb-3 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0E2A21 0%, #1F4A3D 65%, #2D5F4F 100%)' }}>
+        <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-10" style={{ background: '#D4B468' }} />
+        <div className="relative">
+          <div className="text-[15px] font-semibold mb-1" style={{ color: '#D4B468' }}>🌿 체험단 커뮤니티</div>
+          <div className="text-[21px] font-bold leading-snug" style={{ color: '#FCFAF5' }}>
+            지금 함께 다이어트 중인<br />멤버들의 기록을 만나보세요
+          </div>
+          <div className="text-[14px] mt-2 opacity-80" style={{ color: '#FCFAF5' }}>
+            내 닉네임: <span className="font-bold">{userName}</span>
+          </div>
+        </div>
+      </div>
+
+      <button onClick={() => setShowWrite(true)} className="w-full rounded-2xl p-3.5 mb-4 flex items-center gap-3"
+        style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#1F4A3D' }}>
+          <Plus size={18} color="#D4B468" strokeWidth={2.5} />
+        </div>
+        <div className="flex-1 text-left text-[16px]" style={{ color: '#888' }}>오늘의 다이어트 후기를 나눠보세요...</div>
+      </button>
+
+      {posts.length === 0 ? (
+        <div className="rounded-2xl p-8 text-center" style={{ background: '#FFFFFF', border: '1px dashed #D5D3C5' }}>
+          <div className="text-3xl mb-2">💬</div>
+          <div className="text-[18px] font-semibold mb-1" style={{ color: '#0A0A0A' }}>아직 글이 없어요</div>
+          <div className="text-[15px]" style={{ color: '#888' }}>첫 후기를 남겨보세요!</div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {posts.map((p) => (
+            <PostCard key={p.id} post={p} userName={userName}
+              onLike={() => toggleLike(p.id)} onComment={(t) => addComment(p.id, t)} />
+          ))}
+        </div>
+      )}
+
+      {showWrite && (
+        <WritePostModal userName={userName} onClose={() => setShowWrite(false)}
+          onSave={(text, wl) => { addPost(text, wl); setShowWrite(false); }} />
+      )}
+    </div>
+  );
+}
+
+function PostCard({ post, userName, onLike, onComment }) {
+  const [showComments, setShowComments] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const liked = (post.likedBy || []).includes(userName);
+
+  const handleComment = () => {
+    const t = commentText.trim();
+    if (!t) return;
+    onComment(t);
+    setCommentText('');
+  };
+
+  return (
+    <div className="rounded-2xl p-4" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-9 h-9 rounded-full flex items-center justify-center text-[16px] font-bold" style={{ background: '#E8DDC2', color: '#1F4A3D' }}>{post.author.slice(0, 2)}</div>
+        <div className="flex-1">
+          <div className="text-[16px] font-bold" style={{ color: '#0A0A0A' }}>{post.author}</div>
+          <div className="text-[14px]" style={{ color: '#888' }}>{fmtTime(post.ts)}</div>
+        </div>
+        {post.weightLoss && (
+          <div className="px-2.5 py-1 rounded-full text-[14px] font-bold flex items-center gap-1" style={{ background: '#1F4A3D', color: '#D4B468' }}>
+            <TrendingDown size={12} strokeWidth={3} />{post.weightLoss}kg
+          </div>
+        )}
+      </div>
+      <div className="text-[18px] leading-relaxed mb-3 whitespace-pre-wrap" style={{ color: '#0A0A0A' }}>{post.text}</div>
+      <div className="flex items-center gap-4 pt-3 border-t" style={{ borderColor: '#E8DDC2' }}>
+        <button onClick={onLike} className="flex items-center gap-1.5">
+          <Heart size={18} color={liked ? '#D85A7B' : '#888'} fill={liked ? '#D85A7B' : 'none'} />
+          <span className="text-[15px] font-semibold" style={{ color: liked ? '#D85A7B' : '#888' }}>{post.likes}</span>
+        </button>
+        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5">
+          <MessageCircle size={18} color="#888" />
+          <span className="text-[15px] font-semibold" style={{ color: '#888' }}>{(post.comments || []).length}</span>
+        </button>
+      </div>
+
+      {showComments && (
+        <div className="mt-3 pt-3 border-t" style={{ borderColor: '#E8DDC2' }}>
+          {(post.comments || []).map((c) => (
+            <div key={c.id} className="flex gap-2 mb-2">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[14px] font-bold flex-shrink-0" style={{ background: '#E8DDC2', color: '#1F4A3D' }}>{c.author.slice(0, 2)}</div>
+              <div className="flex-1 rounded-2xl px-3 py-2" style={{ background: '#FCFAF5' }}>
+                <div className="text-[14px] font-bold" style={{ color: '#0A0A0A' }}>{c.author}</div>
+                <div className="text-[15px]" style={{ color: '#2A2A2A' }}>{c.text}</div>
+              </div>
+            </div>
+          ))}
+          <div className="flex gap-2 mt-2">
+            <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleComment()} placeholder="댓글 달기..."
+              className="flex-1 px-3 py-2 rounded-full text-[15px] outline-none"
+              style={{ background: '#FCFAF5', border: '1px solid #D5CBB0' }} />
+            <button onClick={handleComment} disabled={!commentText.trim()}
+              className="px-3 rounded-full text-[14px] font-bold disabled:opacity-40"
+              style={{ background: '#1F4A3D', color: '#D4B468' }}>등록</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function WritePostModal({ userName, onClose, onSave }) {
+  const [text, setText] = useState('');
+  const [weightLoss, setWeightLoss] = useState('');
+
+  const handleSave = () => {
+    const t = text.trim();
+    if (!t) return;
+    const wl = parseFloat(weightLoss);
+    onSave(t, wl > 0 ? wl : null);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose}>
+      <div className="w-full max-w-[440px] rounded-t-3xl p-6 pb-10" style={{ background: '#FCFAF5' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="text-[22px] font-bold" style={{ color: '#0A0A0A' }}>후기 작성</div>
+          <button onClick={onClose}><X size={22} color="#888" /></button>
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-[16px] font-bold" style={{ background: '#E8DDC2', color: '#1F4A3D' }}>{userName.slice(0, 2)}</div>
+          <div className="text-[16px] font-semibold" style={{ color: '#0A0A0A' }}>{userName}</div>
+        </div>
+        <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={300}
+          placeholder="오늘의 다이어트 후기를 자유롭게 적어주세요..." autoFocus rows={5}
+          className="w-full px-4 py-3 rounded-2xl text-[18px] outline-none resize-none mb-1"
+          style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+        <div className="text-right text-[14px] mb-4" style={{ color: '#888' }}>{text.length}/300</div>
+
+        <div className="mb-5">
+          <div className="text-[15px] font-semibold mb-2" style={{ color: '#4A4A4A' }}>감량 정보 (선택)</div>
+          <div className="flex items-center gap-2">
+            <span className="text-[16px]" style={{ color: '#888' }}>총</span>
+            <input type="number" step="0.1" value={weightLoss} onChange={(e) => setWeightLoss(e.target.value)} placeholder="0.0"
+              className="flex-1 px-3 py-2 rounded-xl text-[18px] font-bold outline-none"
+              style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+            <span className="text-[16px]" style={{ color: '#888' }}>kg 감량</span>
+          </div>
+        </div>
+
+        <button onClick={handleSave} disabled={!text.trim()}
+          className="w-full py-4 rounded-2xl text-[19px] font-bold disabled:opacity-40"
+          style={{ background: '#1F4A3D', color: '#D4B468' }}>공유하기</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// DIET (GUIDE)
+// ============================================================
+function GuideTab() {
+  const [subTab, setSubTab] = useState('schedule');
+  const [checked, setChecked] = useState({});
+  const [expanded, setExpanded] = useState(null);
+
+  useEffect(() => {
+    const c = safeGet(`detox:${todayKey()}`) || {};
+    setChecked(c);
+  }, []);
+
+  const toggleCheck = (id) => {
+    const next = { ...checked, [id]: !checked[id] };
+    setChecked(next);
+    safeSet(`detox:${todayKey()}`, next);
+  };
+
+  const consumed = SCHEDULE.reduce((sum, s) => sum + (checked[s.id] ? s.amount : 0), 0);
+  const doneCount = SCHEDULE.filter((s) => checked[s.id]).length;
+  const pct = Math.round((consumed / TOTAL_ML) * 100);
+  const allDone = doneCount === SCHEDULE.length;
+
+  return (
+    <div>
+      <div className="px-5 pt-2 pb-4 text-center">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[14px] font-bold tracking-[2px] mb-3"
+          style={{ background: '#1F4A3D11', color: '#1F4A3D', border: '1px solid #1F4A3D33' }}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#1F4A3D', animation: 'pulse 2s infinite' }} />
+          1-DAY PROGRAM
+        </div>
+        <p className="text-[18px] font-semibold leading-relaxed mt-2" style={{ color: '#0A0A0A' }}>
+          오늘 하루, 미네랄과 함께<br />당신의 몸을 가볍게 리셋하는 시간
+        </p>
+      </div>
+
+      <div className="px-5 mb-4 flex items-center justify-center gap-1.5 flex-wrap">
+        <FormulaPiece num="1L" label="미네랄 원액" />
+        <span className="text-[22px] font-bold" style={{ color: '#B8B5A5' }}>+</span>
+        <FormulaPiece num="2L" label="정제수" />
+        <span className="text-[22px] font-bold" style={{ color: '#B8B5A5' }}>=</span>
+        <FormulaPiece num="3L" label="24H 디톡스" highlight />
+      </div>
+
+      <div className="mx-5 mb-4 p-4 rounded-2xl flex items-center gap-4" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+        <BottleGauge pct={pct} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline gap-1">
+            <div className="text-[38px] font-bold tracking-tight leading-none" style={{ color: '#1F4A3D' }}>{consumed.toLocaleString()}</div>
+            <div className="text-[15px] font-medium" style={{ color: '#888' }}>/ 2,700ml</div>
+          </div>
+          <div className="text-[14px] mt-1" style={{ color: '#888' }}>{doneCount}/6단계 완료 · {pct}% 달성</div>
+          <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ background: '#E8DDC2' }}>
+            <div className="h-full transition-all duration-700 rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #1F4A3D, #3D7565)' }} />
+          </div>
+          <div className="flex justify-between mt-2.5">
+            {SCHEDULE.map((s) => (
+              <div key={s.id} className="w-7 h-7 rounded-full flex items-center justify-center text-[14px] font-bold transition-all"
+                style={{ background: checked[s.id] ? '#1F4A3D' : '#E8DDC2',
+                  color: checked[s.id] ? '#D4B468' : '#999',
+                  border: `1.5px solid ${checked[s.id] ? '#1F4A3D' : '#E5E3D8'}` }}>
+                {checked[s.id] ? '✓' : s.id}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {allDone && (
+        <div className="mx-5 mb-4 p-6 rounded-2xl text-center" style={{ background: 'linear-gradient(135deg, #0E2A21 0%, #1F4A3D 65%, #2D5F4F 100%)', border: '1px solid #1F4A3D' }}>
+          <div className="text-4xl mb-2">🎉</div>
+          <div className="text-[24px] font-bold mb-1" style={{ color: '#D4B468' }}>1-DAY 디톡스 완주!</div>
+          <div className="text-[16px] leading-relaxed opacity-90" style={{ color: '#FCFAF5' }}>
+            오늘 하루 디톡스를 모두 마치셨어요.<br />당신의 몸이 새롭게 리셋되고 있습니다.
+          </div>
+        </div>
+      )}
+
+      <div className="px-5 mb-4">
+        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: '#DFD5B8' }}>
+          <SubTabBtn active={subTab === 'schedule'} onClick={() => setSubTab('schedule')}>디톡스 가이드</SubTabBtn>
+          <SubTabBtn active={subTab === 'science'} onClick={() => setSubTab('science')}>미네랄의 힘</SubTabBtn>
+        </div>
+      </div>
+
+      {subTab === 'schedule' && (
+        <>
+          <div className="text-center mb-3 px-5">
+            <div className="text-[14px] font-bold tracking-[3px] uppercase" style={{ color: '#999' }}>나의 24시간 디톡스 여정</div>
+          </div>
+          <div className="px-5 space-y-2.5 pb-4">
+            {SCHEDULE.map((s) => (
+              <TimelineCard key={s.id} step={s} isChecked={!!checked[s.id]}
+                isExpanded={expanded === s.id}
+                onToggleExpand={() => setExpanded(expanded === s.id ? null : s.id)}
+                onCheck={() => toggleCheck(s.id)} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {subTab === 'science' && <ScienceView />}
+
+      <style>{`@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
+    </div>
+  );
+}
+
+function SubTabBtn({ active, onClick, children }) {
+  return (
+    <button onClick={onClick} className="flex-1 py-2.5 rounded-xl text-[16px] font-bold transition-all"
+      style={{ background: active ? '#FFFFFF' : 'transparent', color: active ? '#1F4A3D' : '#888',
+        boxShadow: active ? '0 1px 3px rgba(0,0,0,0.06)' : 'none' }}>{children}</button>
+  );
+}
+
+function FormulaPiece({ num, label, highlight }) {
+  return (
+    <div className="px-3 py-2 rounded-xl text-center"
+      style={{ background: highlight ? '#1F4A3D15' : '#FFFFFF',
+        border: `1px solid ${highlight ? '#1F4A3D44' : '#D5CBB0'}` }}>
+      <div className="text-[24px] font-bold leading-none" style={{ color: '#1F4A3D' }}>{num}</div>
+      <div className="text-[13px] font-semibold mt-1 tracking-wide" style={{ color: '#4A4A4A' }}>{label}</div>
+    </div>
+  );
+}
+
+function BottleGauge({ pct }) {
+  const fillHeight = (84 * pct) / 100;
+  return (
+    <svg width="52" height="116" viewBox="0 0 52 116" className="flex-shrink-0">
+      <defs>
+        <linearGradient id="bottleFill" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#1F4A3D" /><stop offset="100%" stopColor="#3D7565" />
+        </linearGradient>
+        <clipPath id="bottleClip"><rect x="6" y="22" width="40" height="88" rx="6" /></clipPath>
+      </defs>
+      <rect x="16" y="0" width="20" height="6" rx="2" fill="#1F4A3D" opacity="0.55" />
+      <path d="M 20 6 L 20 22 L 32 22 L 32 6 Z" fill="none" stroke="#1F4A3D" strokeWidth="1.5" opacity="0.4" />
+      <rect x="6" y="22" width="40" height="88" rx="6" fill="#FCFAF5" stroke="#1F4A3D" strokeWidth="1.5" strokeOpacity="0.4" />
+      <rect x="6" y={110 - fillHeight} width="40" height={fillHeight} fill="url(#bottleFill)" clipPath="url(#bottleClip)"
+        style={{ transition: 'all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)' }} />
+      {[1, 2, 3, 4, 5].map((i) => (
+        <line key={i} x1="6" y1={26 + i * 16} x2="12" y2={26 + i * 16} stroke="#1F4A3D" strokeWidth="1" opacity="0.25" />
+      ))}
+    </svg>
+  );
+}
+
+function TimelineCard({ step, isChecked, isExpanded, onToggleExpand, onCheck }) {
+  return (
+    <div className="rounded-2xl transition-all overflow-hidden"
+      style={{ background: isExpanded ? '#F0E5C5' : '#FFFFFF',
+        border: `1px solid ${isExpanded ? '#C9A961' : '#D5CBB0'}`,
+        opacity: isChecked && !isExpanded ? 0.55 : 1 }}>
+      <button onClick={onToggleExpand} className="w-full p-4 flex gap-3 items-start text-left">
+        <div className="flex flex-col items-center gap-0.5 w-12 flex-shrink-0">
+          <span className="text-[25px] leading-none">{step.icon}</span>
+          <span className="text-[15px] font-bold tracking-wide mt-1" style={{ color: '#1F4A3D', fontFamily: 'monospace' }}>{step.time}</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <span className="text-[21px] font-bold truncate" style={{ color: '#0A0A0A' }}>{step.title}</span>
+            <span className="text-[14px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: '#1F4A3D', color: '#D4B468' }}>{step.amount}ml</span>
+          </div>
+          <div className="text-[15px] mb-2" style={{ color: '#888' }}>{step.mineral}</div>
+          <div className="rounded-xl p-2.5" style={{ background: '#E8DDC2', borderLeft: '3px solid #1F4A3D66' }}>
+            <div className="text-[13px] font-bold tracking-wide uppercase mb-0.5" style={{ color: '#1F4A3D99' }}>식단</div>
+            <div className="text-[16px] font-semibold leading-tight" style={{ color: '#0A0A0A' }}>{step.meal}</div>
+            <div className="text-[14px] mt-0.5" style={{ color: '#888' }}>{step.mealSub}</div>
+          </div>
+        </div>
+        <ChevronDown size={18} color="#888" className="flex-shrink-0 mt-1 transition-transform"
+          style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+      </button>
+
+      {isExpanded && (
+        <div className="px-4 pb-3 space-y-2">
+          <div className="rounded-xl p-3" style={{ background: '#E8F1F5', border: '1px solid #4A90B522' }}>
+            <div className="text-[14px] font-bold tracking-wide uppercase mb-1.5" style={{ color: '#4A90B5' }}>🔬 과학적 원리</div>
+            <div className="text-[15px] leading-relaxed" style={{ color: '#2A2A2A' }}>{step.science}</div>
+          </div>
+          <div className="rounded-xl p-3" style={{ background: '#F0E8F5', border: '1px solid #8A6CC022' }}>
+            <div className="text-[14px] font-bold tracking-wide uppercase mb-1.5" style={{ color: '#8A6CC0' }}>🧠 심리적 원리</div>
+            <div className="text-[15px] leading-relaxed" style={{ color: '#2A2A2A' }}>{step.psychology}</div>
+          </div>
+          <div className="rounded-xl p-3" style={{ background: '#F5E5B5', border: '1px solid #D4A82033' }}>
+            <div className="text-[14px] font-bold tracking-wide uppercase mb-1.5" style={{ color: '#B8901A' }}>💡 실천 팁</div>
+            <div className="text-[15px] leading-relaxed" style={{ color: '#2A2A2A' }}>{step.tip}</div>
+          </div>
+          <div className="text-center pt-1">
+            <span className="inline-block px-3 py-1 rounded-md text-[14px] font-bold" style={{ background: '#1F4A3D', color: '#D4B468' }}>#{step.keyword}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="px-4 pb-4">
+        <button onClick={onCheck} className="w-full py-3 rounded-2xl text-[18px] font-bold transition-all"
+          style={{ background: isChecked ? 'linear-gradient(135deg, #1F4A3D, #3D7565)' : '#E8DDC2',
+            color: isChecked ? '#D4B468' : '#888' }}>
+          {isChecked ? '✓ 섭취 완료!' : '○ 체크하기'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ScienceView() {
+  const [selectedId, setSelectedId] = useState(1);
+  const step = SCHEDULE.find((s) => s.id === selectedId);
+
+  return (
+    <div className="pb-4">
+      <div className="text-center mb-3 px-5">
+        <div className="inline-flex items-center gap-2 mb-2">
+          <span className="h-px w-6" style={{ background: '#D4B468' }} />
+          <span className="text-[10px] font-bold tracking-[3px]" style={{ color: '#D4B468' }}>03 / SCIENCE</span>
+          <span className="h-px w-6" style={{ background: '#D4B468' }} />
+        </div>
+        <div className="text-[24px] font-bold tracking-tight leading-tight" style={{ color: '#0A0A0A' }}>미네랄의 힘</div>
+        <div className="text-[13px] mt-2" style={{ color: '#4A4A4A' }}>시간을 선택해 해당 시간대 효과를 확인하세요</div>
+      </div>
+
+      <div className="px-5 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <style>{`.tcscroll::-webkit-scrollbar { display: none; }`}</style>
+        <div className="flex gap-2 pb-2 tcscroll">
+          {SCHEDULE.map((s) => (
+            <TimeChip key={s.id} step={s} active={selectedId === s.id}
+              onClick={() => setSelectedId(s.id)} />
+          ))}
+        </div>
+      </div>
+
+      <div className="px-5 mb-4">
+        <ScienceCard step={step} />
+      </div>
+
+      <div className="mx-5 mt-4 p-4 rounded-2xl" style={{ background: '#F0E5C5', border: '1px solid #C9A961' }}>
+        <div className="text-[15px] font-bold mb-1.5" style={{ color: '#8A6B1A' }}>💡 핵심 정리</div>
+        <div className="text-[15px] leading-relaxed" style={{ color: '#5A4A20' }}>
+          미네랄 워터는 단순히 갈증 해소가 아닌 <b>대사·신경·호르몬</b> 시스템을 순서대로 활성화합니다.
+          정해진 시간에 맞춰 마실 때, 마그네슘·칼슘·아연·칼륨이 각각 가장 효과적인 시점에 작용합니다.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TimeChip({ step, active, onClick }) {
+  return (
+    <button onClick={onClick}
+      className="flex flex-col items-center justify-center gap-1 px-3 py-2.5 rounded-xl flex-shrink-0 transition-all relative"
+      style={{
+        background: active ? '#1F4A3D' : '#FFFFFF',
+        border: `1.5px solid ${active ? '#D4B468' : '#D5CBB0'}`,
+        minWidth: 68,
+        boxShadow: active ? '0 6px 16px rgba(31,74,61,0.28)' : 'none',
+      }}>
+      {active && (
+        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full"
+          style={{ background: '#D4B468' }} />
+      )}
+      <span className="text-[22px] leading-none">{step.icon}</span>
+      <span className="text-[11px] font-bold tracking-wide leading-none"
+        style={{ color: active ? '#D4B468' : '#4A4A4A', fontFamily: 'monospace' }}>
+        {step.time}
+      </span>
+    </button>
+  );
+}
+
+function ScienceCard({ step }) {
+  return (
+    <div className="rounded-2xl p-4" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+      <div className="flex items-center gap-3 mb-3 pb-3 border-b" style={{ borderColor: '#E8DDC2' }}>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-[24px] flex-shrink-0" style={{ background: '#E8DDC2' }}>{step.icon}</div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[14px] font-bold tracking-wide" style={{ color: '#1F4A3D', fontFamily: 'monospace' }}>{step.time} · {step.period}</div>
+          <div className="text-[20px] font-bold truncate" style={{ color: '#0A0A0A' }}>{step.title}</div>
+          <div className="text-[14px] mt-0.5">
+            <span className="font-semibold" style={{ color: '#4A4A4A' }}>핵심 키워드: </span>
+            <span className="font-bold" style={{ color: '#1F4A3D' }}>{step.keyword}</span>
+          </div>
+        </div>
+        <div className="text-[14px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: '#1F4A3D', color: '#D4B468' }}>{step.amount}ml</div>
+      </div>
+      <div className="space-y-2.5">
+        <div>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="text-[18px]">🔬</span>
+            <span className="text-[15px] font-bold tracking-wide uppercase" style={{ color: '#4A90B5' }}>과학적 원리</span>
+          </div>
+          <div className="text-[16px] leading-relaxed" style={{ color: '#2A2A2A' }}>{step.science}</div>
+        </div>
+        <div className="pt-2 border-t" style={{ borderColor: '#F0E5C5' }}>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="text-[18px]">🧠</span>
+            <span className="text-[15px] font-bold tracking-wide uppercase" style={{ color: '#8A6CC0' }}>심리적 원리</span>
+          </div>
+          <div className="text-[16px] leading-relaxed" style={{ color: '#2A2A2A' }}>{step.psychology}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// RECORD
+// ============================================================
+function RecordTab() {
+  const [profile, setProfile] = useState(null);
+  const [before, setBefore] = useState(null);
+  const [after, setAfter] = useState(null);
+  const [editPhase, setEditPhase] = useState(null);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
+
+  useEffect(() => {
+    setProfile(safeGet('profile:info'));
+    setBefore(safeGet('diet:before'));
+    setAfter(safeGet('diet:after'));
+  }, []);
+
+  const saveProfile = (info) => {
+    setProfile(info);
+    safeSet('profile:info', info);
+    if (info.nickname) safeSet('user:name', info.nickname);
+  };
+
+  const savePhase = (phase, rec) => {
+    const record = { ...rec, ts: Date.now() };
+    if (phase === 'before') { setBefore(record); safeSet('diet:before', record); }
+    else { setAfter(record); safeSet('diet:after', record); }
+  };
+
+  const resetPhase = (phase) => {
+    if (phase === 'before') { setBefore(null); safeDelete('diet:before'); }
+    else { setAfter(null); safeDelete('diet:after'); }
+  };
+
+  const bothFilled = before && after;
+
+  return (
+    <div className="px-5">
+      <ProfileCard profile={profile} onEdit={() => setShowProfileEdit(true)} />
+
+      <div className="rounded-2xl p-5 mb-3 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0E2A21 0%, #1F4A3D 65%, #2D5F4F 100%)' }}>
+        <div className="absolute -right-10 -top-10 w-44 h-44 rounded-full opacity-10" style={{ background: '#D4B468' }} />
+        <div className="relative">
+          <div className="text-[15px] font-bold mb-1" style={{ color: '#D4B468' }}>🌿 1-DAY 다이어트</div>
+          <div className="text-[23px] font-bold leading-snug" style={{ color: '#FCFAF5' }}>
+            시작 전과 끝난 후의<br />변화를 기록해보세요
+          </div>
+          <div className="text-[14px] mt-2 opacity-80" style={{ color: '#FCFAF5' }}>
+            체중·체지방·자신상태의 변화를 한눈에 비교
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <PhaseSlot phase="before" record={before}
+          onEdit={() => setEditPhase('before')} onReset={() => resetPhase('before')} />
+        <PhaseSlot phase="after" record={after} afterEnabled={!!before}
+          onEdit={() => setEditPhase('after')} onReset={() => resetPhase('after')} />
+      </div>
+
+      {!bothFilled && (
+        <div className="rounded-2xl p-3.5 mb-3 flex items-start gap-2.5" style={{ background: '#F5E5B5', border: '1px solid #C9A961' }}>
+          <div className="text-[22px] flex-shrink-0">💡</div>
+          <div className="text-[15px] leading-relaxed" style={{ color: '#6B5520' }}>
+            {!before ? '먼저 1-DAY 다이어트를 시작하기 전 상태를 기록해보세요. 디톡스가 끝난 후 비교할 수 있어요.'
+              : '디톡스를 완료한 후 "끝난 후" 기록을 남기면 변화량이 자동으로 계산됩니다.'}
+          </div>
+        </div>
+      )}
+
+      {bothFilled && <ComparisonCard before={before} after={after} />}
+
+      {editPhase && (
+        <PhaseModal phase={editPhase} existing={editPhase === 'before' ? before : after}
+          onClose={() => setEditPhase(null)}
+          onSave={(rec) => { savePhase(editPhase, rec); setEditPhase(null); }} />
+      )}
+
+      {showProfileEdit && (
+        <ProfileModal existing={profile} onClose={() => setShowProfileEdit(false)}
+          onSave={(info) => { saveProfile(info); setShowProfileEdit(false); }} />
+      )}
+    </div>
+  );
+}
+
+function ProfileCard({ profile, onEdit }) {
+  if (!profile) {
+    return (
+      <button onClick={onEdit} className="w-full rounded-2xl p-4 mb-3 flex items-center gap-3"
+        style={{ background: '#FFFFFF', border: '1.5px dashed #D5D3C5' }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#E8DDC2' }}>
+          <User size={22} color="#1F4A3D" strokeWidth={2} />
+        </div>
+        <div className="flex-1 text-left">
+          <div className="text-[16px] font-bold" style={{ color: '#0A0A0A' }}>내 정보 입력하기</div>
+          <div className="text-[14px]" style={{ color: '#888' }}>닉네임 · 나이 · 성별 · 연락처</div>
+        </div>
+        <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#1F4A3D' }}>
+          <Plus size={16} color="#D4B468" strokeWidth={2.5} />
+        </div>
+      </button>
+    );
+  }
+  const genderLabel = GENDER_OPTIONS.find((g) => g.value === profile.gender)?.label || '';
+  return (
+    <div className="rounded-2xl p-4 mb-3 flex items-center gap-3" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-[18px] font-bold" style={{ background: '#1F4A3D', color: '#D4B468' }}>{profile.nickname.slice(0, 1)}</div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[18px] font-bold truncate" style={{ color: '#0A0A0A' }}>{profile.nickname}</div>
+        <div className="text-[14px] mt-0.5 truncate" style={{ color: '#888' }}>
+          {profile.age ? `${profile.age}세` : ''}
+          {profile.age && genderLabel ? ' · ' : ''}
+          {genderLabel}
+          {profile.phone ? ` · ${profile.phone}` : ''}
+        </div>
+      </div>
+      <button onClick={onEdit} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#E8DDC2' }}>
+        <Pencil size={14} color="#1F4A3D" strokeWidth={2.5} />
+      </button>
+    </div>
+  );
+}
+
+function PhaseSlot({ phase, record, afterEnabled = true, onEdit, onReset }) {
+  const isBefore = phase === 'before';
+  const label = isBefore ? '시작 전' : '끝난 후';
+  const emoji = isBefore ? '🌅' : '🎯';
+  const subtitle = isBefore ? 'BEFORE' : 'AFTER';
+  const dark = !isBefore && record;
+  const disabled = !isBefore && !afterEnabled;
+
+  if (!record) {
+    return (
+      <button onClick={disabled ? undefined : onEdit} disabled={disabled}
+        className="rounded-2xl p-4 flex flex-col items-center justify-center text-center"
+        style={{ background: '#FFFFFF', border: `1.5px dashed ${disabled ? '#E5E3D8' : '#D5D3C5'}`,
+          minHeight: 220, opacity: disabled ? 0.5 : 1 }}>
+        <div className="text-3xl mb-2 opacity-60">{emoji}</div>
+        <div className="text-[13px] font-bold tracking-[1.5px] mb-0.5" style={{ color: '#888' }}>{subtitle}</div>
+        <div className="text-[18px] font-bold mb-3" style={{ color: '#0A0A0A' }}>{label}</div>
+        {disabled ? <div className="text-[14px]" style={{ color: '#888' }}>시작 전을<br />먼저 기록하세요</div>
+          : <div className="px-3 py-1.5 rounded-full text-[15px] font-bold flex items-center gap-1" style={{ background: '#1F4A3D', color: '#D4B468' }}>
+              <Plus size={14} strokeWidth={3} />기록하기
+            </div>}
+      </button>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl p-4 relative"
+      style={{ background: dark ? 'linear-gradient(135deg, #1F4A3D, #2D5F4F)' : '#E8DDC2',
+        border: '1px solid', borderColor: dark ? '#1F4A3D' : '#C9A961', minHeight: 220 }}>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[22px] leading-none">{emoji}</span>
+          <div>
+            <div className="text-[11px] font-bold tracking-[1.5px]" style={{ color: dark ? '#D4B468' : '#888' }}>{subtitle}</div>
+            <div className="text-[14px] font-bold leading-none" style={{ color: dark ? '#FCFAF5' : '#0A0A0A' }}>{label}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button onClick={onEdit} className="w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: dark ? 'rgba(212,180,104,0.2)' : 'rgba(31,74,61,0.1)' }}>
+            <Pencil size={12} color={dark ? '#D4B468' : '#1F4A3D'} strokeWidth={2.5} />
+          </button>
+          <button onClick={onReset} className="w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: dark ? 'rgba(212,180,104,0.2)' : 'rgba(31,74,61,0.1)' }}>
+            <Trash2 size={12} color={dark ? '#D4B468' : '#1F4A3D'} strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+      <div className="mb-3 mt-2">
+        <div className="flex items-baseline gap-1">
+          <div className="text-[30px] font-bold leading-none tracking-tight" style={{ color: dark ? '#D4B468' : '#0A0A0A' }}>{record.weight.toFixed(1)}</div>
+          <div className="text-[13px]" style={{ color: dark ? 'rgba(252,250,245,0.7)' : '#888' }}>kg</div>
+        </div>
+        {record.bodyFat != null && (
+          <div className="text-[13px] font-semibold mt-1" style={{ color: dark ? '#D4B468cc' : '#1F4A3D' }}>체지방 {record.bodyFat}%</div>
+        )}
+      </div>
+      <div className="grid grid-cols-1 gap-y-1 pt-2.5 border-t" style={{ borderColor: dark ? 'rgba(212,180,104,0.2)' : '#D5C896' }}>
+        {STATE_ITEMS.map((item) => (
+          <MiniRow key={item.key} label={item.label} value={record[item.key]} dark={dark} />
+        ))}
+      </div>
+      {record.note && (
+        <div className="mt-3 px-2 py-1.5 rounded-lg text-[12px] leading-snug"
+          style={{ background: dark ? 'rgba(252,250,245,0.1)' : 'rgba(255,255,255,0.5)',
+            color: dark ? 'rgba(252,250,245,0.9)' : '#4A4A4A' }}>{record.note}</div>
+      )}
+    </div>
+  );
+}
+
+function MiniRow({ label, value, dark }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[11px] font-semibold truncate pr-1" style={{ color: dark ? 'rgba(252,250,245,0.75)' : '#4A4A4A' }}>{label}</span>
+      <DotRating value={value} dark={dark} small />
+    </div>
+  );
+}
+
+function DotRating({ value, muted, dark, small }) {
+  const size = small ? 5 : 7;
+  return (
+    <div className="flex items-center gap-0.5 flex-shrink-0">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className="rounded-full" style={{ width: size, height: size,
+          background: i <= (value || 0)
+            ? (dark ? '#D4B468' : muted ? '#B5B0A0' : '#1F4A3D')
+            : (dark ? 'rgba(212,180,104,0.25)' : '#EBE8DC') }} />
+      ))}
+    </div>
+  );
+}
+
+function ComparisonCard({ before, after }) {
+  return (
+    <div className="rounded-2xl p-5 mb-3" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+      <div className="text-[18px] font-bold mb-1" style={{ color: '#0A0A0A' }}>📊 변화 비교</div>
+      <div className="flex items-center gap-2 text-[14px] mb-4" style={{ color: '#888' }}>
+        <span className="px-2 py-0.5 rounded-md font-semibold" style={{ background: '#E8DDC2', color: '#4A4A4A' }}>
+          {fmtDate(new Date(before.ts).toISOString().slice(0, 10))}
+        </span>
+        <ArrowRight size={14} color="#888" />
+        <span className="px-2 py-0.5 rounded-md font-semibold" style={{ background: '#1F4A3D', color: '#D4B468' }}>
+          {fmtDate(new Date(after.ts).toISOString().slice(0, 10))}
+        </span>
+      </div>
+      <CompareRow label="체중" before={before.weight} after={after.weight} unit="kg" lowerIsBetter />
+      <CompareRow label="체지방률" before={before.bodyFat} after={after.bodyFat} unit="%" lowerIsBetter />
+      <div className="mt-4 pt-4 border-t" style={{ borderColor: '#E8DDC2' }}>
+        <div className="text-[15px] font-bold mb-1" style={{ color: '#4A4A4A' }}>자신상태 변화</div>
+        <div className="text-[12px] mb-3" style={{ color: '#999' }}>1 = 매우 안좋음 → 5 = 매우 좋음</div>
+        {STATE_ITEMS.map((item) => (
+          <StateCompareRow key={item.key} label={item.label}
+            before={before[item.key]} after={after[item.key]} higherIsBetter />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CompareRow({ label, before, after, unit, lowerIsBetter }) {
+  if (before == null || after == null) return null;
+  const diff = (after - before).toFixed(1);
+  const isImprovement = lowerIsBetter ? diff < 0 : diff > 0;
+  const isSame = parseFloat(diff) === 0;
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div className="text-[16px] font-semibold w-20" style={{ color: '#4A4A4A' }}>{label}</div>
+      <div className="flex-1 flex items-center justify-center gap-2">
+        <span className="text-[19px] font-bold" style={{ color: '#999' }}>{before.toFixed(1)}</span>
+        <ArrowRight size={14} color="#888" />
+        <span className="text-[22px] font-bold" style={{ color: '#0A0A0A' }}>{after.toFixed(1)}</span>
+        <span className="text-[14px]" style={{ color: '#888' }}>{unit}</span>
+      </div>
+      <div className="text-[14px] font-bold px-2 py-0.5 rounded-md flex items-center gap-0.5 w-20 justify-center"
+        style={{ background: isSame ? '#E8DDC2' : isImprovement ? '#B5DECC' : '#F0C5D2',
+          color: isSame ? '#888' : isImprovement ? '#1F5F44' : '#C44' }}>
+        {!isSame && (diff < 0 ? <TrendingDown size={12} strokeWidth={3} /> : <TrendingUp size={12} strokeWidth={3} />)}
+        {Math.abs(diff)}
+      </div>
+    </div>
+  );
+}
+
+function StateCompareRow({ label, before, after, higherIsBetter }) {
+  if (before == null || after == null) return null;
+  const diff = after - before;
+  const isImprovement = higherIsBetter ? diff > 0 : diff < 0;
+  const isSame = diff === 0;
+  return (
+    <div className="flex items-center justify-between py-1.5 gap-2">
+      <div className="text-[14px] font-semibold flex-shrink-0" style={{ color: '#4A4A4A', width: 110 }}>{label}</div>
+      <div className="flex-1 flex items-center justify-center gap-2">
+        <DotRating value={before} muted />
+        <ArrowRight size={12} color="#888" />
+        <DotRating value={after} />
+      </div>
+      <div className="text-[13px] font-bold px-1.5 py-0.5 rounded-md text-center flex-shrink-0"
+        style={{ background: isSame ? '#E8DDC2' : isImprovement ? '#B5DECC' : '#F0C5D2',
+          color: isSame ? '#888' : isImprovement ? '#1F5F44' : '#C44', minWidth: 48 }}>
+        {isSame ? '동일' : (diff > 0 ? '+' : '') + diff}
+      </div>
+    </div>
+  );
+}
+
+function ProfileModal({ existing, onClose, onSave }) {
+  const [nickname, setNickname] = useState(existing?.nickname || '');
+  const [age, setAge] = useState(existing?.age?.toString() || '');
+  const [gender, setGender] = useState(existing?.gender || '');
+  const [phone, setPhone] = useState(existing?.phone || '');
+
+  const handleSave = () => {
+    if (!nickname.trim()) return;
+    onSave({ nickname: nickname.trim(), age: age ? parseInt(age) : null, gender, phone: phone.trim() });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose}>
+      <div className="w-full max-w-[440px] rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
+        style={{ background: '#FCFAF5' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <div className="text-[22px] font-bold" style={{ color: '#0A0A0A' }}>내 정보</div>
+            <div className="text-[14px] mt-1" style={{ color: '#888' }}>다이어트 체험단 정보를 입력해주세요</div>
+          </div>
+          <button onClick={onClose}><X size={22} color="#888" /></button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>닉네임 <span style={{ color: '#C44' }}>*</span></div>
+            <input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)}
+              placeholder="다이어트짱" maxLength={20} autoFocus
+              className="w-full px-4 py-3 rounded-2xl text-[18px] font-bold outline-none"
+              style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>나이</div>
+              <input type="number" value={age} onChange={(e) => setAge(e.target.value)} placeholder="30" min="10" max="100"
+                className="w-full px-4 py-3 rounded-2xl text-[18px] font-bold outline-none"
+                style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+            </div>
+            <div>
+              <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>성별</div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {GENDER_OPTIONS.map((g) => (
+                  <button key={g.value} onClick={() => setGender(g.value)}
+                    className="py-3 rounded-2xl text-[14px] font-bold transition-all"
+                    style={{ background: gender === g.value ? '#1F4A3D' : '#FFFFFF',
+                      color: gender === g.value ? '#D4B468' : '#4A4A4A',
+                      border: '1.5px solid', borderColor: gender === g.value ? '#1F4A3D' : '#D5CBB0' }}>{g.label}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>전화번호 (선택)</div>
+            <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
+              placeholder="010-0000-0000" maxLength={20}
+              className="w-full px-4 py-3 rounded-2xl text-[18px] font-bold outline-none"
+              style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+          </div>
+        </div>
+        <button onClick={handleSave} disabled={!nickname.trim()}
+          className="w-full py-4 rounded-2xl text-[19px] font-bold disabled:opacity-40 mt-6"
+          style={{ background: '#1F4A3D', color: '#D4B468' }}>
+          {existing ? '수정하기' : '저장하기'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PhaseModal({ phase, existing, onClose, onSave }) {
+  const isBefore = phase === 'before';
+  const title = isBefore ? '1-DAY 다이어트 시작 전' : '1-DAY 다이어트 끝난 후';
+  const subtitle = isBefore ? '디톡스를 시작하기 전 상태를 기록해주세요' : '디톡스 완료 후 변화를 기록해주세요';
+
+  const [weight, setWeight] = useState(existing?.weight?.toString() || '');
+  const [bodyFat, setBodyFat] = useState(existing?.bodyFat?.toString() || '');
+  const [states, setStates] = useState(() => {
+    const init = {};
+    STATE_ITEMS.forEach((item) => { init[item.key] = existing?.[item.key] || 3; });
+    return init;
+  });
+  const [note, setNote] = useState(existing?.note || '');
+
+  const updateState = (key, val) => setStates({ ...states, [key]: val });
+
+  const handleSave = () => {
+    const w = parseFloat(weight);
+    if (!w || w < 20 || w > 300) return;
+    const bf = parseFloat(bodyFat);
+    onSave({ weight: w, bodyFat: bf > 0 && bf < 70 ? bf : null, ...states, note: note.trim() });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onClose}>
+      <div className="w-full max-w-[440px] rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
+        style={{ background: '#FCFAF5' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            <div className="inline-block px-2 py-0.5 rounded-md text-[13px] font-bold tracking-[1.5px] mb-1.5"
+              style={{ background: isBefore ? '#E8DDC2' : '#1F4A3D', color: isBefore ? '#4A4A4A' : '#D4B468' }}>
+              {isBefore ? 'BEFORE' : 'AFTER'}
+            </div>
+            <div className="text-[22px] font-bold" style={{ color: '#0A0A0A' }}>{title}</div>
+            <div className="text-[15px] mt-1" style={{ color: '#888' }}>{subtitle}</div>
+          </div>
+          <button onClick={onClose}><X size={22} color="#888" /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>체중 (kg)</div>
+            <input type="number" step="0.1" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="65.5" autoFocus
+              className="w-full px-3 py-3 rounded-2xl text-[22px] font-bold outline-none"
+              style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+          </div>
+          <div>
+            <div className="text-[15px] font-semibold mb-1.5" style={{ color: '#4A4A4A' }}>체지방률 (%)</div>
+            <input type="number" step="0.1" value={bodyFat} onChange={(e) => setBodyFat(e.target.value)} placeholder="22.5"
+              className="w-full px-3 py-3 rounded-2xl text-[22px] font-bold outline-none"
+              style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+          </div>
+        </div>
+
+        <div className="mb-5">
+          <div className="text-[16px] font-bold mb-1" style={{ color: '#0A0A0A' }}>자신상태 체크</div>
+          <div className="flex items-center justify-between text-[13px] mb-3 px-1" style={{ color: '#888' }}>
+            <span><b style={{ color: '#C44' }}>1</b> 매우 안좋음</span>
+            <span>매우 좋음 <b style={{ color: '#1F5F44' }}>5</b></span>
+          </div>
+          <div className="rounded-2xl p-4 space-y-4" style={{ background: '#FFFFFF', border: '1px solid #D5CBB0' }}>
+            {STATE_ITEMS.map((item) => (
+              <StateSlider key={item.key} label={item.label} value={states[item.key]}
+                onChange={(v) => updateState(item.key, v)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <div className="text-[15px] font-semibold mb-2" style={{ color: '#4A4A4A' }}>한 줄 메모 (선택)</div>
+          <input type="text" value={note} onChange={(e) => setNote(e.target.value)} maxLength={50}
+            placeholder={isBefore ? '예: 오늘 시작! 화이팅' : '예: 부기가 확실히 줄었어요'}
+            className="w-full px-4 py-3 rounded-2xl text-[18px] outline-none"
+            style={{ background: '#FFFFFF', border: '1.5px solid #D5CBB0', color: '#0A0A0A' }} />
+        </div>
+
+        <button onClick={handleSave} disabled={!weight || isNaN(parseFloat(weight))}
+          className="w-full py-4 rounded-2xl text-[19px] font-bold disabled:opacity-40"
+          style={{ background: '#1F4A3D', color: '#D4B468' }}>
+          {existing ? '수정하기' : '저장하기'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function StateSlider({ label, value, onChange }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="text-[16px] font-semibold" style={{ color: '#0A0A0A' }}>{label}</div>
+        <div className="text-[14px] font-bold" style={{ color: value <= 2 ? '#C44' : value >= 4 ? '#1F5F44' : '#888' }}>{value} / 5</div>
+      </div>
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <button key={i} onClick={() => onChange(i)}
+            className="flex-1 h-11 rounded-lg transition-all flex items-center justify-center"
+            style={{ background: i <= value ? '#1F4A3D' : '#E8DDC2', color: i <= value ? '#D4B468' : '#999' }}>
+            <span className="text-[15px] font-bold">{i}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MOUNT
+// ============================================================
+const rootEl = document.getElementById('root');
+rootEl.innerHTML = '';
+createRoot(rootEl).render(<App />);
+</script>
+</body>
+</html>
