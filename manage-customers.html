@@ -6,7 +6,7 @@
 <title>AIVO · 고객관리의 처음부터 끝까지</title>
 
 <meta name="description" content="고객을 만들고, 관리하고, 넓혀가는 모든 과정을 하나씩 알려주고 함께 실행하는 AI 고객관리 앱."/>
-<meta name="theme-color" content="#0E1420"/>
+<meta name="theme-color" content="#14120F"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -24,6 +24,9 @@
 <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"AIVO 고객관리","short_name":"AIVO","start_url":".","display":"standalone","background_color":"%23F6F7F9","theme_color":"%230E1420","orientation":"portrait"}'/>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -36,303 +39,367 @@
 -->
 <style>
 :root{
-  --ink:#0E1420; --ink2:#39424F; --ink3:#7C879A; --ink4:#A9B2C0;
-  --line:#E6E9EF; --line2:#F0F2F6; --bg:#F5F6F8; --paper:#FFFFFF;
-  --gold:#B98B2E; --gold2:#D9BE86; --goldbg:#FBF6EC;
-  --blue:#2350D8; --bluebg:#EEF2FE;
-  --good:#1F7A4C; --goodbg:#EBF6F0;
-  --warn:#B3341F; --warnbg:#FDF0ED;
-  --shadow:0 1px 2px rgba(14,20,32,.04),0 8px 24px rgba(14,20,32,.06);
-  --shadow2:0 2px 6px rgba(14,20,32,.06),0 18px 40px rgba(14,20,32,.10);
-  --r:20px; --r2:14px;
-  --safe:env(safe-area-inset-bottom,0px);
+  --bg:#F3F1EC; --paper:#FFFFFF; --raised:#FBFAF7;
+  --ink:#14120F; --ink2:#4C463D; --ink3:#8B8377; --ink4:#B5AD9F;
+  --line:#E4DFD5; --line2:#EFEBE2; --track:#EAE6DC;
+  --pri:#14120F; --pri-fg:#FFFFFF;
+  --gold:#96762B; --gold2:#C6A45C; --goldbg:#F8F2E4; --goldline:#E7D9BA;
+  --blue:#27509C; --bluebg:#EDF1F9;
+  --good:#1E6B45; --goodbg:#E9F3ED;
+  --warn:#A32E1C; --warnbg:#FBEDEA;
+  --shadow:0 1px 1px rgba(20,18,15,.03),0 6px 18px rgba(20,18,15,.05);
+  --shadow2:0 2px 6px rgba(20,18,15,.05),0 20px 44px rgba(20,18,15,.10);
+  --hdr:#14120F; --hdr-fg:#F5F1E9; --hdr-dim:#8E877A; --hdr-soft:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.86);
+  --r:22px; --r2:15px; --safe:env(safe-area-inset-bottom,0px);
+  --serif:'Noto Serif KR',ui-serif,Georgia,'Times New Roman',serif;
+}
+[data-theme="dark"]{
+  --bg:#0E0E0D; --paper:#181816; --raised:#201F1C;
+  --ink:#F2EEE6; --ink2:#BEB8AC; --ink3:#8B857A; --ink4:#655F56;
+  --line:#2B2A26; --line2:#232320; --track:#2B2A26;
+  --pri:#EFE9DD; --pri-fg:#14120F;
+  --gold:#D2B478; --gold2:#E2C994; --goldbg:#241E12; --goldline:#3C3220;
+  --blue:#87A6E8; --bluebg:#161B26;
+  --good:#5FBF8C; --goodbg:#12211A;
+  --warn:#E8836E; --warnbg:#2A1613;
+  --shadow:0 1px 2px rgba(0,0,0,.45); --shadow2:0 12px 38px rgba(0,0,0,.55);
+  --hdr:#000000; --hdr-fg:#F2EEE6; --hdr-dim:#857F74; --hdr-soft:rgba(255,255,255,.07);
+  --glass:rgba(24,24,22,.86);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;background:#E9EBEF}
+html,body{margin:0;padding:0;background:var(--bg)}
 body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);
-  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;letter-spacing:-.011em;
+  transition:background .25s,color .25s}
 button{font-family:inherit;color:inherit}
-.app{max-width:460px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);
-  position:relative;overflow-x:hidden;box-shadow:0 0 60px rgba(14,20,32,.10)}
-.pad{padding:0 18px}
-.pb{padding-bottom:calc(112px + var(--safe))}
-.loading{padding:120px 20px;text-align:center;color:var(--ink3);font-size:15px}
+.app{max-width:462px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);
+  position:relative;overflow-x:hidden}
+@media(min-width:520px){.app{box-shadow:0 0 0 1px var(--line),0 0 80px rgba(20,18,15,.14)}}
+.pad{padding:0 20px}
+.pb{padding-bottom:calc(116px + var(--safe))}
+.loading{padding:130px 20px;text-align:center;color:var(--ink3);font-size:15px}
 
 /* ── 타이포 ── */
-.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.10em;color:var(--ink4);text-transform:uppercase;display:block}
-.h1{font-size:27px;font-weight:800;letter-spacing:-.035em;line-height:1.3;margin:6px 0 8px}
-.h2{font-size:15px;font-weight:800;letter-spacing:-.02em;margin:26px 0 12px;display:flex;
-  justify-content:space-between;align-items:center;gap:10px}
-.h2 .more{font-size:13px;font-weight:700;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:2px}
-.sub{font-size:14.5px;color:var(--ink3);line-height:1.65;margin:0 0 18px}
-.tiny{font-size:12.5px;color:var(--ink4)}
+.serif{font-family:var(--serif);font-weight:600}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase;display:block}
+.h1{font-family:var(--serif);font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.36;margin:8px 0 10px}
+.h2{font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:var(--ink2);
+  margin:28px 0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.h2 .more{font-size:12px;font-weight:800;color:var(--ink3);
+  cursor:pointer;display:flex;align-items:center;gap:2px}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold2),transparent);margin:0 0 16px;opacity:.55}
+.sub{font-size:14.5px;color:var(--ink3);line-height:1.68;margin:0 0 18px}
+.tiny{font-size:12.5px;color:var(--ink4);line-height:1.5}
 .num{font-variant-numeric:tabular-nums;letter-spacing:-.03em}
 
 /* ── 헤더 ── */
-.top{position:relative;background:var(--ink);color:#fff;padding:calc(18px + env(safe-area-inset-top,0px)) 18px 26px;
-  border-radius:0 0 26px 26px;overflow:hidden}
-.top::after{content:"";position:absolute;right:-70px;top:-90px;width:230px;height:230px;border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,rgba(217,190,134,.28),rgba(217,190,134,0) 65%)}
-.top .row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
-.brand{display:flex;align-items:center;gap:9px}
-.brand b{font-size:19px;font-weight:800;letter-spacing:.02em}
-.brand .tagline{font-size:12px;color:#8E99AC;margin-top:1px;letter-spacing:0}
-.mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(150deg,#D9BE86,#B98B2E);
-  display:flex;align-items:center;justify-content:center;color:#0E1420;font-weight:900;font-size:15px}
-.plan{font-size:11.5px;font-weight:800;padding:6px 11px;border-radius:20px;border:1px solid rgba(255,255,255,.18);
-  color:#D9BE86;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap}
-.plan.pro{background:linear-gradient(150deg,#D9BE86,#B98B2E);color:#0E1420;border-color:transparent}
+.top{position:relative;background:var(--hdr);color:var(--hdr-fg);
+  padding:calc(16px + env(safe-area-inset-top,0px)) 20px 26px;overflow:hidden}
+.top::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 82% -18%,rgba(198,164,92,.26),transparent 58%)}
+.top::after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:1px;
+  background:linear-gradient(90deg,rgba(198,164,92,.5),transparent)}
+.top>*{position:relative;z-index:1}
+.trow{display:flex;justify-content:space-between;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .nm{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:.10em;line-height:1.1}
+.brand .tagline{font-size:11.5px;color:var(--hdr-dim);margin-top:3px;letter-spacing:0}
+.mark{width:34px;height:34px;border-radius:11px;border:1px solid rgba(198,164,92,.5);
+  display:flex;align-items:center;justify-content:center;color:var(--gold2);font-family:var(--serif);
+  font-weight:600;font-size:17px;flex:none}
+.hbtns{display:flex;gap:7px;align-items:center}
+.iconbtn{width:34px;height:34px;border-radius:11px;border:1px solid var(--hdr-soft);background:none;
+  color:var(--hdr-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.plan{font-size:11px;font-weight:800;padding:8px 12px;border-radius:11px;border:1px solid rgba(198,164,92,.4);
+  background:none;color:var(--gold2);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;
+  letter-spacing:.04em}
+.plan.pro{background:linear-gradient(140deg,#E2C994,#B08E3C);color:#20180A;border-color:transparent}
 
-/* ── 세그먼트 (집중 / 전체) ── */
-.seg{display:flex;background:rgba(255,255,255,.09);border-radius:13px;padding:4px;margin-top:20px;position:relative;z-index:1}
-.seg button{flex:1;border:0;background:none;color:#A5AEBE;font-size:14px;font-weight:800;padding:10px 0;
-  border-radius:10px;cursor:pointer;transition:.18s;letter-spacing:-.02em}
-.seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.16)}
+.kpis{display:flex;margin-top:22px;border-top:1px solid var(--hdr-soft);padding-top:16px}
+.kpi{flex:1;text-align:center;position:relative}
+.kpi+.kpi::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--hdr-soft)}
+.kpi b{display:block;font-size:25px;font-weight:700;letter-spacing:-.045em;line-height:1.15;font-family:var(--serif)}
+.kpi span{font-size:10.5px;color:var(--hdr-dim);font-weight:700;letter-spacing:.05em}
+.kpi.alert b{color:#F09A85}
+.kpi.gold b{color:var(--gold2)}
+
+.seg{display:flex;background:var(--hdr-soft);border-radius:12px;padding:3px;margin-top:20px}
+.seg button{flex:1;border:0;background:none;color:var(--hdr-dim);font-size:13.5px;font-weight:800;
+  padding:11px 0;border-radius:10px;cursor:pointer;transition:.2s;letter-spacing:-.02em}
+.seg button.on{background:var(--hdr-fg);color:var(--hdr)}
 
 /* ── 카드 ── */
-.card{background:var(--paper);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
-.card.flat{box-shadow:none;border:1px solid var(--line)}
+.card{background:var(--paper);border-radius:var(--r);padding:19px;box-shadow:var(--shadow);
+  margin-bottom:12px;border:1px solid var(--line2)}
+.card.flat{box-shadow:none}
 .card.pop{box-shadow:var(--shadow2)}
-.card.gold{background:linear-gradient(160deg,#FDFAF3,#F8F1E2);border:1px solid #EDE0C6}
-.card.dark{background:var(--ink);color:#fff}
-.card.center{text-align:center;padding:34px 20px}
+.card.gold{background:var(--goldbg);border-color:var(--goldline);box-shadow:none}
+.card.center{text-align:center;padding:36px 22px}
+.card.hair{border:1px solid var(--line);box-shadow:none;background:none}
 
-/* ── KPI ── */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px;position:relative;z-index:1}
-.kpi{background:rgba(255,255,255,.09);border-radius:14px;padding:12px 4px;text-align:center}
-.kpi b{display:block;font-size:22px;font-weight:800;letter-spacing:-.04em;line-height:1.2}
-.kpi span{font-size:11px;color:#96A1B2;font-weight:600}
-.kpi.alert b{color:#FF9E8C}
-.kpi.gold b{color:#D9BE86}
-
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
-.stat{background:var(--paper);border-radius:var(--r2);padding:14px 8px;text-align:center;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:21px;font-weight:800;letter-spacing:-.04em}
-.stat span{font-size:11.5px;color:var(--ink3);font-weight:600}
+/* ── 통계 ── */
+.stats{display:flex;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);
+  padding:16px 0;margin-bottom:12px;box-shadow:var(--shadow)}
+.st{flex:1;text-align:center;position:relative}
+.st+.st::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line2)}
+.st b{display:block;font-size:23px;font-weight:700;letter-spacing:-.045em;font-family:var(--serif);line-height:1.2}
+.st span{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.03em}
 
 /* ── 버튼 ── */
 .btn{width:100%;border:0;border-radius:15px;font-size:16px;font-weight:800;cursor:pointer;
   padding:16px 18px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;
-  letter-spacing:-.02em;line-height:1.35;transition:transform .12s}
+  letter-spacing:-.02em;line-height:1.35;transition:transform .1s,opacity .15s}
 .btn:active{transform:scale(.985)}
-.btn.dark{background:var(--ink);color:#fff}
-.btn.dark:disabled{opacity:.35}
-.btn.gold{background:linear-gradient(150deg,#D9BE86,#B98B2E);color:#241A05}
-.btn.line{background:var(--paper);color:var(--ink2);border:1.5px solid var(--line)}
-.btn.quiet{background:#EDEFF3;color:var(--ink2)}
-.btn.sm{padding:12px 14px;font-size:14.5px;border-radius:12px;margin:0}
-.btn.blue{background:var(--blue);color:#fff}
+.btn.dark{background:var(--pri);color:var(--pri-fg)}
+.btn.dark:disabled{opacity:.3}
+.btn.gold{background:linear-gradient(140deg,#E2C994,#AF8C39);color:#211809}
+.btn.line{background:var(--paper);color:var(--ink2);border:1px solid var(--line)}
+.btn.quiet{background:var(--line2);color:var(--ink2)}
+.btn.sm{padding:12px 14px;font-size:14px;border-radius:12px;margin:0}
 .row2{display:flex;gap:9px;margin-bottom:10px}
 .row2 .btn{margin:0}
-.chip{border:1.5px solid var(--line);background:var(--paper);border-radius:20px;padding:9px 14px;
-  font-size:13.5px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.chip.gold{background:var(--goldbg);border-color:#E9D9B6;color:var(--gold)}
+.chip{border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:9px 13px;
+  font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--pri);color:var(--pri-fg);border-color:var(--pri)}
 .chips{display:flex;gap:7px;flex-wrap:wrap}
 .chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}
 .chips.scroll::-webkit-scrollbar{display:none}
-.back{background:none;border:0;font-size:14.5px;font-weight:700;color:var(--ink3);cursor:pointer;
-  padding:14px 0 6px;display:flex;align-items:center;gap:4px}
-.ghostlink{background:none;border:0;color:var(--ink3);font-size:13px;font-weight:700;text-decoration:underline;
-  cursor:pointer;display:block;margin:22px auto 0;padding:8px}
+.back{background:none;border:0;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer;
+  padding:16px 0 8px;display:flex;align-items:center;gap:5px}
+.ghostlink{background:none;border:0;color:var(--ink4);font-size:12.5px;font-weight:700;text-decoration:underline;
+  cursor:pointer;display:block;margin:24px auto 0;padding:8px}
 
 /* ── 입력 ── */
 .field{margin-bottom:14px}
-.label{font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:7px;display:block}
-.inp,.area{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;font-size:16px;
+.label{font-size:12.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink2);margin-bottom:8px;display:block}
+.inp,.area{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font-size:16px;
   font-family:inherit;background:var(--paper);color:var(--ink);line-height:1.6}
-.inp:focus,.area:focus{outline:none;border-color:var(--ink)}
+.inp:focus,.area:focus{outline:none;border-color:var(--ink3);box-shadow:0 0 0 3px var(--line2)}
 .area{resize:vertical;min-height:120px}
-.err{background:var(--warnbg);color:#8C2617;border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:10px;font-weight:600}
-.note{background:var(--bluebg);border-radius:13px;padding:13px 15px;font-size:13.5px;color:#1E3C96;line-height:1.6;margin-bottom:12px}
+.err{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:14px;
+  margin-bottom:10px;font-weight:700}
+.note{background:var(--goldbg);border:1px solid var(--goldline);border-radius:13px;padding:13px 15px;
+  font-size:13.5px;color:var(--gold);line-height:1.65;margin-bottom:12px;font-weight:600}
 .note b{cursor:pointer;border-bottom:1px solid currentColor}
 
 /* ── 진행 ── */
-.bar{height:6px;background:var(--line2);border-radius:4px;overflow:hidden;width:100%}
-.bar i{display:block;height:100%;border-radius:4px;transition:width .45s cubic-bezier(.4,0,.2,1)}
-.steps{display:flex;gap:5px;flex:1}
-.steps i{flex:1;height:4px;border-radius:3px;background:var(--line);transition:.3s}
-.steps i.on{background:var(--ink)}
-.flowtop{display:flex;align-items:center;gap:14px;padding:calc(12px + env(safe-area-inset-top,0px)) 0 18px}
+.bar{height:5px;background:var(--track);border-radius:4px;overflow:hidden;width:100%}
+.bar i{display:block;height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.steps{display:flex;gap:4px;flex:1}
+.steps i{flex:1;height:3px;border-radius:3px;background:var(--line);transition:.3s}
+.steps i.on{background:var(--gold2)}
+.flowtop{display:flex;align-items:center;gap:14px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 20px}
 .flowtop .back{padding:0}
-.ring{position:relative;width:74px;height:74px;flex:none}
+.ring{position:relative;width:76px;height:76px;flex:none}
 .ring svg{transform:rotate(-90deg)}
 .ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .val b{font-size:19px;font-weight:800;letter-spacing:-.04em;line-height:1}
-.ring .val span{font-size:9.5px;color:var(--ink3);font-weight:700;margin-top:2px}
+.ring .val b{font-size:20px;font-weight:700;letter-spacing:-.045em;line-height:1;font-family:var(--serif)}
+.ring .val span{font-size:9px;color:var(--ink4);font-weight:800;margin-top:3px;letter-spacing:.08em}
 
 /* ── 리스트 ── */
-.list{display:flex;flex-direction:column;gap:9px}
-.item{display:flex;align-items:center;gap:12px;background:var(--paper);border:0;border-radius:var(--r2);
-  padding:14px;width:100%;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
-.av{width:42px;height:42px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:13px;background:var(--paper);border:1px solid var(--line2);
+  border-radius:var(--r2);padding:14px;width:100%;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.item:active{background:var(--raised)}
+.av{width:42px;height:42px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:16px;letter-spacing:-.02em}
+.av.ink{background:var(--pri);color:var(--pri-fg)}
+.av.soft{background:var(--line2);color:var(--ink2)}
 .item .mid{flex:1;min-width:0}
 .item .mid b{font-size:15.5px;font-weight:800;display:block;letter-spacing:-.02em}
-.item .mid .l2{font-size:13px;color:var(--ink3);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.item .mid .l2{font-size:12.5px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .dot{width:3px;height:3px;border-radius:50%;background:var(--ink4);flex:none}
 .late{color:var(--warn);font-weight:800}
-.tagpill{font-size:11px;font-weight:800;padding:3px 8px;border-radius:20px;background:var(--line2);color:var(--ink2)}
+.tagpill{font-size:10.5px;font-weight:800;padding:4px 8px;border-radius:7px;background:var(--line2);
+  color:var(--ink2);letter-spacing:.02em;white-space:nowrap}
 .tagpill.warn{background:var(--warnbg);color:var(--warn)}
 .tagpill.good{background:var(--goodbg);color:var(--good)}
 .tagpill.gold{background:var(--goldbg);color:var(--gold)}
 .tagpill.blue{background:var(--bluebg);color:var(--blue)}
-.blank{text-align:center;padding:44px 24px;color:var(--ink3);font-size:14.5px;line-height:1.75}
+.blank{text-align:center;padding:46px 24px;color:var(--ink3);font-size:14.5px;line-height:1.8}
 
 /* ── 퍼널 ── */
-.fun{display:flex;flex-direction:column;gap:8px}
-.funrow{display:flex;align-items:center;gap:10px;cursor:pointer}
-.funrow .nm{width:60px;font-size:13px;font-weight:800;flex:none;color:var(--ink2)}
-.funbar{flex:1;height:30px;background:var(--line2);border-radius:9px;overflow:hidden;position:relative}
-.funbar i{display:block;height:100%;border-radius:9px;transition:width .5s}
-.funbar em{position:absolute;left:10px;top:0;height:30px;display:flex;align-items:center;font-style:normal;
-  font-size:12.5px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2)}
-.funrow .ct{width:26px;text-align:right;font-size:14px;font-weight:800;flex:none}
+.fun{display:flex;flex-direction:column}
+.funrow{display:flex;align-items:center;gap:12px;cursor:pointer;padding:9px 0;border-bottom:1px solid var(--line2)}
+.funrow:last-child{border:0;padding-bottom:0}
+.funrow .nm{width:54px;font-size:12.5px;font-weight:800;flex:none;color:var(--ink2)}
+.funbar{flex:1;height:8px;background:var(--track);border-radius:5px;overflow:hidden}
+.funbar i{display:block;height:100%;border-radius:5px;transition:width .55s}
+.funrow .ct{width:44px;text-align:right;font-size:15px;font-weight:700;flex:none;font-family:var(--serif)}
+.funrow .ct em{font-style:normal;font-size:11px;color:var(--ink4);font-family:Pretendard,sans-serif;margin-left:2px}
 
 /* ── 미션 카드 ── */
 .mission{padding:22px 20px}
-.mission .who{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.mission h3{font-size:21px;font-weight:800;letter-spacing:-.035em;line-height:1.42;margin:0 0 8px}
-.mission .why{font-size:13.5px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.script{background:#F7F8FA;border-radius:14px;padding:15px;margin-top:16px;border:1px solid var(--line2)}
-.script .sh{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--ink4);margin-bottom:8px}
-.script p{margin:0 0 12px;font-size:15px;line-height:1.75;color:var(--ink2);white-space:pre-wrap}
+.mission .who{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.mission h3{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.025em;
+  line-height:1.45;margin:0 0 9px}
+.mission .why{font-size:13px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.script{background:var(--raised);border:1px solid var(--line2);border-radius:14px;padding:15px;margin-top:17px}
+.script .sh{font-size:11.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink4);margin-bottom:9px}
+.script p{margin:0 0 13px;font-size:15px;line-height:1.78;color:var(--ink2);white-space:pre-wrap}
 
 /* ── 코칭 ── */
-.coach{background:var(--paper);border-radius:var(--r2);padding:16px 17px;margin-bottom:10px;border-left:4px solid;box-shadow:var(--shadow)}
-.coach .ch{font-size:12.5px;font-weight:800;letter-spacing:.02em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.coach p{margin:0;font-size:15.5px;line-height:1.72;color:var(--ink2)}
-.c-good{border-color:var(--good)} .c-good .ch{color:var(--good)}
-.c-miss{border-color:#C08A1E} .c-miss .ch{color:#8F6410}
-.c-say{border-color:var(--blue)} .c-say .ch{color:var(--blue)}
+.coach{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r2);padding:16px 17px;
+  margin-bottom:10px;border-left:3px solid;box-shadow:var(--shadow)}
+.coach .ch{font-size:12.5px;font-weight:800;letter-spacing:-.01em;margin-bottom:7px;display:flex;
+  align-items:center;gap:6px}
+.coach p{margin:0;font-size:15.5px;line-height:1.75;color:var(--ink2)}
+.c-good{border-left-color:var(--good)} .c-good .ch{color:var(--good)}
+.c-miss{border-left-color:var(--gold)} .c-miss .ch{color:var(--gold)}
+.c-say{border-left-color:var(--blue)} .c-say .ch{color:var(--blue)}
 .c-say p{font-weight:700;color:var(--ink)}
-.c-pat{border-color:#6B4DE6} .c-pat .ch{color:#5A3FD1}
+.c-pat{border-left-color:#8A6BE0} .c-pat .ch{color:#8A6BE0}
 
 /* ── 상세 ── */
 .kv{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:14.5px;align-items:flex-start}
 .kv:last-child{border:0;padding-bottom:0}
-.kv>span{color:var(--ink3);width:92px;flex:none;font-weight:700;font-size:13.5px;padding-top:1px}
+.kv>span{color:var(--ink4);width:92px;flex:none;font-weight:700;font-size:12.5px;padding-top:2px}
 .kv>b{font-weight:700;flex:1}
 .kv>b.warn{color:var(--warn)}
-.stars{display:flex;gap:4px}
-.stars button{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
-  cursor:pointer;font-size:14px;padding:0;color:var(--ink4)}
-.stars button.on{background:var(--goldbg);border-color:#E4D2AA;color:var(--gold)}
-.timeline{position:relative;padding-left:20px}
-.timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1.5px;background:var(--line)}
-.tl{position:relative;padding:0 0 16px}
+.stars{display:flex;gap:5px}
+.stars button{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--paper);
+  cursor:pointer;padding:0;color:var(--ink4);display:flex;align-items:center;justify-content:center}
+.stars button.on{background:var(--goldbg);border-color:var(--goldline);color:var(--gold)}
+.timeline{position:relative;padding-left:19px}
+.timeline::before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:1px;background:var(--line)}
+.tl{position:relative;padding:0 0 17px}
+.tl:last-child{padding-bottom:0}
 .tl::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;
-  background:#fff;border:2px solid var(--ink3)}
+  background:var(--paper);border:1.5px solid var(--ink4)}
 .tl.hot::before{border-color:var(--gold);background:var(--gold)}
-.tl .d{font-size:11.5px;font-weight:800;color:var(--ink4);letter-spacing:.02em}
-.tl .t{font-size:14.5px;font-weight:700;margin-top:2px;line-height:1.55}
-.tl .x{font-size:13.5px;color:var(--ink3);margin-top:3px;line-height:1.6}
+.tl .d{font-size:10.5px;font-weight:800;color:var(--ink4);letter-spacing:.08em}
+.tl .t{font-size:14.5px;font-weight:700;margin-top:3px;line-height:1.6}
+.tl .x{font-size:13.5px;color:var(--ink3);margin-top:4px;line-height:1.65}
+
+/* ── 캘린더 ── */
+.week{display:flex;gap:6px}
+.day{flex:1;border:1px solid var(--line2);background:var(--paper);border-radius:13px;padding:10px 2px;
+  text-align:center;cursor:pointer;position:relative}
+.day.on{background:var(--pri);border-color:var(--pri)}
+.day.on .dw,.day.on .dn{color:var(--pri-fg)}
+.day .dw{font-size:10px;font-weight:800;color:var(--ink4);letter-spacing:.04em}
+.day .dn{font-size:16px;font-weight:700;font-family:var(--serif);margin-top:3px}
+.day .pip{display:block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin:6px auto 0}
+.day .pip.none{background:transparent}
+.day.on .pip{background:var(--gold2)}
+.day.today{border-color:var(--gold2)}
+.mbars{display:flex;align-items:flex-end;gap:7px;height:96px;margin-top:16px}
+.mbars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
+.mbars .mb i{width:58%;border-radius:5px 5px 2px 2px;background:var(--track);display:block;transition:height .5s}
+.mbars .mb span{font-size:9.5px;color:var(--ink4);font-weight:700}
 
 /* ── 채팅 ── */
-.chatwrap{display:flex;flex-direction:column;height:100vh;height:100dvh}
-.chathead{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+.chatwrap{display:flex;flex-direction:column;height:100vh;height:100dvh;background:var(--bg)}
+.chathead{background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
   padding:calc(11px + env(safe-area-inset-top,0px)) 15px 11px;display:flex;align-items:center;gap:11px;flex:none}
-.chathead b{display:block;font-size:15.5px;font-weight:800}
-.chathead span{font-size:12px;color:var(--ink3)}
-.chatlog{flex:1;overflow-y:auto;padding:16px 14px 8px;display:flex;flex-direction:column;gap:10px}
-.bub{max-width:86%;padding:13px 15px;border-radius:18px;font-size:15px;line-height:1.7;white-space:pre-wrap}
-.bub.me{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:6px}
-.bub.ai{align-self:flex-start;background:#fff;border-bottom-left-radius:6px;box-shadow:var(--shadow);cursor:pointer}
-.bub.think{color:var(--ink3);font-style:italic;box-shadow:none;background:#EFF1F5}
-.chatbar{display:flex;gap:8px;padding:10px 13px calc(14px + var(--safe));background:var(--bg);flex:none;align-items:flex-end}
-.chatin{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:13px 16px;font-size:16px;
-  font-family:inherit;resize:none;max-height:120px;line-height:1.5;background:#fff}
-.chatin:focus{outline:none;border-color:var(--ink)}
-.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--ink);color:#fff;cursor:pointer;flex:none;
-  display:flex;align-items:center;justify-content:center}
+.chathead b{display:block;font-size:15px;font-weight:800}
+.chathead span{font-size:11.5px;color:var(--ink3)}
+.chatlog{flex:1;overflow-y:auto;padding:16px 15px 8px;display:flex;flex-direction:column;gap:10px}
+.bub{max-width:86%;padding:13px 15px;border-radius:18px;font-size:15px;line-height:1.72;white-space:pre-wrap}
+.bub.me{align-self:flex-end;background:var(--pri);color:var(--pri-fg);border-bottom-right-radius:6px}
+.bub.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line2);
+  border-bottom-left-radius:6px;box-shadow:var(--shadow);cursor:pointer}
+.bub.think{color:var(--ink3);font-style:italic;box-shadow:none;background:var(--line2);border:0}
+.chatbar{display:flex;gap:8px;padding:10px 14px calc(14px + var(--safe));background:var(--bg);flex:none;align-items:flex-end}
+.chatin{flex:1;border:1px solid var(--line);border-radius:22px;padding:13px 16px;font-size:16px;
+  font-family:inherit;resize:none;max-height:120px;line-height:1.5;background:var(--paper);color:var(--ink)}
+.chatin:focus{outline:none;border-color:var(--ink3)}
+.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--pri);color:var(--pri-fg);
+  cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
 .send:disabled{opacity:.3}
 
 /* ── 음성 ── */
-.dict{background:var(--paper);border-radius:var(--r);padding:24px 18px;text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
-.dict.live{background:#FFFBFA;box-shadow:0 0 0 2px rgba(179,52,31,.25),var(--shadow)}
-.micbig{width:84px;height:84px;border-radius:50%;border:0;background:var(--ink);color:#fff;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 22px rgba(14,20,32,.24)}
-.micbig.on{background:var(--warn);animation:pulse 1.5s infinite;box-shadow:0 8px 22px rgba(179,52,31,.3)}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
-.wave{display:flex;gap:4px;justify-content:center;align-items:flex-end;height:22px;margin-top:14px}
+.dict{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);padding:26px 18px;
+  text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
+.dict.live{border-color:var(--warn);background:var(--warnbg)}
+.micbig{width:84px;height:84px;border-radius:50%;border:0;background:var(--pri);color:var(--pri-fg);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.micbig.on{background:var(--warn);color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.wave{display:flex;gap:4px;justify-content:center;align-items:flex-end;height:22px;margin-top:15px}
 .wave i{width:4px;background:var(--warn);border-radius:3px;animation:wv .95s infinite ease-in-out}
 .wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}
 .wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}
 .wave i:nth-child(6){animation-delay:.5s}
 @keyframes wv{0%,100%{height:6px}50%{height:20px}}
 @media(prefers-reduced-motion:reduce){.micbig.on,.wave i{animation:none}.wave i{height:12px}}
-.interim{font-size:14.5px;color:var(--ink2);margin-top:12px;line-height:1.65;background:#F5F6F8;
-  border-radius:12px;padding:11px 13px;text-align:left}
-.micbtn{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);background:#fff;cursor:pointer;
-  flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.interim{font-size:14.5px;color:var(--ink2);margin-top:13px;line-height:1.68;background:var(--raised);
+  border:1px solid var(--line2);border-radius:12px;padding:11px 13px;text-align:left}
+.micbtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--paper);
+  cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
 .micbtn.on{background:var(--warn);border-color:var(--warn);color:#fff;animation:pulse 1.5s infinite}
-.speak{background:none;border:0;font-size:12.5px;font-weight:700;color:var(--ink3);cursor:pointer;
+.speak{background:none;border:0;font-size:12px;font-weight:800;color:var(--ink4);cursor:pointer;
   display:flex;align-items:center;gap:5px;margin-left:auto;padding:6px 0}
 
 /* ── 교육 ── */
-.track{background:var(--paper);border-radius:var(--r);margin-bottom:11px;overflow:hidden;box-shadow:var(--shadow)}
-.trackh{display:flex;align-items:center;gap:13px;padding:16px;cursor:pointer}
-.trackic{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none}
-.trackh b{font-size:15.5px;font-weight:800;display:block;letter-spacing:-.02em}
-.trackh span{font-size:12.5px;color:var(--ink3)}
-.lesson{display:flex;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line2);cursor:pointer}
-.ck{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);flex:none;display:flex;
+.track{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);margin-bottom:10px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.trackh{display:flex;align-items:center;gap:13px;padding:17px;cursor:pointer}
+.trackic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.trackh b{font-size:15px;font-weight:800;display:block;letter-spacing:-.02em}
+.trackh span{font-size:12px;color:var(--ink3)}
+.lesson{display:flex;gap:12px;align-items:center;padding:14px 17px;border-top:1px solid var(--line2);cursor:pointer}
+.ck{width:21px;height:21px;border-radius:50%;border:1px solid var(--line);flex:none;display:flex;
   align-items:center;justify-content:center;color:#fff}
 .ck.on{background:var(--good);border-color:var(--good)}
 .lesson b{font-size:14.5px;font-weight:700;display:block}
-.lesson span{font-size:12.5px;color:var(--ink3)}
-.point{display:flex;gap:11px;margin-bottom:14px;font-size:15.5px;line-height:1.72;color:var(--ink2)}
-.point b{flex:none;width:22px;height:22px;border-radius:7px;background:var(--ink);color:#fff;font-size:12px;
-  display:flex;align-items:center;justify-content:center;font-weight:800;margin-top:3px}
+.lesson span{font-size:12px;color:var(--ink3)}
+.point{display:flex;gap:12px;margin-bottom:15px;font-size:15.5px;line-height:1.75;color:var(--ink2)}
+.point:last-child{margin-bottom:0}
+.point b{flex:none;width:21px;height:21px;border-radius:7px;background:var(--goldbg);color:var(--gold);
+  font-size:11.5px;display:flex;align-items:center;justify-content:center;font-weight:800;margin-top:4px}
 
 /* ── 광고 ── */
-.ad{background:linear-gradient(180deg,#EFF1F5,#E9ECF1);border:1px solid var(--line);border-radius:var(--r2);
-  padding:14px;margin:14px 0;text-align:center;position:relative;overflow:hidden}
-.ad .lb{position:absolute;top:7px;left:9px;font-size:9.5px;font-weight:800;color:var(--ink4);letter-spacing:.08em}
-.ad .body{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-.ad .body b{font-size:14px;font-weight:800;color:var(--ink2)}
-.ad .body span{font-size:12px;color:var(--ink3)}
-.ad .rm{margin-top:9px;font-size:11.5px;font-weight:800;color:var(--gold);background:none;border:0;cursor:pointer;text-decoration:underline}
-.sheet{position:fixed;inset:0;background:rgba(14,20,32,.55);z-index:90;display:flex;align-items:flex-end;
-  justify-content:center;backdrop-filter:blur(3px);animation:fade .2s}
+.ad{background:var(--raised);border:1px dashed var(--line);border-radius:var(--r2);padding:15px;
+  margin:16px 0;text-align:center;position:relative}
+.ad .lb{position:absolute;top:8px;left:11px;font-size:9px;font-weight:800;color:var(--ink4);letter-spacing:.14em}
+.ad .body{min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.ad .body b{font-size:13.5px;font-weight:800;color:var(--ink3)}
+.ad .body span{font-size:11.5px;color:var(--ink4)}
+.ad .rm{margin-top:10px;font-size:11px;font-weight:800;color:var(--gold);background:none;border:0;
+  cursor:pointer;letter-spacing:.02em;border-bottom:1px solid var(--goldline)}
+.sheet{position:fixed;inset:0;background:rgba(10,9,8,.6);z-index:90;display:flex;align-items:flex-end;
+  justify-content:center;backdrop-filter:blur(4px);animation:fade .2s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.sheetin{background:var(--bg);width:100%;max-width:460px;border-radius:26px 26px 0 0;padding:26px 20px calc(24px + var(--safe));
-  max-height:92vh;overflow-y:auto;animation:up .28s cubic-bezier(.3,1,.4,1)}
-@keyframes up{from{transform:translateY(40px)}to{transform:translateY(0)}}
-.grab{width:38px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
-.full{position:fixed;inset:0;background:rgba(14,20,32,.94);z-index:95;display:flex;flex-direction:column;
+.sheetin{background:var(--bg);width:100%;max-width:462px;border-radius:26px 26px 0 0;
+  padding:24px 20px calc(24px + var(--safe));max-height:92vh;overflow-y:auto;
+  animation:up .3s cubic-bezier(.3,1,.4,1);border-top:1px solid var(--line)}
+@keyframes up{from{transform:translateY(46px)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.full{position:fixed;inset:0;background:rgba(10,9,8,.95);z-index:95;display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:26px;color:#fff;text-align:center}
-.full .box{background:#fff;color:var(--ink);border-radius:var(--r);padding:30px 22px;max-width:330px;width:100%}
-.full .close{margin-top:20px;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:22px;
-  padding:11px 22px;font-size:13.5px;font-weight:700;cursor:pointer}
+.full .box{background:var(--paper);color:var(--ink);border-radius:var(--r);padding:30px 22px;max-width:330px;width:100%}
+.full .close{margin-top:20px;background:none;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:22px;
+  padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer}
 .full .close:disabled{opacity:.4}
-.pricerow{display:flex;align-items:baseline;gap:6px;justify-content:center;margin:6px 0 2px}
-.pricerow b{font-size:32px;font-weight:800;letter-spacing:-.04em}
+.pricerow{display:flex;align-items:baseline;gap:6px;justify-content:center;margin:8px 0 2px}
+.pricerow b{font-size:34px;font-weight:600;letter-spacing:-.04em;font-family:var(--serif)}
 .pricerow span{font-size:14px;color:var(--ink3);font-weight:700}
-.feat{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.6;margin-bottom:11px;color:var(--ink2)}
-.feat .ic{color:var(--good);flex:none;margin-top:3px}
-.feat.off{color:var(--ink4)}
-.lockrow{display:flex;align-items:center;gap:9px;background:var(--goldbg);border:1px solid #EFE3C8;
-  border-radius:var(--r2);padding:13px 15px;font-size:13.5px;font-weight:700;color:#7A5B12;cursor:pointer;margin-bottom:10px}
+.feat{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;line-height:1.6;margin-bottom:12px;color:var(--ink2)}
+.feat .ic{color:var(--gold);flex:none;margin-top:3px}
+.lockrow{display:flex;align-items:center;gap:10px;background:var(--goldbg);border:1px solid var(--goldline);
+  border-radius:var(--r2);padding:14px 16px;font-size:13.5px;font-weight:700;color:var(--gold);
+  cursor:pointer;margin-bottom:10px}
 
 /* ── 탭바 ── */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:460px;
-  background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);
-  display:flex;padding:8px 0 calc(9px + var(--safe));z-index:40}
-.tb{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;
-  font-size:11px;font-weight:700;color:var(--ink4);cursor:pointer;padding:5px 0;position:relative}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:462px;
+  background:var(--glass);backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  display:flex;padding:9px 0 calc(10px + var(--safe));z-index:40}
+.tb{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:10.5px;font-weight:800;color:var(--ink4);cursor:pointer;padding:4px 0;position:relative;letter-spacing:.02em}
 .tb.on{color:var(--ink)}
-.tb .bdg{position:absolute;top:0;right:50%;margin-right:-20px;background:var(--warn);color:#fff;font-size:10px;
-  font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.fab{position:fixed;bottom:calc(84px + var(--safe));left:50%;transform:translateX(-50%);margin-left:150px;
-  width:54px;height:54px;border-radius:50%;border:0;background:var(--ink);color:#fff;z-index:41;cursor:pointer;
-  box-shadow:0 8px 22px rgba(14,20,32,.3);display:flex;align-items:center;justify-content:center}
-.toast{position:fixed;left:50%;bottom:calc(108px + var(--safe));transform:translateX(-50%);background:var(--ink);
-  color:#fff;font-size:14.5px;font-weight:700;padding:13px 20px;border-radius:14px;z-index:80;
-  box-shadow:0 10px 30px rgba(14,20,32,.35);max-width:86vw;text-align:center;animation:up .22s}
-.done{text-align:center;padding:56px 22px}
-.bigck{width:66px;height:66px;border-radius:50%;background:var(--goodbg);color:var(--good);
-  display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.tb .bdg{position:absolute;top:-2px;right:50%;margin-right:-20px;background:var(--warn);color:#fff;font-size:9.5px;
+  font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;padding:0 4px}
+.tbplus{width:42px;height:42px;border-radius:14px;background:var(--pri);color:var(--pri-fg);display:flex;
+  align-items:center;justify-content:center;margin-top:-13px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.toast{position:fixed;left:50%;bottom:calc(110px + var(--safe));transform:translateX(-50%);background:var(--pri);
+  color:var(--pri-fg);font-size:14px;font-weight:700;padding:13px 20px;border-radius:13px;z-index:80;
+  box-shadow:var(--shadow2);max-width:86vw;text-align:center;animation:up .22s}
+.done{text-align:center;padding:60px 22px}
+.bigck{width:64px;height:64px;border-radius:50%;background:var(--goodbg);color:var(--good);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 </style>
 </head>
 <body>
@@ -406,7 +473,7 @@ const SOURCES=["소개받음","지인","SNS·온라인","방문·행사","광고
    3. 교육과정 — 고객관리 A to Z (업종 공통)
    ══════════════════════════════════════════════════════════════ */
 const TRACKS=[
- {id:"t1",name:"1단계 · 기초 다지기",sub:"고객을 만들기 전에",icon:"seed",c:"#1F7A4C",bg:"#EBF6F0",lessons:[
+ {id:"t1",name:"1단계 · 기초 다지기",sub:"고객을 만들기 전에",icon:"seed",c:"#1F7A4C",bg:"#1F7A4C22",lessons:[
   {id:"l11",t:"고객관리는 기억이 아니라 시스템",d:"왜 수첩으로는 안 되는가",
    p:["사람은 3일이 지나면 대화의 70%를 잊습니다. 잊은 만큼 기회도 사라집니다.",
       "잘하는 사람과 못하는 사람의 차이는 기억력이 아니라 '다시 연락하는 시점을 정해두느냐'입니다.",
@@ -430,7 +497,7 @@ const TRACKS=[
    x:"거절받은 분을 보류 단계로 옮기고, 다시 연락할 날짜를 정하세요.",
    s:"알겠습니다. 지금은 때가 아니신 것 같네요. 나중에 필요하실 때 편하게 연락 주세요. 그때까지 건강하세요."},
  ]},
- {id:"t2",name:"2단계 · 실전 영업",sub:"만나서 계약까지",icon:"target",c:"#2350D8",bg:"#EEF2FE",pro:true,lessons:[
+ {id:"t2",name:"2단계 · 실전 영업",sub:"만나서 계약까지",icon:"target",c:"#2350D8",bg:"#2350D822",pro:true,lessons:[
   {id:"l21",t:"말하지 말고 질문하라",d:"니즈를 찾아내는 4가지 질문",
    p:["설명이 길어질수록 계약은 멀어집니다. 말하는 비율은 3, 듣는 비율은 7입니다.",
       "네 가지만 물으면 됩니다 — 지금 상황 / 불편한 점 / 그게 계속되면 / 해결되면 어떨지.",
@@ -461,7 +528,7 @@ const TRACKS=[
    x:"협상 단계 고객에게 두 가지 선택지를 제시해보세요.",
    s:"그럼 이번 주에 시작하시는 것과 다음 달 초에 시작하시는 것 중 어느 쪽이 편하실까요?"},
  ]},
- {id:"t3",name:"3단계 · 넓혀가기",sub:"한 명을 열 명으로",icon:"grow",c:"#B98B2E",bg:"#FBF6EC",pro:true,lessons:[
+ {id:"t3",name:"3단계 · 넓혀가기",sub:"한 명을 열 명으로",icon:"grow",c:"#B98B2E",bg:"#B98B2E22",pro:true,lessons:[
   {id:"l31",t:"재구매가 진짜 사업이다",d:"신규보다 3배 쉬운 매출",
    p:["첫 구매는 관계로, 두 번째는 효과로, 세 번째부터는 습관으로 이어집니다.",
       "떨어질 때쯤 먼저 연락하는 사람이 이깁니다. 고객이 아쉬워서 연락하게 만들지 마세요.",
@@ -540,6 +607,15 @@ const PATHS={
  heart:"M12 20s-7-4.4-7-9.2A3.9 3.9 0 0112 8.4a3.9 3.9 0 017 2.4C19 15.6 12 20 12 20z",
  speaker:"M11 5L6.5 9H3v6h3.5L11 19zM15.5 9.5a3.5 3.5 0 010 5M18 7a7 7 0 010 10",
  copy:"M9 9h10v11H9zM5 15V4h11",
+ sun:"M12 17a5 5 0 100-10 5 5 0 000 10zM12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8",
+ moon:"M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z",
+ cal:"M4 6.5h16V20H4zM4 10.5h16M8.5 3v3M15.5 3v3",
+ coin:"M12 21a9 9 0 100-18 9 9 0 000 18zM9.5 9.2A2.5 2.5 0 0114.4 9M14.5 14.8A2.5 2.5 0 019.6 15M12 6.5v11",
+ bell:"M18 15.5V11a6 6 0 10-12 0v4.5L4.5 18h15zM10 20.5a2.2 2.2 0 004 0",
+ upload:"M12 16V4m0 12l-4-4m4 4l4-4M4 17v2.5A1.5 1.5 0 005.5 21h13a1.5 1.5 0 001.5-1.5V17",
+ gift:"M4 11h16v9H4zM3.5 7.5h17V11h-17zM12 7.5V20M12 7.5S10.5 4 8.5 4a2 2 0 100 3.5zM12 7.5S13.5 4 15.5 4a2 2 0 110 3.5z",
+ note:"M6 3.5h9L19 8v12.5H6zM14.5 3.5V8H19M9 12h7M9 15.5h5",
+ sparkles:"M9 3l1.4 4.1L14.5 8.5 10.4 9.9 9 14l-1.4-4.1L3.5 8.5l4.1-1.4zM17 13l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z",
 };
 function I({n,s=20,c}){ return <svg width={s} height={s} viewBox="0 0 24 24" style={c?{color:c}:null} {...P}><path d={PATHS[n]}/></svg>; }
 
@@ -556,7 +632,7 @@ const fmtL=d=>{const x=new Date(d);return `${x.getMonth()+1}월 ${x.getDate()}�
 const won=n=>!n?"":n>=10000?`${(n/10000).toLocaleString(undefined,{maximumFractionDigits:1})}만원`:`${n.toLocaleString()}원`;
 const initial=s=>(s||"?").trim().slice(0,1);
 const hue=s=>{let h=0;for(let i=0;i<(s||"").length;i++)h=(h*31+s.charCodeAt(i))%360;return h;};
-const avStyle=name=>({background:`hsl(${hue(name)},42%,94%)`,color:`hsl(${hue(name)},46%,34%)`});
+const avStyle=name=>({background:`hsl(${hue(name)} 38% 50% / .13)`,color:`hsl(${hue(name)} 42% 44%)`});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const emptyState=()=>({v:2,
   profile:{name:"",job:"any",goal:5,onboarded:false,plan:"free"},
@@ -609,6 +685,27 @@ function taskRank(t,c){
   return {s,late:d,why:d>0?`${d}일 지났어요`:d===0?"오늘까지예요":`${-d}일 남았어요`};
 }
 
+/* 단계 변경 시 적용할 값 (성사 시 매출 확정) */
+function stagePatch(c,k){ const o={stage:k,nextContact:addDays(today(),(SK[k]||SK.new).cad)};
+  if(k==="won"&&!c.wonAt){ o.wonAt=today(); o.wonValue=c.value||0; }
+  return o; }
+/* 대본의 OO → 실제 이름, {나} → 내 이름 */
+const fill=(t,c,me)=>String(t||"").replace(/OO/g,(c&&c.name)||"OO").replace(/\{나\}/g,me||"");
+/* 생일까지 남은 날 (MM-DD 저장) */
+function bdayIn(md){ if(!md||!/^\d{2}-\d{2}$/.test(md)) return null;
+  const now=new Date(), y=now.getFullYear();
+  let d=new Date(`${y}-${md}`); if(isNaN(d)) return null;
+  if(gap(today(),d.toISOString().slice(0,10))<0) d=new Date(`${y+1}-${md}`);
+  return gap(today(),d.toISOString().slice(0,10)); }
+/* 매출 집계 */
+const wonValueOf=c=>(c.wonValue!=null?c.wonValue:(c.value||0));
+function revenueOf(db,ym){ return db.customers.filter(c=>c.stage==="won"&&c.wonAt&&c.wonAt.slice(0,7)===ym)
+  .reduce((a,c)=>a+wonValueOf(c),0); }
+function monthsBack(n){ const out=[],d=new Date();
+  for(let i=n-1;i>=0;i--){ const x=new Date(d.getFullYear(),d.getMonth()-i,1);
+    out.push({ym:`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}`,m:x.getMonth()+1}); }
+  return out; }
+
 /* ══════════════════════════════════════════════════════════════
    6. 오늘의 실행 큐 — 한 번에 하나씩
    ══════════════════════════════════════════════════════════════ */
@@ -635,6 +732,10 @@ function buildQueue(db){
       title:`${c.name}님, 다음 단계로 옮길까요?`,sub:`${c.st.n} 단계에서 ${c.since}일 멈춰 있어요`,
       why:"멈춘 고객은 정리하거나 밀어야 해요"});
   });
+  cs.forEach(c=>{ const d=bdayIn(c.birthday);
+    if(d!=null&&d<=3) q.push({k:"bday:"+c.id+":"+today(),type:"bday",score:88,cust:c,
+      title:`${c.name}님 생일이 ${d===0?"오늘":d+"일 뒤"}예요`,sub:"축하 한마디가 관계를 바꿔요",
+      why:"기념일은 부담 없이 연락할 가장 좋은 구실이에요"}); });
   const lesson=nextLesson(db);
   if(lesson) q.push({k:"learn:"+lesson.id,type:"learn",score:34,lesson,
     title:lesson.t,sub:"오늘의 배움 · 2분",why:lesson.d});
@@ -788,7 +889,7 @@ function Paywall({db,save,close,notify,reason}){
       <div className="grab"/>
       <div style={{textAlign:"center",marginBottom:20}}>
         <div style={{width:52,height:52,borderRadius:16,margin:"0 auto 14px",display:"flex",alignItems:"center",
-          justifyContent:"center",background:"linear-gradient(150deg,#D9BE86,#B98B2E)",color:"#241A05"}}><I n="crown" s={26}/></div>
+          justifyContent:"center",background:"linear-gradient(140deg,#E2C994,#AF8C39)",color:"#211809"}}><I n="crown" s={26}/></div>
         <h2 style={{fontSize:23,fontWeight:800,letterSpacing:"-.035em",margin:"0 0 6px"}}>AIVO 프로</h2>
         <p style={{fontSize:14.5,color:"var(--ink3)",margin:0}}>{reason||"제한 없이, 광고 없이 고객관리"}</p>
         <div className="pricerow"><b>{PLAN.pro.price}원</b><span>/ {PLAN.pro.period}</span></div>
@@ -821,16 +922,38 @@ function App(){
   const [pay,setPay]=useState(null);
   const [inter,setInter]=useState(false);
   const [quick,setQuick]=useState(false);
+  const [dark,setDark]=useState(false);
 
   useEffect(()=>{ store.get(KEY).then(v=>{ let d=null; try{d=v?JSON.parse(v):null;}catch(e){}
     const s=d?{...emptyState(),...d,profile:{...emptyState().profile,...(d.profile||{})}}:emptyState();
     if(s.usage.date!==today()) s.usage={date:today(),ai:0,bonus:0,steps:0};
+    const th=s.profile.theme||"light";
+    const isDark=th==="dark"||(th==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+    setDark(isDark); document.documentElement.dataset.theme=isDark?"dark":"light";
     setDb(s); if(!s.profile.onboarded) setView({n:"onboard"});
   }); },[]);
 
   const save=useCallback(n=>{ setDb(n); store.set(KEY,JSON.stringify(n)); },[]);
   const notify=useCallback(m=>{ setToast(m); setTimeout(()=>setToast(""),2400); },[]);
   const nav=useCallback(v=>{ setView(v); window.scrollTo(0,0); },[]);
+  const toggleTheme=()=>{ const nx=!dark; setDark(nx);
+    document.documentElement.dataset.theme=nx?"dark":"light";
+    const mc=document.querySelector('meta[name="theme-color"]'); if(mc) mc.setAttribute("content",nx?"#000000":"#14120F");
+    save2(d=>({...d,profile:{...d.profile,theme:nx?"dark":"light"}})); };
+  /* 매일 정해진 시각 알림 (앱이 열려 있을 때) */
+  useEffect(()=>{ if(!db||!db.profile.remindAt) return;
+    const tick=()=>{ const n=new Date();
+      const hm=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+      if(hm!==db.profile.remindAt) return;
+      const k="aivo-noti-"+today();
+      try{ if(localStorage.getItem(k))return; localStorage.setItem(k,"1"); }catch(e){}
+      const left=buildQueue(db).length;
+      if(typeof Notification!=="undefined"&&Notification.permission==="granted")
+        new Notification("AIVO",{body:left?`오늘 할 일 ${left}개가 기다리고 있어요.`
+          :"오늘은 비어 있어요. 새로운 분을 한 명 만나보세요."});
+    };
+    const t=setInterval(tick,30000); return ()=>clearInterval(t);
+  },[db]);
   const upgrade=r=>setPay(r||true);
   if(!db) return <div className="app"><div className="loading">잠시만요…</div></div>;
 
@@ -858,9 +981,10 @@ function App(){
   };
   const skipStep=k=>save2(d=>({...d,skipped:[...(d.skipped||[]).filter(s=>s.d===today()),{d:today(),k}]}));
 
-  const S={db,save,save2,notify,nav,pro,lim,aiLeft,canAI,spendAI,upgrade,pushHist,bumpStep,skipStep,rewardAd};
+  const S={db,save,save2,notify,nav,pro,lim,aiLeft,canAI,spendAI,upgrade,pushHist,bumpStep,skipStep,rewardAd,
+    dark,toggleTheme};
   const queue=buildQueue(db);
-  const tabs=["home","run","customers","growth"];
+  const tabs=["home","run","schedule","customers","growth"];
   const showTabs=tabs.indexOf(view.n)>=0;
 
   let body;
@@ -878,6 +1002,10 @@ function App(){
     case "lesson":    body=<Lesson {...S} id={view.id}/>; break;
     case "plays":     body=<Plays {...S}/>; break;
     case "team":      body=<Team {...S}/>; break;
+    case "schedule":  body=<Schedule {...S} queue={queue}/>; break;
+    case "import":    body=<ImportPeople {...S}/>; break;
+    case "report":    body=<Report {...S}/>; break;
+    case "revenue":   body=<Revenue {...S}/>; break;
     case "settings":  body=<Settings {...S}/>; break;
     default:          body=<Growth {...S} queue={queue}/>;
   }
@@ -887,10 +1015,9 @@ function App(){
       <nav className="tabbar">
         <Tab n="home"  cur={view.n} ic="home"  l="홈"   go={nav}/>
         <Tab n="run"   cur={view.n} ic="target" l="실행" go={nav} badge={queue.filter(q=>q.late>0).length}/>
+        <Tab n="schedule" cur={view.n} ic="cal" l="일정" go={nav}/>
         <button className="tb" onClick={()=>setQuick(true)} aria-label="빠른 작업">
-          <span style={{width:42,height:42,borderRadius:14,background:"var(--ink)",color:"#fff",display:"flex",
-            alignItems:"center",justifyContent:"center",marginTop:-14,boxShadow:"0 6px 16px rgba(14,20,32,.28)"}}>
-            <I n="plus" s={22}/></span></button>
+          <span className="tbplus"><I n="plus" s={21}/></span></button>
         <Tab n="customers" cur={view.n} ic="users" l="고객" go={nav}/>
         <Tab n="growth" cur={view.n} ic="chart" l="성장" go={nav}/>
       </nav>
@@ -904,6 +1031,8 @@ function App(){
           ["record","mic","오늘 있었던 일 기록","말하면 AI가 정리해요"],
           ["coach","msg","AI 코치에게 묻기","막힌 곳을 바로 풀어요"],
           ["content","pen","콘텐츠 만들기","SNS·메시지·제안서"],
+          ["import","upload","연락처 일괄 등록","이름을 붙여넣으면 한 번에 등록"],
+          ["revenue","coin","매출 기록하기","성사 금액과 이번 달 목표"],
           ["plays","book","상황별 대본 보기","그대로 복사해서 쓰세요"]].map(([n,ic,t,s])=>(
           <button key={n} className="item" style={{marginBottom:9}} onClick={()=>{setQuick(false);nav({n});}}>
             <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={ic} s={19}/></span>
@@ -960,7 +1089,7 @@ function Onboard({db,save,nav}){
       <b className="num" style={{fontSize:52,fontWeight:800,letterSpacing:"-.05em"}}>{goal}</b>
       <div className="tiny" style={{marginBottom:16}}>명</div>
       <input type="range" min="3" max="30" value={goal} onChange={e=>setGoal(+e.target.value)}
-        style={{width:"100%",accentColor:"#0E1420"}}/>
+        style={{width:"100%",accentColor:"var(--gold)"}}/>
       <div style={{display:"flex",justifyContent:"space-between"}} className="tiny"><span>3</span><span>30</span></div>
     </div>
     <button className="btn dark" onClick={()=>setS(3)}>다음</button>
@@ -984,7 +1113,7 @@ function Onboard({db,save,nav}){
 /* ══════════════════════════════════════════════════════════════
    11. 홈 — 집중(한 번에 하나) / 전체(대시보드) 전환
    ══════════════════════════════════════════════════════════════ */
-function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd}){
+function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd,dark,toggleTheme}){
   const [mode,setMode]=useState(()=>{ try{return localStorage.getItem("aivo-mode")||"focus";}catch(e){return "focus";} });
   const setM=m=>{ setMode(m); try{localStorage.setItem("aivo-mode",m);}catch(e){} };
   const cs=db.customers.map(enrich);
@@ -998,13 +1127,18 @@ function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd}){
 
   return (<div>
     <header className="top">
-      <div className="row">
+      <div className="trow">
         <div className="brand">
           <span className="mark">A</span>
-          <div><b>AIVO</b><div className="tagline">{greet}{db.profile.name?`, ${db.profile.name}님`:""}</div></div>
+          <div><div className="nm">AIVO</div>
+            <div className="tagline">{greet}{db.profile.name?`, ${db.profile.name}님`:""}</div></div>
         </div>
-        <button className={pro?"plan pro":"plan"} onClick={()=>upgrade()}>
-          <I n="crown" s={13}/>{pro?"프로":"무료"}</button>
+        <div className="hbtns">
+          <button className="iconbtn" onClick={toggleTheme} aria-label="화면 밝기">
+            <I n={dark?"sun":"moon"} s={17}/></button>
+          <button className={pro?"plan pro":"plan"} onClick={()=>upgrade()}>
+            <I n="crown" s={12}/>{pro?"PRO":"FREE"}</button>
+        </div>
       </div>
       <div className="kpis">
         <div className="kpi"><b className="num">{queue.length}</b><span>오늘 할 일</span></div>
@@ -1034,8 +1168,8 @@ function FocusHome({db,nav,queue,pct,doneToday,unit,pro,upgrade,aiLeft,rewardAd}
     <div className="card pop" style={{display:"flex",gap:16,alignItems:"center",padding:"18px"}}>
       <div className="ring">
         <svg width="74" height="74" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r={R} fill="none" stroke="#EFF1F5" strokeWidth="9"/>
-          <circle cx="50" cy="50" r={R} fill="none" stroke="#0E1420" strokeWidth="9" strokeLinecap="round"
+          <circle cx="50" cy="50" r={R} fill="none" stroke="var(--track)" strokeWidth="9"/>
+          <circle cx="50" cy="50" r={R} fill="none" stroke="var(--gold)" strokeWidth="9" strokeLinecap="round"
             strokeDasharray={C} strokeDashoffset={C*(1-pct/100)} style={{transition:"stroke-dashoffset .6s"}}/>
         </svg>
         <div className="val"><b className="num">{pct}%</b><span>오늘</span></div>
@@ -1052,7 +1186,7 @@ function FocusHome({db,nav,queue,pct,doneToday,unit,pro,upgrade,aiLeft,rewardAd}
       <div className="h2"><span>지금 이것부터</span><span className="tiny">1 / {queue.length}</span></div>
       <div className="card pop mission">
         <div className="who">
-          <span className="av" style={next.cust?avStyle(next.cust.name):{background:"var(--ink)",color:"#fff"}}>
+          <span className="av" style={next.cust?avStyle(next.cust.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
             {next.cust?initial(next.cust.name):<I n={next.type==="learn"?"book":next.type==="add"?"plus":"spark"} s={19}/>}</span>
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:13.5,fontWeight:800,color:"var(--ink2)"}}>{next.sub}</div>
@@ -1110,9 +1244,9 @@ function Overview({db,nav,queue,cs,pro,upgrade,unit}){
   const wmax=Math.max(1,...week.map(w=>w.n));
   return (<div>
     <div className="stats">
-      <div className="stat"><b className="num">{db.customers.length}</b><span>전체 {unit}</span></div>
-      <div className="stat"><b className="num">{act.length}</b><span>진행 중</span></div>
-      <div className="stat"><b className="num" style={{color:overdue.length?"var(--warn)":undefined}}>{overdue.length}</b><span>연락 지연</span></div>
+      <div className="st"><b className="num">{db.customers.length}</b><span>전체 {unit}</span></div>
+      <div className="st"><b className="num">{act.length}</b><span>진행 중</span></div>
+      <div className="st"><b className="num" style={{color:overdue.length?"var(--warn)":undefined}}>{overdue.length}</b><span>연락 지연</span></div>
     </div>
 
     <div className="card">
@@ -1124,9 +1258,8 @@ function Overview({db,nav,queue,cs,pro,upgrade,unit}){
         {STAGES.map(s=>{ const n=cs.filter(c=>c.stage===s.k).length;
           return (<div className="funrow" key={s.k} onClick={()=>nav({n:"customers",stage:s.k})}>
             <span className="nm">{s.n}</span>
-            <span className="funbar"><i style={{width:`${Math.max(n?12:0,n/max*100)}%`,background:s.c}}/>
-              {n>0&&<em>{s.d}</em>}</span>
-            <span className="ct num">{n}</span></div>); })}
+            <span className="funbar"><i style={{width:`${n?Math.max(6,n/max*100):0}%`,background:s.c}}/></span>
+            <span className="ct num">{n}<em>명</em></span></div>); })}
       </div>
     </div>
 
@@ -1145,12 +1278,21 @@ function Overview({db,nav,queue,cs,pro,upgrade,unit}){
       </div>
     </div>):<Locked text="예상 매출 · 성사율 · 주간 리포트 보기" onClick={()=>upgrade("심화 분석은 프로 기능이에요")}/>}
 
+    {db.profile.revGoal>0&&(<div className="card gold" onClick={()=>nav({n:"revenue"})}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+        <span className="eyebrow">{new Date().getMonth()+1}월 매출</span>
+        <span className="tiny">목표 {won2(db.profile.revGoal)}</span></div>
+      <b className="serif num" style={{fontSize:28,display:"block",margin:"6px 0 10px"}}>
+        {won2(revenueOf(db,today().slice(0,7)))}</b>
+      <div className="bar"><i style={{width:`${Math.min(100,Math.round(revenueOf(db,today().slice(0,7))/db.profile.revGoal*100))}%`,
+        background:"var(--gold)"}}/></div>
+    </div>)}
     <div className="card">
       <span className="eyebrow">최근 7일 활동</span>
       <div style={{display:"flex",gap:6,alignItems:"flex-end",height:74,marginTop:14}}>
         {week.map(w=>(<div key={w.d} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
           <div style={{width:"100%",height:`${Math.max(6,w.n/wmax*54)}px`,borderRadius:6,
-            background:w.d===today()?"var(--ink)":"#DDE1E8"}}/>
+            background:w.d===today()?"var(--gold)":"var(--track)"}}/>
           <span className="tiny" style={{fontSize:10}}>{new Date(w.d).getDate()}</span>
         </div>))}
       </div>
@@ -1212,6 +1354,7 @@ function stageScript(c,me){
     default:     return `${n}님 안녕하세요, 오랜만이에요.\n예전에 말씀하셨던 그 부분, 그 뒤로 좀 나아지셨을까요? 문득 생각나서 연락드렸어요.`;
   }
 }
+function bdayScript(c,me){ return `${c.name}님, 생일 축하드려요!\n좋은 일만 가득한 한 해 되시길 바랍니다. 오늘 하루 행복하게 보내세요 :)`; }
 function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrade}){
   const [i,setI]=useState(0);
   const [fin,setFin]=useState(false);
@@ -1235,8 +1378,7 @@ function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrad
   };
   const delay=(t,n)=>{ save2(d=>({...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,due:addDays(today(),n)}:x)}));
     notify(`${n}일 뒤로 미뤘어요`); advance(); };
-  const moveStage=(c,k)=>{ save2(d=>({...d,customers:d.customers.map(x=>x.id!==c.id?x:
-      ({...x,stage:k,nextContact:addDays(today(),SK[k].cad)}))}));
+  const moveStage=(c,k)=>{ save2(d=>({...d,customers:d.customers.map(x=>x.id!==c.id?x:({...x,...stagePatch(x,k)}))}));
     pushHist(c.id,{kind:"stage",text:`${c.st.n} → ${SK[k].n}`}); bumpStep(); notify("단계를 옮겼어요"); advance(); };
   const learnDone=l=>{ save2(d=>({...d,learned:d.learned.indexOf(l.id)>=0?d.learned:[...d.learned,l.id]}));
     bumpStep(); notify("한 과 끝냈어요 👏"); advance(); };
@@ -1261,7 +1403,7 @@ function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrad
 
     <div className="card pop mission">
       <div className="who">
-        <span className="av" style={c?avStyle(c.name):{background:"var(--ink)",color:"#fff"}}>
+        <span className="av" style={c?avStyle(c.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
           {c?initial(c.name):<I n={q.type==="learn"?"book":q.type==="add"?"plus":"mic"} s={19}/>}</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:13.5,fontWeight:800,color:"var(--ink2)"}}>{q.sub}</div>
@@ -1273,13 +1415,16 @@ function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrad
       <div className="why">{q.late>0&&<React.Fragment><span className="late">{q.late}일 지남</span><span className="dot"/></React.Fragment>}
         <span>{q.why}</span>{q.channel&&<React.Fragment><span className="dot"/><span>{q.channel}</span></React.Fragment>}</div>
 
-      {(q.type==="task"&&q.script)||(q.type==="reach")?(
+      {(q.type==="task"&&q.script)||q.type==="reach"||q.type==="bday"?(
         <div className="script">
           <div className="sh">이대로 보내보세요</div>
-          <p>{q.type==="reach"?stageScript(c,db.profile.name):q.script}</p>
+          <p>{q.type==="bday"?bdayScript(c,db.profile.name)
+             :q.type==="reach"?stageScript(c,db.profile.name):fill(q.script,c,db.profile.name)}</p>
           <div className="row2">
             <button className="btn quiet sm" style={{flex:1}}
-              onClick={()=>copy(q.type==="reach"?stageScript(c,db.profile.name):q.script)}><I n="copy" s={16}/>복사</button>
+              onClick={()=>copy(q.type==="bday"?bdayScript(c,db.profile.name)
+                :q.type==="reach"?stageScript(c,db.profile.name):fill(q.script,c,db.profile.name))}>
+              <I n="copy" s={16}/>복사</button>
             {c&&c.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}} href={`sms:${c.phone}`}><I n="msg" s={16}/>문자</a>}
             {c&&c.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}} href={`tel:${c.phone}`}><I n="phone" s={16}/>전화</a>}
           </div>
@@ -1322,6 +1467,9 @@ function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrad
       {q.lesson.s&&<button className="btn line" onClick={()=>copy(q.lesson.s)}><I n="copy" s={18}/>예시 문장 복사</button>}
     </React.Fragment>)}
 
+    {q.type==="bday"&&(<button className="btn dark" onClick={()=>contact(c,"생일 축하 연락")}>
+      <I n="check" s={19}/>축하 인사 보냈어요</button>)}
+
     {q.type==="add"&&<button className="btn dark" onClick={()=>nav({n:"addcust"})}><I n="plus" s={19}/>지금 등록하기</button>}
     {q.type==="record"&&<button className="btn dark" onClick={()=>nav({n:"record"})}><I n="mic" s={19}/>지금 기록하기</button>}
 
@@ -1360,7 +1508,7 @@ function Customers({db,nav,pro,upgrade,notify}){
     <div className="chips scroll" style={{marginBottom:16}}>
       <button className={f==="all"?"chip on":"chip"} onClick={()=>setF("all")}>전체 {cnt("all")}</button>
       <button className={f==="overdue"?"chip on":"chip"} onClick={()=>setF("overdue")}
-        style={f!=="overdue"&&cnt("overdue")?{color:"var(--warn)",borderColor:"#F0C9C1"}:null}>지연 {cnt("overdue")}</button>
+        style={f!=="overdue"&&cnt("overdue")?{color:"var(--warn)",borderColor:"var(--warn)"}:null}>지연 {cnt("overdue")}</button>
       {STAGES.map(s=><button key={s.k} className={f===s.k?"chip on":"chip"} onClick={()=>setF(s.k)}>{s.n} {cnt(s.k)}</button>)}
     </div>
     {full&&<Locked text={`무료는 ${PLAN.free.customers}명까지예요. 무제한으로 늘리기`} onClick={()=>upgrade()}/>}
@@ -1376,6 +1524,22 @@ function Customers({db,nav,pro,upgrade,notify}){
   </div>);
 }
 
+function QuickMemo({onSave}){
+  const [t,setT]=useState("");
+  const dict=useDictation(setT);
+  return (<div className="card" style={{padding:14}}>
+    <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+      <textarea className="chatin" rows={1} style={{border:"1px solid var(--line)"}} value={t}
+        placeholder={dict.on?"듣고 있어요…":"한 줄 메모 (예: 아침 통화 선호)"}
+        onChange={e=>setT(e.target.value)}/>
+      <button className={dict.on?"micbtn on":"micbtn"} style={{width:44,height:44}}
+        onClick={()=>dict.on?dict.stop():dict.start(t)}><I n={dict.on?"stop":"mic"} s={18}/></button>
+      <button className="send" style={{width:44,height:44}} disabled={!t.trim()}
+        onClick={()=>{ onSave(t.trim()); setT(""); if(dict.on)dict.stop(); }}><I n="plus" s={18}/></button>
+    </div>
+    {dict.interim&&<div className="interim">{dict.interim}</div>}
+  </div>);
+}
 function Detail({db,save2,nav,notify,pushHist,id,pro,upgrade}){
   const raw=db.customers.find(x=>x.id===id);
   if(!raw) return <div className="pad"><div className="blank">삭제된 고객이에요.</div></div>;
@@ -1384,7 +1548,7 @@ function Detail({db,save2,nav,notify,pushHist,id,pro,upgrade}){
   const recs=db.records.filter(r=>r.customerId===id);
   const hist=(c.history||[]);
   const patch=o=>save2(d=>({...d,customers:d.customers.map(x=>x.id===id?{...x,...o}:x)}));
-  const setStage=k=>{ patch({stage:k,nextContact:addDays(today(),SK[k].cad)});
+  const setStage=k=>{ patch(stagePatch(c,k));
     pushHist(id,{kind:"stage",text:`${c.st.n} → ${SK[k].n}`}); notify(`${SK[k].n} 단계로 옮겼어요`); };
   const copy=t=>{ try{navigator.clipboard.writeText(t);}catch(e){} notify("복사했어요"); };
   const listTag=a=>(a||[]).map(x=>x.tag+(x.count>1?` (${x.count})`:"")).join(", ");
@@ -1442,6 +1606,11 @@ function Detail({db,save2,nav,notify,pushHist,id,pro,upgrade}){
         {[1,2,3,4,5].map(n=><button key={n} className={(c.temp||3)>=n?"on":""}
           onClick={()=>patch({temp:n})}><I n="star" s={15}/></button>)}
       </div>
+      <div className="kv"><span>생일</span>
+        <b><input className="inp" style={{padding:"8px 11px",fontSize:14.5,width:130}} placeholder="MM-DD 예) 03-14"
+          value={c.birthday||""} onChange={e=>patch({birthday:e.target.value.trim()})}/>
+          {bdayIn(c.birthday)!=null&&<span className="tagpill gold" style={{marginLeft:8}}>
+            {bdayIn(c.birthday)===0?"오늘!":`${bdayIn(c.birthday)}일 뒤`}</span>}</b></div>
       {c.phone&&<div className="kv"><span>연락처</span><b>{c.phone}</b></div>}
       {c.source&&<div className="kv"><span>알게 된 곳</span><b>{c.source}</b></div>}
       {c.needs&&<div className="kv"><span>필요한 것</span><b>{c.needs}</b></div>}
@@ -1461,12 +1630,13 @@ function Detail({db,save2,nav,notify,pushHist,id,pro,upgrade}){
           notify("완료했어요"); }}>완료</button></div>))}</div></React.Fragment>)}
 
     <div className="h2"><span>기록</span>
-      <span className="more" onClick={()=>nav({n:"record",id})}>추가<I n="plus" s={14}/></span></div>
+      <span className="more" onClick={()=>nav({n:"record",id})}>말로 남기기<I n="plus" s={14}/></span></div>
+    <QuickMemo onSave={t=>{ pushHist(id,{kind:"memo",text:t}); notify("메모를 남겼어요"); }}/>
     {(recs.length||hist.length)?(<div className="card"><div className="timeline">
       {recs.map(r=>(<div className="tl hot" key={r.id}>
         <div className="d">{fmtL(r.date)}</div><div className="t">{r.summary}</div>
         {r.praise&&<div className="x">👏 {r.praise}</div>}
-        {r.miss&&<div className="x" style={{color:"#8F6410"}}>🔍 {r.miss}</div>}</div>))}
+        {r.miss&&<div className="x" style={{color:"var(--gold)"}}>🔍 {r.miss}</div>}</div>))}
       {hist.map(h=>(<div className="tl" key={h.id}>
         <div className="d">{fmtL(h.date)}</div><div className="t">{h.text}</div></div>))}
     </div></div>):<div className="blank">아직 기록이 없어요.<br/>만난 이야기를 남기면 다음 할 일이 만들어져요.</div>}
@@ -1645,7 +1815,7 @@ tasks는 1~2개만. 없는 사실을 지어내지 마세요.`;
       <p className="sub">고르지 않으셔도 됩니다. 새로운 분이면 AI가 알아서 등록해요.</p>
       <div className="list">
         <button className="item" onClick={()=>{setCid(null);setS(1);}} style={!cid?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
-          <span className="av" style={{background:"var(--ink)",color:"#fff"}}><I n="plus" s={19}/></span>
+          <span className="av" style={{background:"var(--pri)",color:"var(--pri-fg)"}}><I n="plus" s={19}/></span>
           <span className="mid"><b>처음 만난 분 · 혼자 한 일</b><span className="l2">말하면 자동으로 등록돼요</span></span></button>
         {db.customers.map(enrich).map(c=>(<button key={c.id} className="item" onClick={()=>{setCid(c.id);setS(1);}}
           style={cid===c.id?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
@@ -1658,7 +1828,7 @@ tasks는 1~2개만. 없는 사실을 지어내지 마세요.`;
       <h1 className="h1">어떻게 남길까요?</h1>
       <p className="sub">말로 하면 가장 빠릅니다. 미팅 직후 3분 안에 남기면 코칭이 정확해져요.</p>
       <button className="item" style={{padding:18,marginBottom:10}} onClick={()=>{setMode("voice");setS(2);}}>
-        <span className="av" style={{background:"var(--ink)",color:"#fff"}}><I n="mic" s={20}/></span>
+        <span className="av" style={{background:"var(--pri)",color:"var(--pri-fg)"}}><I n="mic" s={20}/></span>
         <span className="mid"><b>말로 남기기</b><span className="l2">버튼 누르고 편하게 말씀하세요</span></span>
         <I n="chev" s={17} c="var(--ink4)"/></button>
       <button className="item" style={{padding:18}} onClick={()=>{setMode("text");setS(2);}}>
@@ -1790,7 +1960,7 @@ ${ctx}
   return (<div className="chatwrap">
     <div className="chathead">
       <button className="back" style={{padding:0}} onClick={()=>nav(c?{n:"customer",id}:{n:"home"})}><I n="back" s={20}/></button>
-      <span className="av" style={c?avStyle(c.name):{background:"var(--ink)",color:"#fff"}}>
+      <span className="av" style={c?avStyle(c.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
         {c?initial(c.name):<I n="spark" s={19}/>}</span>
       <div style={{flex:1,minWidth:0}}>
         <b>{c?`${c.name}님 대응 코치`:"AI 코치"}</b>
@@ -1928,7 +2098,7 @@ function Learn({db,nav,pro,upgrade}){
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:9}}>
         <b style={{fontSize:15,fontWeight:800}}>{db.learned.length} / {LESSON_TOTAL}과 완료</b>
         <span className="tiny num">{pct}%</span></div>
-      <div className="bar"><i style={{width:pct+"%",background:"linear-gradient(90deg,#B98B2E,#D9BE86)"}}/></div>
+      <div className="bar"><i style={{width:pct+"%",background:"linear-gradient(90deg,var(--gold),var(--gold2))"}}/></div>
     </div>
     {TRACKS.map(tr=>{ const n=tr.lessons.filter(l=>done.has(l.id)).length;
       const locked=tr.pro&&!pro;
@@ -1986,11 +2156,20 @@ function Lesson({db,save2,nav,notify,id,pro,upgrade}){
 function Plays({db,nav,notify,pro,upgrade}){
   const cats=[...new Set(PLAYBOOKS.map(p=>p.cat))];
   const [f,setF]=useState("전체");
+  const [who,setWho]=useState(null);
+  const target=db.customers.find(c=>c.id===who)||null;
   const list=PLAYBOOKS.filter(p=>f==="전체"||p.cat===f);
   return (<div className="pad" style={{paddingBottom:40}}>
     <button className="back" onClick={()=>nav({n:"learn"})}><I n="back" s={18}/>교육센터</button>
     <h1 className="h1">상황별 대본</h1>
-    <p className="sub">그대로 복사해서 보내셔도 됩니다. OO 자리에 이름만 바꾸세요.</p>
+    <p className="sub">받는 분을 고르면 이름이 자동으로 채워져요. 복사해서 그대로 보내셔도 됩니다.</p>
+    {db.customers.length>0&&(<React.Fragment>
+      <label className="label">누구에게 보낼까요? (이름이 자동으로 채워져요)</label>
+      <div className="chips scroll" style={{marginBottom:14}}>
+        <button className={!who?"chip on":"chip"} onClick={()=>setWho(null)}>선택 안 함</button>
+        {db.customers.slice(0,12).map(c=>(
+          <button key={c.id} className={who===c.id?"chip on":"chip"} onClick={()=>setWho(c.id)}>{c.name}</button>))}
+      </div></React.Fragment>)}
     <div className="chips scroll" style={{marginBottom:16}}>
       <button className={f==="전체"?"chip on":"chip"} onClick={()=>setF("전체")}>전체</button>
       {cats.map(c=><button key={c} className={f===c?"chip on":"chip"} onClick={()=>setF(c)}>{c}</button>)}
@@ -2004,9 +2183,16 @@ function Plays({db,nav,notify,pro,upgrade}){
         </div>
         {locked?<p style={{margin:0,color:"var(--ink4)",fontSize:14.5}}>프로에서 볼 수 있어요 →</p>
           :(<React.Fragment>
-            <p style={{margin:"0 0 12px",fontSize:15,lineHeight:1.8,color:"var(--ink2)",whiteSpace:"pre-wrap"}}>{p.s}</p>
-            <button className="btn quiet sm" onClick={()=>{try{navigator.clipboard.writeText(p.s);}catch(e){} notify("복사했어요");}}>
-              <I n="copy" s={16}/>복사</button></React.Fragment>)}
+            <p style={{margin:"0 0 12px",fontSize:15,lineHeight:1.8,color:"var(--ink2)",whiteSpace:"pre-wrap"}}>
+              {fill(p.s,target,db.profile.name)}</p>
+            <div className="row2" style={{marginBottom:0}}>
+              <button className="btn quiet sm" style={{flex:1}}
+                onClick={()=>{try{navigator.clipboard.writeText(fill(p.s,target,db.profile.name));}catch(e){} notify("복사했어요");}}>
+                <I n="copy" s={16}/>복사</button>
+              {target&&target.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}}
+                href={`sms:${target.phone}?body=${encodeURIComponent(fill(p.s,target,db.profile.name))}`}>
+                <I n="msg" s={16}/>문자로</a>}
+            </div></React.Fragment>)}
       </div>); })}
     <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
   </div>);
@@ -2028,14 +2214,14 @@ function Growth({db,nav,pro,upgrade,queue}){
     <h1 className="h1">나의 성장</h1>
     <p className="sub">숫자보다 중요한 건 어제보다 하나 더 하는 것.</p>
     <div className="stats">
-      <div className="stat"><b className="num">{db.streak.count}</b><span>연속 실행일</span></div>
-      <div className="stat"><b className="num">{month}</b><span>이번 달 기록</span></div>
-      <div className="stat"><b className="num">{rate}%</b><span>실행 완료율</span></div>
+      <div className="st"><b className="num">{db.streak.count}</b><span>연속 실행일</span></div>
+      <div className="st"><b className="num">{month}</b><span>이번 달 기록</span></div>
+      <div className="st"><b className="num">{rate}%</b><span>실행 완료율</span></div>
     </div>
     <div className="stats">
-      <div className="stat"><b className="num">{won}</b><span>성사</span></div>
-      <div className="stat"><b className="num">{touchAvg}</b><span>평균 접촉</span></div>
-      <div className="stat"><b className="num">{db.learned.length}</b><span>이수한 과</span></div>
+      <div className="st"><b className="num">{won}</b><span>성사</span></div>
+      <div className="st"><b className="num">{touchAvg}</b><span>평균 접촉</span></div>
+      <div className="st"><b className="num">{db.learned.length}</b><span>이수한 과</span></div>
     </div>
 
     {focus?(<div className="card gold">
@@ -2050,11 +2236,14 @@ function Growth({db,nav,pro,upgrade,queue}){
         {s.tag}{s.count>1&&` ${s.count}`}</span>)}</div></React.Fragment>)}
     {wk.length>0&&(<React.Fragment><div className="h2"><span>더 좋아질 수 있는 것</span></div>
       <div className="chips">{wk.map(s=><span key={s.tag} className="tagpill" style={{fontSize:13,padding:"7px 12px",
-        background:"#FFF6E8",color:"#8F6410"}}>{s.tag}{s.count>1&&` ${s.count}`}</span>)}</div></React.Fragment>)}
+        background:"var(--goldbg)",color:"var(--gold)"}}>{s.tag}{s.count>1&&` ${s.count}`}</span>)}</div></React.Fragment>)}
 
     <div className="h2"><span>더 보기</span></div>
     <div className="list">
-      {[["learn","book","교육센터",`${db.learned.length}/${LESSON_TOTAL}과 완료`],
+      {[["revenue","coin","매출 관리",`이번 달 ${won2(revenueOf(db,today().slice(0,7)))}`],
+        ["report","note","주간 리포트",pro?"한 주 요약 보기":"프로 기능"],
+        ["schedule","cal","연락 일정","이번 주 계획"],
+        ["learn","book","교육센터",`${db.learned.length}/${LESSON_TOTAL}과 완료`],
         ["plays","msg","상황별 대본",`${PLAYBOOKS.length}종`],
         ["content","pen","콘텐츠 만들기","SNS · 메시지 · 제안서"],
         ["team","users","팀 관리",pro?`그룹원 ${db.members.length}명`:"프로 기능"],
@@ -2084,9 +2273,9 @@ function Team({db,save2,nav,notify,pro,upgrade}){
     <h1 className="h1">팀 관리</h1>
     <p className="sub">신입은 첫 3주, 리더 후보는 꾸준함으로 찾습니다.</p>
     <div className="stats">
-      <div className="stat"><b className="num">{ms.length}</b><span>그룹원</span></div>
-      <div className="stat"><b className="num" style={{color:risk?"var(--warn)":undefined}}>{risk}</b><span>연락 필요</span></div>
-      <div className="stat"><b className="num" style={{color:"var(--gold)"}}>{cand}</b><span>리더 후보</span></div>
+      <div className="st"><b className="num">{ms.length}</b><span>그룹원</span></div>
+      <div className="st"><b className="num" style={{color:risk?"var(--warn)":undefined}}>{risk}</b><span>연락 필요</span></div>
+      <div className="st"><b className="num" style={{color:"var(--gold)"}}>{cand}</b><span>리더 후보</span></div>
     </div>
     {nb>0&&<div className="note">합류 3주 안쪽인 분이 {nb}명 있어요. 이 시기에 작은 성공 하나를 만들어 주세요.</div>}
     {ms.map(m=>(<div className="card" key={m.id}>
@@ -2123,8 +2312,21 @@ function Team({db,save2,nav,notify,pro,upgrade}){
   </div>);
 }
 
-function Settings({db,save,save2,nav,notify,pro,upgrade}){
+function Settings({db,save,save2,nav,notify,pro,upgrade,dark}){
   const cs=db.customers.map(enrich);
+  const [,setTheme]=useState(dark);
+  const [noti,setNoti]=useState(typeof Notification!=="undefined"?Notification.permission:"unsupported");
+  const askNoti=()=>{ if(typeof Notification==="undefined"){notify("이 브라우저는 알림을 지원하지 않아요");return;}
+    Notification.requestPermission().then(r=>{ setNoti(r);
+      notify(r==="granted"?"알림을 켰어요":"알림이 허용되지 않았어요"); }); };
+  const importJson=e=>{ const f=e.target.files&&e.target.files[0]; if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{ try{ const j=JSON.parse(rd.result);
+        if(!j||!Array.isArray(j.customers)) throw new Error("bad");
+        if(!confirm(`고객 ${j.customers.length}명이 담긴 백업이에요. 지금 기록을 덮어쓸까요?`))return;
+        save({...emptyState(),...j}); notify("복원했어요"); nav({n:"home"});
+      }catch(err){ notify("백업 파일을 읽지 못했어요"); } };
+    rd.readAsText(f); e.target.value=""; };
   const exportJson=()=>{
     if(!pro){ upgrade("데이터 내보내기는 프로 기능이에요"); return; }
     const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
@@ -2142,7 +2344,7 @@ function Settings({db,save,save2,nav,notify,pro,upgrade}){
     <h1 className="h1">설정</h1>
     <div className={pro?"card gold":"card"}>
       <div style={{display:"flex",alignItems:"center",gap:12}}>
-        <span className="av" style={pro?{background:"linear-gradient(150deg,#D9BE86,#B98B2E)",color:"#241A05"}
+        <span className="av" style={pro?{background:"linear-gradient(140deg,#E2C994,#AF8C39)",color:"#211809"}
           :{background:"var(--line2)",color:"var(--ink3)"}}><I n="crown" s={19}/></span>
         <div style={{flex:1}}><b style={{fontSize:16,fontWeight:800}}>{pro?"AIVO 프로":"무료 버전"}</b>
           <div className="tiny">{pro?"모든 기능이 열려 있어요":`고객 ${db.customers.length}/${PLAN.free.customers}명 · AI 하루 ${PLAN.free.aiPerDay}회`}</div></div>
@@ -2164,14 +2366,41 @@ function Settings({db,save,save2,nav,notify,pro,upgrade}){
           onClick={()=>save2(d=>({...d,profile:{...d.profile,job:j.k}}))}>{j.n}</button>)}
       </div>
       <label className="label">유지할 진행 중 {lbl(db)} 수 · {db.profile.goal}명</label>
-      <input type="range" min="3" max="30" value={db.profile.goal} style={{width:"100%",accentColor:"#0E1420"}}
+      <input type="range" min="3" max="30" value={db.profile.goal} style={{width:"100%",accentColor:"var(--gold)"}}
         onChange={e=>save2(d=>({...d,profile:{...d.profile,goal:+e.target.value}}))}/>
+    </div>
+    <div className="card">
+      <label className="label">화면</label>
+      <div className="chips" style={{marginBottom:16}}>
+        {[["light","밝게"],["dark","어둡게"],["auto","기기 설정 따라"]].map(([k,n])=>(
+          <button key={k} className={(db.profile.theme||"light")===k?"chip on":"chip"}
+            onClick={()=>{ save2(d=>({...d,profile:{...d.profile,theme:k}}));
+              const isD=k==="dark"||(k==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+              document.documentElement.dataset.theme=isD?"dark":"light"; setTheme(isD); }}>{n}</button>))}
+      </div>
+      <label className="label">매일 알림 받을 시각</label>
+      <div style={{display:"flex",gap:9,alignItems:"center"}}>
+        <input className="inp" type="time" style={{flex:1,marginBottom:0}} value={db.profile.remindAt||"09:00"}
+          onChange={e=>save2(d=>({...d,profile:{...d.profile,remindAt:e.target.value}}))}/>
+        <button className="btn line sm" style={{width:"auto",padding:"13px 15px"}} onClick={askNoti}>
+          <I n="bell" s={17}/>{noti==="granted"?"켜짐":"허용하기"}</button>
+      </div>
+      <div className="tiny" style={{marginTop:8}}>앱이 열려 있을 때 그 시각에 오늘 할 일을 알려드려요.</div>
     </div>
     <div className="list">
       <button className="item" onClick={exportJson}>
         <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="export" s={19}/></span>
         <span className="mid"><b>데이터 내보내기</b><span className="l2">기기가 바뀌어도 옮길 수 있어요</span></span>
         <I n={pro?"chev":"lock"} s={17} c="var(--ink4)"/></button>
+      <label className="item" style={{cursor:"pointer"}}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="upload" s={19}/></span>
+        <span className="mid"><b>백업 파일 불러오기</b><span className="l2">기기를 바꿨을 때 그대로 복원</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/>
+        <input type="file" accept="application/json" style={{display:"none"}} onChange={importJson}/></label>
+      <button className="item" onClick={()=>nav({n:"import"})}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="users" s={19}/></span>
+        <span className="mid"><b>연락처 일괄 등록</b><span className="l2">이름을 붙여넣어 한 번에</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>
       <button className="item" onClick={share}>
         <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="heart" s={19}/></span>
         <span className="mid"><b>AIVO 알리기</b><span className="l2">동료에게 공유하기</span></span>
@@ -2186,6 +2415,242 @@ function Settings({db,save,save2,nav,notify,pro,upgrade}){
     </div>
     <button className="ghostlink" onClick={()=>{ if(confirm("모든 기록을 지울까요? 되돌릴 수 없어요."))
       { save(emptyState()); notify("초기화했어요"); nav({n:"home"}); } }}>모든 기록 지우기</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   20. 일정 — 이번 주 연락 계획
+   ══════════════════════════════════════════════════════════════ */
+const WD=["일","월","화","수","목","금","토"];
+function Schedule({db,save2,nav,notify,pro,upgrade,queue}){
+  const [sel,setSel]=useState(today());
+  const [off,setOff]=useState(0);
+  const cs=db.customers.map(enrich);
+  const byId=Object.fromEntries(cs.map(c=>[c.id,c]));
+  const base=addDays(today(),off*7);
+  const start=addDays(base,-new Date(base).getDay());
+  const days=[...Array(7)].map((_,i)=>addDays(start,i));
+  const onDay=d=>{
+    const ts=db.tasks.filter(t=>!t.done&&t.due===d).map(t=>({kind:"task",id:t.id,title:t.title,
+      sub:(byId[t.customerId]||{}).name||"나의 일",cust:byId[t.customerId],task:t}));
+    const rs=cs.filter(c=>c.nextContact===d&&!db.tasks.some(t=>!t.done&&t.customerId===c.id&&t.due===d))
+      .map(c=>({kind:"reach",id:c.id,title:`${c.name}님께 연락`,sub:`${c.st.n} · ${c.st.act}`,cust:c}));
+    const bs=cs.filter(c=>{ const n=bdayIn(c.birthday); return n!=null&&addDays(today(),n)===d; })
+      .map(c=>({kind:"bday",id:"b"+c.id,title:`${c.name}님 생일`,sub:"축하 인사 보내기",cust:c}));
+    return [...ts,...rs,...bs];
+  };
+  const items=onDay(sel);
+  const late=cs.filter(c=>c.overdue&&c.stage!=="won");
+  return (<div className="pad" style={{paddingTop:"calc(22px + env(safe-area-inset-top,0px))"}}>
+    <span className="eyebrow">Schedule</span>
+    <h1 className="h1">연락 일정</h1>
+    <div className="rule"/>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+      <button className="chip" onClick={()=>setOff(off-1)}>‹ 지난주</button>
+      <b style={{fontSize:13.5,fontWeight:800}}>{off===0?"이번 주":off===1?"다음 주":`${fmtL(start)} 주`}</b>
+      <button className="chip" onClick={()=>setOff(off+1)}>다음주 ›</button>
+    </div>
+    <div className="week">
+      {days.map(d=>{ const n=onDay(d).length;
+        return (<button key={d} className={"day"+(sel===d?" on":"")+(d===today()?" today":"")} onClick={()=>setSel(d)}>
+          <div className="dw">{WD[new Date(d).getDay()]}</div>
+          <div className="dn">{new Date(d).getDate()}</div>
+          <span className={n?"pip":"pip none"}/></button>); })}
+    </div>
+    <div className="h2"><span>{fmtL(sel)}{sel===today()?" · 오늘":""}</span><span className="tiny">{items.length}건</span></div>
+    <div className="list">
+      {items.map(it=>(<button key={it.kind+it.id} className="item"
+        onClick={()=>it.cust?nav({n:"customer",id:it.cust.id}):nav({n:"run"})}>
+        <span className="av" style={it.cust?avStyle(it.cust.name):{background:"var(--line2)",color:"var(--ink3)"}}>
+          {it.cust?initial(it.cust.name):<I n="flag" s={18}/>}</span>
+        <span className="mid"><b>{it.title}</b>
+          <span className="l2">{it.sub}
+            <span className={"tagpill "+(it.kind==="bday"?"gold":it.kind==="task"?"blue":"")}>
+              {it.kind==="bday"?"기념일":it.kind==="task"?"할 일":"연락"}</span></span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>))}
+      {items.length===0&&<div className="blank">이 날은 예정이 없어요.<br/>비는 날엔 새로운 분을 한 명 만나보세요.</div>}
+    </div>
+    {late.length>0&&(<React.Fragment>
+      <div className="h2"><span>지난 일정 · 밀린 연락</span><span className="tiny">{late.length}명</span></div>
+      <div className="list">{late.slice(0,5).map(c=><CustRow key={c.id} c={c} go={()=>nav({n:"customer",id:c.id})}/>)}</div>
+    </React.Fragment>)}
+    <button className="btn dark" style={{marginTop:16}} onClick={()=>nav({n:"run"})}>
+      <I n="target" s={18}/>오늘 것부터 하나씩 하기</button>
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   21. 매출 — 성사 금액과 목표
+   ══════════════════════════════════════════════════════════════ */
+function Revenue({db,save2,nav,notify,pro,upgrade}){
+  const ym=today().slice(0,7);
+  const goal=db.profile.revGoal||0;
+  const cur=revenueOf(db,ym);
+  const pct=goal?Math.min(100,Math.round(cur/goal*100)):0;
+  const ms=monthsBack(6).map(m=>({...m,v:revenueOf(db,m.ym)}));
+  const mx=Math.max(1,...ms.map(m=>m.v));
+  const wonList=db.customers.filter(c=>c.stage==="won").sort((a,b)=>(b.wonAt||"").localeCompare(a.wonAt||""));
+  const pipe=db.customers.map(enrich).filter(c=>ACTIVE.indexOf(c.stage)>=0)
+    .reduce((a,c)=>a+(c.value||0)*(c.st.w/100),0);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Revenue</span>
+    <h1 className="h1">매출</h1>
+    <div className="rule"/>
+    <div className="card gold">
+      <span className="eyebrow">{new Date().getMonth()+1}월 매출</span>
+      <div style={{display:"flex",alignItems:"baseline",gap:8,margin:"8px 0 4px"}}>
+        <b className="num serif" style={{fontSize:32,letterSpacing:"-.045em"}}>{won2(cur)}</b>
+        {goal>0&&<span className="tiny">/ 목표 {won2(goal)}</span>}
+      </div>
+      {goal>0&&(<React.Fragment>
+        <div className="bar" style={{marginTop:10}}><i style={{width:pct+"%",background:"var(--gold)"}}/></div>
+        <div className="tiny" style={{marginTop:7}}>{pct}% 달성 · 남은 금액 {won2(Math.max(0,goal-cur))}</div>
+      </React.Fragment>)}
+    </div>
+    <div className="card">
+      <span className="eyebrow">최근 6개월</span>
+      <div className="mbars">
+        {ms.map(m=>(<div className="mb" key={m.ym}>
+          <i style={{height:`${Math.max(4,m.v/mx*72)}px`,background:m.ym===ym?"var(--gold)":"var(--track)"}}/>
+          <span>{m.m}월</span></div>))}
+      </div>
+      <div className="kv" style={{marginTop:14}}><span>진행 중 예상</span><b>{won2(pipe)}</b></div>
+      <div className="kv"><span>누적 성사</span><b>{won2(db.customers.reduce((a,c)=>a+(c.stage==="won"?wonValueOf(c):0),0))}</b></div>
+    </div>
+    <div className="card">
+      <label className="label">이번 달 목표 (원)</label>
+      <input className="inp" type="number" inputMode="numeric" value={goal||""}
+        placeholder="예) 3000000"
+        onChange={e=>save2(d=>({...d,profile:{...d.profile,revGoal:+e.target.value||0}}))}/>
+      <div className="tiny">목표를 정하면 홈 대시보드에도 진척이 표시돼요.</div>
+    </div>
+    <div className="h2"><span>성사한 {lbl(db)}</span><span className="tiny">{wonList.length}명</span></div>
+    <div className="list">
+      {wonList.map(c=>(<button key={c.id} className="item" onClick={()=>nav({n:"customer",id:c.id})}>
+        <span className="av" style={avStyle(c.name)}>{initial(c.name)}</span>
+        <span className="mid"><b>{c.name}</b>
+          <span className="l2">{c.wonAt?fmtL(c.wonAt):"날짜 미기록"}<span className="dot"/>
+            <span style={{fontWeight:800,color:"var(--good)"}}>{won2(wonValueOf(c))}</span></span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>))}
+      {wonList.length===0&&<div className="blank">아직 성사 기록이 없어요.<br/>고객 단계를 '성사'로 바꾸면 여기에 쌓입니다.</div>}
+    </div>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   22. 일괄 등록 — 붙여넣기 한 번으로
+   ══════════════════════════════════════════════════════════════ */
+function parseLines(txt){
+  return txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{
+    const parts=l.split(/[,\t]/).map(x=>x.trim());
+    let name="",org="",phone="";
+    if(parts.length>1){ name=parts[0];
+      parts.slice(1).forEach(x=>{ if(/01[016-9][-. ]?\d{3,4}[-. ]?\d{4}/.test(x)) phone=x; else if(!org) org=x; });
+    } else { const m=l.match(/(01[016-9][-. ]?\d{3,4}[-. ]?\d{4})/);
+      if(m){ phone=m[1]; name=l.replace(m[1],"").trim(); } else name=l; }
+    return {name:name.slice(0,20),org:org.slice(0,30),phone};
+  }).filter(x=>x.name);
+}
+function ImportPeople({db,save2,nav,notify,pro,upgrade}){
+  const [txt,setTxt]=useState("");
+  const [stage,setStage]=useState("new");
+  const rows=useMemo(()=>parseLines(txt),[txt]);
+  const room=pro?rows.length:Math.max(0,PLAN.free.customers-db.customers.length);
+  const willAdd=Math.min(rows.length,room);
+  const unit=lbl(db);
+  const doAdd=()=>{
+    const add=rows.slice(0,willAdd).map(r=>({id:uid(),name:r.name,org:r.org,phone:r.phone,needs:"",memo:"",
+      source:"일괄 등록",stage,temp:3,value:0,createdAt:today(),lastContact:null,touches:0,
+      nextContact:addDays(today(),SK[stage].cad),cares:[],objections:[],works:[],
+      history:[{id:uid(),date:today(),kind:"add",text:"일괄 등록"}]}));
+    save2(d=>({...d,customers:[...add,...d.customers]}));
+    notify(`${add.length}명을 등록했어요`); nav({n:"customers"});
+  };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"customers"})}><I n="back" s={17}/>뒤로</button>
+    <span className="eyebrow">Import</span>
+    <h1 className="h1">한 번에 등록하기</h1>
+    <p className="sub">이름을 한 줄에 하나씩 붙여넣으세요. 쉼표로 소속·전화번호를 같이 넣어도 됩니다.</p>
+    <div className="note">예시<br/>김성호, 한빛물류, 010-1111-2222<br/>박지훈, 010-3333-4444<br/>이수민</div>
+    <textarea className="area" style={{minHeight:170}} value={txt} onChange={e=>setTxt(e.target.value)}
+      placeholder={"김성호, 한빛물류, 010-1111-2222\n박지훈\n이수민"}/>
+    <label className="label">모두 이 단계로 넣기</label>
+    <div className="chips" style={{marginBottom:16}}>
+      {STAGES.filter(x=>x.k!=="won").map(x=>(
+        <button key={x.k} className={stage===x.k?"chip on":"chip"} onClick={()=>setStage(x.k)}>{x.n}</button>))}
+    </div>
+    {rows.length>0&&(<React.Fragment>
+      <div className="h2"><span>미리보기</span><span className="tiny">{rows.length}명 인식</span></div>
+      <div className="list">
+        {rows.slice(0,8).map((r,i)=>(<div key={i} className="item" style={{cursor:"default",opacity:i<willAdd?1:.4}}>
+          <span className="av" style={avStyle(r.name)}>{initial(r.name)}</span>
+          <span className="mid"><b>{r.name}</b>
+            <span className="l2">{[r.org,r.phone].filter(Boolean).join(" · ")||"정보 없음"}</span></span>
+          {i>=willAdd&&<span className="tagpill warn">한도 초과</span>}</div>))}
+        {rows.length>8&&<div className="tiny" style={{textAlign:"center",padding:8}}>외 {rows.length-8}명</div>}
+      </div>
+    </React.Fragment>)}
+    {!pro&&rows.length>room&&(<div style={{marginTop:12}}>
+      <Locked text={`무료는 ${unit} ${PLAN.free.customers}명까지예요. 무제한으로 늘리기`} onClick={()=>upgrade()}/></div>)}
+    <button className="btn dark" style={{marginTop:14}} disabled={willAdd===0} onClick={doAdd}>
+      {willAdd>0?`${willAdd}명 등록하기`:"등록할 사람이 없어요"}</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   23. 주간 리포트
+   ══════════════════════════════════════════════════════════════ */
+function Report({db,nav,pro,upgrade}){
+  const from=addDays(today(),-6);
+  const inWeek=d=>d&&d>=from&&d<=today();
+  const cs=db.customers.map(enrich);
+  const doneTasks=db.tasks.filter(t=>t.done&&inWeek(t.doneAt));
+  const recs=db.records.filter(r=>inWeek(r.date));
+  const added=db.customers.filter(c=>inWeek(c.createdAt));
+  const wonW=db.customers.filter(c=>c.stage==="won"&&inWeek(c.wonAt));
+  const contacts=cs.reduce((a,c)=>a+((c.history||[]).filter(h=>inWeek(h.date)&&h.kind==="contact").length),0);
+  const next=cs.filter(c=>c.nextContact&&c.nextContact>today()&&c.nextContact<=addDays(today(),7));
+  const overdue=cs.filter(c=>c.overdue&&c.stage!=="won");
+  const strong=collectTags(db,"s")[0], weak=collectTags(db,"w")[0];
+  if(!pro) return (<div className="pad">
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Weekly</span><h1 className="h1">주간 리포트</h1><div className="rule"/>
+    <div className="card center"><div style={{color:"var(--gold)",marginBottom:14}}><I n="lock" s={28}/></div>
+      <p className="sub">한 주 동안의 접촉·성사·다음 주 예정을 한 장으로 정리해 드려요.</p>
+      <button className="btn gold" onClick={()=>upgrade("주간 리포트는 프로 기능이에요")}>프로 살펴보기</button></div></div>);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Weekly Report</span>
+    <h1 className="h1">{fmtL(from)} – {fmtL(today())}</h1>
+    <div className="rule"/>
+    <div className="stats">
+      <div className="st"><b className="num">{contacts}</b><span>접촉</span></div>
+      <div className="st"><b className="num">{doneTasks.length}</b><span>실행 완료</span></div>
+      <div className="st"><b className="num">{added.length}</b><span>새 {lbl(db)}</span></div>
+    </div>
+    <div className="card">
+      <span className="eyebrow">이번 주 성사</span>
+      <div style={{display:"flex",alignItems:"baseline",gap:8,marginTop:8}}>
+        <b className="serif num" style={{fontSize:28}}>{wonW.length}건</b>
+        <span className="tiny">{won2(wonW.reduce((a,c)=>a+wonValueOf(c),0))}</span></div>
+      {wonW.length>0&&<div className="tiny" style={{marginTop:8}}>{wonW.map(c=>c.name).join(", ")}</div>}
+    </div>
+    <div className="card">
+      <span className="eyebrow">다음 주 예정</span>
+      <div className="kv" style={{marginTop:8}}><span>연락 예정</span><b>{next.length}명</b></div>
+      <div className="kv"><span>밀린 연락</span><b className={overdue.length?"warn":""}>{overdue.length}명</b></div>
+      <div className="kv"><span>기록한 미팅</span><b>{recs.length}건</b></div>
+    </div>
+    {(strong||weak)&&(<div className="card">
+      <span className="eyebrow">코치 총평</span>
+      {strong&&<p style={{margin:"10px 0 0",fontSize:15,lineHeight:1.75,color:"var(--ink2)"}}>
+        <b style={{color:"var(--good)"}}>잘하신 것</b> — “{strong.tag}” {strong.count}번. 계속 이렇게 하세요.</p>}
+      {weak&&<p style={{margin:"10px 0 0",fontSize:15,lineHeight:1.75,color:"var(--ink2)"}}>
+        <b style={{color:"var(--gold)"}}>고칠 것</b> — “{weak.tag}” {weak.count}번 반복. 다음 주엔 이것 하나만 신경 쓰세요.</p>}
+    </div>)}
+    <button className="btn line" onClick={()=>nav({n:"coach"})}><I n="msg" s={18}/>이번 주 어땠는지 코치와 이야기</button>
   </div>);
 }
 
