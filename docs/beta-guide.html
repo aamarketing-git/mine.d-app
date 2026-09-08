@@ -1,0 +1,343 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"/>
+<style>
+@page{size:A4;margin:16mm 15mm 18mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Noto Sans KR','Malgun Gothic',sans-serif;color:#14120F;font-size:10.2pt;line-height:1.68;
+ letter-spacing:-.01em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3,.serif{font-family:'Noto Serif KR','Batang',serif}
+.page{page-break-after:always}
+.page:last-child{page-break-after:auto}
+/* 표지 */
+.cover{height:297mm;display:flex;flex-direction:column;justify-content:center;background:#14120F;color:#F5F1E9;
+ margin:-16mm -15mm -18mm;padding:0 22mm;position:relative}
+.cover .mark{width:52px;height:52px;border:1.5px solid #C6A45C;border-radius:15px;display:flex;
+ align-items:center;justify-content:center;color:#C6A45C;font-family:'Noto Serif KR',serif;font-size:26px;font-weight:600}
+.cover .eyebrow{color:#8E877A;font-size:9pt;letter-spacing:.22em;margin:34px 0 10px;font-weight:700}
+.cover h1{font-size:36pt;font-weight:600;line-height:1.24;margin:0 0 14px;letter-spacing:-.03em}
+.cover .lead{color:#B8B0A2;font-size:11.5pt;line-height:1.75;max-width:118mm}
+.cover .line{width:64px;height:2px;background:#C6A45C;margin:26px 0}
+.cover .meta{font-size:9.5pt;color:#8E877A;line-height:1.9}
+.cover .meta b{color:#E2C994;font-weight:600}
+/* 본문 */
+h2{font-size:19pt;font-weight:600;letter-spacing:-.025em;margin:0 0 4px}
+.kicker{font-size:8.5pt;font-weight:700;letter-spacing:.18em;color:#96762B;margin-bottom:6px}
+.hr{height:1px;background:linear-gradient(90deg,#C6A45C,rgba(198,164,92,0));margin:10px 0 20px}
+h3{font-size:12pt;font-weight:600;margin:22px 0 8px;letter-spacing:-.02em}
+p{margin:0 0 11px}
+.muted{color:#6D665C}
+ul,ol{margin:0 0 12px;padding-left:18px}
+li{margin-bottom:6px}
+.card{border:1px solid #E4DFD5;border-radius:11px;padding:14px 16px;margin-bottom:12px;
+ page-break-inside:avoid;background:#FCFBF8}
+.card.gold{background:#F8F2E4;border-color:#E7D9BA}
+.card.dark{background:#14120F;color:#EDE8DE;border:0}
+.card.dark b{color:#E2C994}
+.card h4{margin:0 0 7px;font-size:11pt;font-weight:700;letter-spacing:-.02em}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:9.4pt;page-break-inside:avoid}
+th{text-align:left;font-weight:700;color:#6D665C;font-size:8.4pt;letter-spacing:.06em;
+ border-bottom:1.5px solid #14120F;padding:7px 8px}
+td{padding:8px;border-bottom:1px solid #EFEBE2;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:#96762B;font-weight:700}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding-left:34px;margin-bottom:14px;page-break-inside:avoid}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:7px;
+ background:#14120F;color:#fff;font-size:9pt;font-weight:700;display:flex;align-items:center;justify-content:center;
+ font-family:'Noto Sans KR',sans-serif}
+.steps b{display:block;font-size:11pt;margin-bottom:2px}
+.two{display:flex;gap:14px}
+.two>*{flex:1}
+.shots{display:flex;gap:12px;margin:14px 0 4px}
+.shots figure{flex:1;margin:0;text-align:center}
+.shots img{width:100%;border:1px solid #E4DFD5;border-radius:10px}
+.shots figcaption{font-size:8.4pt;color:#6D665C;margin-top:6px}
+.tag{display:inline-block;font-size:8.2pt;font-weight:700;padding:2px 7px;border-radius:5px;
+ background:#EFEBE2;color:#4C463D;margin-right:4px}
+.tag.g{background:#E9F3ED;color:#1E6B45}.tag.w{background:#FBEDEA;color:#A32E1C}
+.tag.o{background:#F8F2E4;color:#96762B}
+.chk{list-style:none;padding:0}
+.chk li{padding-left:24px;position:relative;margin-bottom:9px}
+.chk li::before{content:"";position:absolute;left:0;top:3px;width:13px;height:13px;border:1.5px solid #8B8377;border-radius:3px}
+.foot{position:fixed;bottom:0;left:0;right:0;font-size:8pt;color:#A9A296;text-align:center}
+.url{font-family:ui-monospace,Menlo,monospace;font-size:9pt;background:#F3F1EC;border:1px solid #E4DFD5;
+ border-radius:6px;padding:6px 9px;display:inline-block;word-break:break-all;line-height:1.5}
+.big{font-family:'Noto Serif KR',serif;font-size:15pt;font-weight:600;letter-spacing:-.02em}
+</style></head><body>
+
+<!-- 표지 -->
+<section class="page"><div class="cover">
+  <div class="mark">A</div>
+  <div class="eyebrow">BETA TEST GUIDE</div>
+  <h1>AIVO 고객관리<br/>활용서</h1>
+  <div class="lead">고객을 만들고, 기억하고, 다시 연락하고,<br/>계약까지 가는 모든 과정을 하루에 하나씩.</div>
+  <div class="line"></div>
+  <div class="meta">
+    베타 버전 <b>1.0</b><br/>
+    배포일 2026년 9월 8일<br/>
+    대상 <b>베타 테스터</b> · 소요 시간 하루 5~10분
+  </div>
+</div></section>
+
+<!-- 1. 시작하기 -->
+<section class="page">
+  <div class="kicker">01 · 시작하기</div>
+  <h2>3분이면 준비 끝</h2>
+  <div class="hr"></div>
+  <p>AIVO는 설치가 필요 없습니다. 휴대폰 브라우저로 아래 주소를 열면 바로 시작됩니다.
+  회원가입도, 비밀번호도 없습니다.</p>
+
+  <div class="card gold">
+    <h4>베타 접속 주소</h4>
+    <div class="url">https://claude.ai/code/artifact/59090aa5-7c8d-41c8-9d01-57b31ed3c614</div>
+    <p class="muted" style="margin:9px 0 0;font-size:9.2pt">링크를 받으신 분만 열 수 있습니다. 주변에 공유하기 전에 담당자에게 알려주세요.</p>
+  </div>
+
+  <h3>홈 화면에 추가하면 앱처럼 쓸 수 있어요</h3>
+  <table>
+    <tr><th style="width:26%">기기</th><th>방법</th></tr>
+    <tr><td><b>아이폰</b></td><td>사파리에서 열기 → 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b></td></tr>
+    <tr><td><b>안드로이드</b></td><td>크롬에서 열기 → 오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b></td></tr>
+  </table>
+  <p class="muted">한 번 추가하면 아이콘을 눌러 바로 들어올 수 있고, 주소창 없이 앱처럼 보입니다.</p>
+
+  <h3>처음 들어가면 세 가지만 물어봅니다</h3>
+  <ol class="steps">
+    <li><b>어떤 일을 하세요?</b>보험·부동산·네트워크마케팅·건강/뷰티·교육/코칭·프리랜서·매장 중에서 고르세요.
+      고른 업종에 맞춰 부르는 말(고객·손님·회원·수강생)과 연락 주기가 바뀝니다.</li>
+    <li><b>진행 중인 고객을 몇 명으로 유지할까요?</b>처음엔 5명이면 충분합니다.
+      이 숫자보다 적어지면 “새로운 분을 만나세요”라고 알려줍니다.</li>
+    <li><b>이름을 알려주세요.</b>코치가 부를 이름이자, 대본에 들어갈 이름입니다.</li>
+  </ol>
+
+  <div class="card dark">
+    <h4 style="color:#E2C994">기억할 것은 딱 하나</h4>
+    <p style="margin:0">완벽하게 채우려 하지 마세요. <b>이름 하나만 있어도</b> 고객 등록이 됩니다.
+    나머지는 만나면서 채워집니다.</p>
+  </div>
+</section>
+
+<!-- 2. 하루 사용법 -->
+<section class="page">
+  <div class="kicker">02 · 매일 쓰는 법</div>
+  <h2>하루 5분, 하나씩만</h2>
+  <div class="hr"></div>
+  <p>AIVO의 핵심은 <b>한 번에 하나만 보여준다</b>는 것입니다.
+  할 일이 열 개여도 화면에는 언제나 가장 급한 하나만 뜹니다. 그것만 처리하면 다음이 나옵니다.</p>
+
+  <div class="shots">
+    <figure><img src="img/g-runner.png"/><figcaption>실행 화면 — 지금 할 일 하나와 보낼 문장</figcaption></figure>
+    <figure><img src="img/n-home.png"/><figcaption>홈 · 집중 모드 — 오늘 진척과 다음 할 일</figcaption></figure>
+  </div>
+
+  <h3>아침 루틴 (3분)</h3>
+  <ol class="steps">
+    <li><b>홈을 연다</b>맨 위에 오늘 할 일 개수와 지연된 건수가 보입니다.</li>
+    <li><b>‘하나씩 시작하기’를 누른다</b>가장 급한 것부터 한 장씩 넘어갑니다.</li>
+    <li><b>보낼 문장을 복사해서 보낸다</b>‘복사’를 누르고 카톡·문자에 붙여넣으면 끝입니다.</li>
+    <li><b>‘했어요’를 누른다</b>연락 기록과 다음 연락 날짜가 자동으로 잡힙니다.</li>
+  </ol>
+
+  <h3>저녁 루틴 (2분)</h3>
+  <p>사람을 만난 날은 <b>＋ → 오늘 있었던 일 기록</b>에서 말로 남기세요.
+  “오늘 김성호 사장님 만났는데 비용이 부담된다고 하셔서…” 처럼 편하게 말하면 됩니다.
+  정리·코칭·다음 할 일까지 자동으로 만들어집니다.</p>
+
+  <div class="card">
+    <h4>버튼 세 개의 뜻</h4>
+    <p style="margin:0"><span class="tag g">했어요</span> 완료 처리 + 연락 기록 + 다음 연락일 자동 설정<br/>
+    <span class="tag o">내일로 / 3일 뒤로</span> 날짜만 미루기 (기록은 남습니다)<br/>
+    <span class="tag">오늘은 건너뛰기</span> 오늘만 숨김 — 내일 다시 나옵니다</p>
+  </div>
+</section>
+
+<!-- 3. 화면 지도 -->
+<section class="page">
+  <div class="kicker">03 · 화면 지도</div>
+  <h2>여섯 개 버튼이 전부입니다</h2>
+  <div class="hr"></div>
+  <table>
+    <tr><th style="width:20%">탭</th><th>무엇을 하는 곳인가</th></tr>
+    <tr><td><b>홈</b></td><td><b>집중</b> 모드는 다음 할 일 하나만, <b>전체 대시보드</b> 모드는 파이프라인·매출·지연·활동을 한 화면에. 위 가운데 버튼으로 언제든 전환합니다.</td></tr>
+    <tr><td><b>실행</b></td><td>오늘 할 일을 한 장씩 넘기며 처리합니다. 빨간 숫자는 기한이 지난 건수입니다.</td></tr>
+    <tr><td><b>일정</b></td><td>이번 주 달력. 날짜 아래 점이 있으면 그날 할 일이 있다는 뜻입니다. 지난주·다음주로 이동할 수 있습니다.</td></tr>
+    <tr><td><b>＋</b></td><td>고객 등록, 기록, AI 코치, 콘텐츠, 일괄 등록, 매출 기록, 대본을 바로 여는 단축 메뉴.</td></tr>
+    <tr><td><b>고객</b></td><td>전체 명단. 급한 순서로 정렬되고, 단계별·지연별로 걸러 볼 수 있습니다.</td></tr>
+    <tr><td><b>성장</b></td><td>연속 실행일, 잘하는 점·고칠 점, 매출, 주간 리포트, 교육센터, 설정.</td></tr>
+  </table>
+
+  <h3>화면을 어둡게 쓰고 싶다면</h3>
+  <p>홈 오른쪽 위 <b>달 모양 아이콘</b>을 누르면 어두운 화면으로 바뀝니다.
+  설정 → 화면에서 <b>기기 설정 따라</b>를 고르면 휴대폰 설정을 따라갑니다.</p>
+
+  <div class="card gold">
+    <h4>두 모드를 이렇게 쓰세요</h4>
+    <p style="margin:0"><b>평일 아침·저녁</b>은 집중 모드로 — 생각하지 말고 시키는 것만 하세요.<br/>
+    <b>주 1회(일요일 저녁 추천)</b>는 전체 대시보드로 — 어디가 막혔는지 보고 다음 주를 계획하세요.</p>
+  </div>
+</section>
+
+<!-- 4. 고객 등록 -->
+<section class="page">
+  <div class="kicker">04 · 고객 만들기</div>
+  <h2>등록하는 세 가지 방법</h2>
+  <div class="hr"></div>
+  <ol class="steps">
+    <li><b>한 명씩 등록 — ＋ → 고객 등록하기</b>다섯 화면에 걸쳐 하나씩 물어봅니다. 이름만 넣고 <b>‘여기까지만 저장’</b>을 눌러도 됩니다.</li>
+    <li><b>여러 명 한 번에 — ＋ → 연락처 일괄 등록</b>이름을 한 줄에 하나씩 붙여넣으세요. 쉼표로 소속·전화번호를 같이 넣으면 알아서 나눕니다.
+      <br/><span class="url" style="margin-top:6px">김성호, 한빛물류, 010-1111-2222<br/>박지훈<br/>이수민, 010-3333-4444</span></li>
+    <li><b>말로 기록하면 자동 등록</b>“오늘 성호헬스케어 김성호 사장님 만났어요…”라고 말하면 이름·소속·연락처를 뽑아 자동으로 카드가 만들어집니다.</li>
+  </ol>
+
+  <h3>고객 카드에서 하는 일</h3>
+  <div class="shots" style="margin-bottom:10px">
+    <figure style="flex:0 0 46%"><img src="img/g-detail.png"/><figcaption>고객 카드</figcaption></figure>
+    <figure style="flex:1;text-align:left">
+      <ul style="margin-top:4px">
+        <li><b>단계 바꾸기</b> — 진행 상황이 바뀌면 눌러서 옮기세요. 연락 주기가 자동으로 다시 잡힙니다.</li>
+        <li><b>접촉 게이지</b> — 계약까지 평균 8회 접촉이 필요합니다. 몇 번째인지 보여줍니다.</li>
+        <li><b>관심도 별점</b> — 높을수록 먼저 알려줍니다.</li>
+        <li><b>생일</b> — MM-DD로 넣으면 3일 전부터 축하 인사를 챙겨줍니다.</li>
+        <li><b>빠른 메모</b> — 한 줄 또는 음성으로 즉시 기록.</li>
+        <li><b>전화 · 문자 · 코치</b> — 바로 걸거나, 대본을 받아 보낼 수 있습니다.</li>
+      </ul>
+    </figure>
+  </div>
+</section>
+
+<!-- 5. 파이프라인 -->
+<section class="page">
+  <div class="kicker">05 · 6단계 파이프라인</div>
+  <h2>지금 어디까지 왔는지</h2>
+  <div class="hr"></div>
+  <p>모든 고객은 여섯 단계 중 하나에 놓입니다. 단계마다 <b>해야 할 일</b>과 <b>연락 주기</b>가 다릅니다.
+  주기가 지나면 앱이 먼저 알려주므로, 언제 연락할지 고민할 필요가 없습니다.</p>
+  <table>
+    <tr><th style="width:16%">단계</th><th style="width:30%">이런 상태</th><th style="width:34%">해야 할 일</th><th style="width:20%">연락 주기</th></tr>
+    <tr><td><b>신규</b></td><td>이름만 아는 분</td><td>첫 연락을 해보세요</td><td class="n">2일마다</td></tr>
+    <tr><td><b>연결</b></td><td>연락이 닿았어요</td><td>만날 약속을 잡으세요</td><td class="n">4일마다</td></tr>
+    <tr><td><b>니즈확인</b></td><td>무엇이 필요한지 알았어요</td><td>맞는 제안을 준비하세요</td><td class="n">4일마다</td></tr>
+    <tr><td><b>제안</b></td><td>제안을 드렸어요</td><td>반응을 확인하세요</td><td class="n">3일마다</td></tr>
+    <tr><td><b>협상</b></td><td>조건을 맞추는 중</td><td>결정을 도와주세요</td><td class="n">2일마다</td></tr>
+    <tr><td><b>성사</b></td><td>함께하기로 했어요</td><td>만족도를 챙기세요</td><td class="n">14일마다</td></tr>
+    <tr><td><b>보류</b></td><td>지금은 때가 아니에요</td><td>때가 되면 다시 노크</td><td class="n">45일마다</td></tr>
+  </table>
+
+  <div class="card">
+    <h4>거절당했다면 지우지 마세요</h4>
+    <p style="margin:0"><b>보류</b>로 옮기세요. 45일 뒤 “다시 노크할 때”라고 알려줍니다.
+    깨끗하게 물러난 고객은 3개월 뒤 가장 좋은 명단이 됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h4>‘멈춰 있는 고객’이 뜨면</h4>
+    <p style="margin:0">한 단계에 주기의 3배 넘게 머문 고객입니다. 둘 중 하나를 고르세요 —
+    <b>다음 단계로 밀거나</b>, <b>보류로 정리하거나</b>. 어중간하게 두는 것이 가장 나쁩니다.</p>
+  </div>
+</section>
+
+<!-- 6. 기록과 코칭 -->
+<section class="page">
+  <div class="kicker">06 · 기록 · 코칭 · 대본</div>
+  <h2>말만 하면 정리됩니다</h2>
+  <div class="hr"></div>
+  <h3>기록하기 (＋ → 오늘 있었던 일 기록)</h3>
+  <ol class="steps">
+    <li><b>누구를 만났는지 고르기</b>처음 만난 분이면 그냥 넘어가세요.</li>
+    <li><b>말하기 또는 글로 쓰기</b>마이크를 누르고 편하게 말하면 글로 적힙니다. 순서는 상관없습니다.</li>
+    <li><b>정리 내용 확인</b>요약과 알아낸 정보(이름·연락처·필요한 것·단계)를 보여줍니다.</li>
+    <li><b>코칭 받기</b>잘한 점 / 놓친 점 / 다음에 쓸 문장을 알려줍니다. <b>읽어주기</b>를 누르면 소리로 들을 수 있습니다.</li>
+    <li><b>할 일 받기</b>다음에 할 일이 실행 목록에 자동으로 들어갑니다.</li>
+  </ol>
+
+  <h3>AI 코치에게 묻기</h3>
+  <p>막혔을 때는 <b>＋ → AI 코치에게 묻기</b>. 고객이 한 말을 그대로 적으면 뭐라고 답할지 문장으로 만들어 줍니다.
+  고객 카드 안에서 열면 그 고객의 기록을 참고해 답합니다.</p>
+
+  <h3>상황별 대본 (성장 → 상황별 대본)</h3>
+  <p>첫 연락, 무응답, 거절, 가격, 결정권자, 클로징, 재구매, 소개 요청 등 12가지.
+  <b>받는 분을 고르면 이름이 자동으로 채워지고</b>, 문자 앱으로 바로 보낼 수 있습니다.</p>
+
+  <div class="card gold">
+    <h4>대본은 그대로 쓰지 마세요</h4>
+    <p style="margin:0">한 문장만 내 말투로 바꾸세요. 그 한 줄이 “복사한 티”를 없앱니다.</p>
+  </div>
+</section>
+
+<!-- 7. 일정 매출 리포트 -->
+<section class="page">
+  <div class="kicker">07 · 일정 · 매출 · 리포트</div>
+  <h2>주 1회 돌아보기</h2>
+  <div class="hr"></div>
+  <div class="shots">
+    <figure><img src="img/n-schedule.png"/><figcaption>연락 일정 — 날짜 아래 점이 할 일 표시</figcaption></figure>
+    <figure><img src="img/n-revenue.png"/><figcaption>매출 — 목표 대비 진척과 6개월 추이</figcaption></figure>
+  </div>
+  <h3>매출은 저절로 쌓입니다</h3>
+  <p>고객 등록할 때 <b>예상 금액</b>을 넣고, 계약되면 단계를 <b>성사</b>로 바꾸세요.
+  그 순간 금액과 날짜가 확정되어 이번 달 매출에 잡힙니다.
+  <b>성장 → 매출 관리</b>에서 이번 달 목표를 정하면 홈 대시보드에도 진척이 표시됩니다.</p>
+
+  <h3>주간 리포트 (프로)</h3>
+  <p>한 주 동안의 접촉 수, 완료한 실행, 새로 만난 사람, 성사 건수와 금액, 다음 주 예정,
+  그리고 “잘하신 것 / 고칠 것” 총평을 한 장으로 보여줍니다.</p>
+
+  <h3>무료와 프로의 차이</h3>
+  <table>
+    <tr><th style="width:44%">항목</th><th style="width:28%">무료</th><th style="width:28%">프로</th></tr>
+    <tr><td>고객 등록</td><td>15명</td><td>무제한</td></tr>
+    <tr><td>AI 코칭·분석</td><td>하루 5회</td><td>무제한</td></tr>
+    <tr><td>광고</td><td>노출</td><td>없음</td></tr>
+    <tr><td>교육과정</td><td>1단계</td><td>3단계 전부</td></tr>
+    <tr><td>상황별 대본</td><td>3종</td><td>12종</td></tr>
+    <tr><td>매출 심화·주간 리포트</td><td>—</td><td>포함</td></tr>
+    <tr><td>팀 관리 · 내보내기</td><td>—</td><td>포함</td></tr>
+  </table>
+  <p class="muted">베타 기간에는 <b>결제 없이</b> 프로를 켜고 끌 수 있습니다.
+  오른쪽 위 <b>FREE</b> 배지를 눌러 <b>프로 시작하기</b> → 다시 <b>무료로 되돌리기</b>. 양쪽 다 꼭 써보세요.</p>
+</section>
+
+<!-- 8. 베타 안내 -->
+<section class="page">
+  <div class="kicker">08 · 베타 참여 안내</div>
+  <h2>테스터가 꼭 알아야 할 것</h2>
+  <div class="hr"></div>
+  <div class="card dark">
+    <h4 style="color:#E2C994">베타 버전의 한계 — 미리 알려드립니다</h4>
+    <ul style="margin:0;padding-left:18px">
+      <li><b>데이터는 이 브라우저에만 저장됩니다.</b> 방문 기록을 지우거나 기기를 바꾸면 사라집니다. 실제 중요한 고객 정보는 아직 넣지 마세요.</li>
+      <li><b>AI 코칭은 ‘간단 코칭 모드’로 동작합니다.</b> 서버 연결 전이라 미리 준비된 규칙으로 답합니다. 정식 버전에서는 훨씬 정교해집니다.</li>
+      <li><b>백업 내보내기는 베타 링크에서 동작하지 않습니다.</b> 정식 배포본에서는 정상 동작합니다.</li>
+      <li><b>광고는 자리만 표시</b>되어 있습니다. 실제 광고는 아직 붙지 않았습니다.</li>
+      <li><b>음성 입력은 크롬·사파리 최신 버전</b>에서 가장 잘 됩니다. 안 되면 글로 쓰셔도 됩니다.</li>
+    </ul>
+  </div>
+
+  <h3>일주일 테스트 시나리오</h3>
+  <table>
+    <tr><th style="width:16%">일차</th><th>해볼 것</th></tr>
+    <tr><td class="n">1일차</td><td>온보딩 → 실제 고객 5명 등록 (일괄 등록도 한 번 써보기)</td></tr>
+    <tr><td class="n">2일차</td><td>아침에 실행 3건 처리 → 대본 복사해서 실제로 보내보기</td></tr>
+    <tr><td class="n">3일차</td><td>만난 일을 <b>음성으로</b> 기록 → 코칭과 자동 생성된 할 일 확인</td></tr>
+    <tr><td class="n">4일차</td><td>고객 단계 옮겨보기 · 생일 넣어보기 · 빠른 메모 남기기</td></tr>
+    <tr><td class="n">5일차</td><td>프로로 전환 → 대본 12종·주간 리포트·매출 확인 후 무료로 되돌리기</td></tr>
+    <tr><td class="n">6일차</td><td>어두운 화면으로 바꿔서 하루 사용 · 홈 화면에 추가해서 써보기</td></tr>
+    <tr><td class="n">7일차</td><td>전체 대시보드에서 한 주 돌아보기 → 아래 피드백 보내기</td></tr>
+  </table>
+
+  <h3>이것만 알려주세요</h3>
+  <ul class="chk">
+    <li><b>매일 열게 되던가요?</b> 안 열게 됐다면 며칠째부터, 왜인지</li>
+    <li><b>‘하나씩’ 방식이 편했나요, 답답했나요?</b></li>
+    <li><b>대본을 실제로 보냈나요?</b> 보냈다면 반응은 어땠는지</li>
+    <li><b>이해가 안 되던 화면이나 단어</b>가 있었나요</li>
+    <li><b>돈을 낼 만하다고 느낀 기능</b>은 무엇이었나요</li>
+    <li><b>빠져서 아쉬운 기능</b> 한 가지</li>
+    <li><b>오류·멈춤·깨진 화면</b> — 언제, 어느 화면에서 (가능하면 화면 캡처)</li>
+  </ul>
+  <div class="card gold" style="margin-top:14px">
+    <p style="margin:0"><b>피드백 보내실 곳</b> — 담당자에게 카톡 또는 메일로 보내주세요.
+    한 줄이라도 좋습니다. “그냥 안 쓰게 되더라”가 가장 중요한 피드백입니다.</p>
+  </div>
+</section>
+
+</body></html>

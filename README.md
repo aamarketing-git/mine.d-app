@@ -45,3 +45,7 @@
 `AI_ENDPOINT` 는 데모용으로 Anthropic API를 직접 호출합니다.
 실제 배포에서는 **서버리스 프록시(예: `/api/ai`)로 바꿔** API 키가 노출되지 않게 하세요.
 호출이 실패해도 앱은 간단 코칭 모드로 계속 동작합니다.
+
+### 베타 테스트
+- 활용서 PDF: `docs/AIVO-고객관리-활용서.pdf` (원본 `docs/beta-guide.html`)
+- PDF 다시 만들기: `docs/beta-guide.html` 을 브라우저에서 열고 인쇄 → PDF로 저장 (A4, 배경 그래픽 켜기)
