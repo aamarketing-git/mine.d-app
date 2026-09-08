@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no"/>
+<title>AIVO · 고객관리의 처음부터 끝까지</title>
+
+<meta name="description" content="고객을 만들고, 관리하고, 넓혀가는 모든 과정을 하나씩 알려주고 함께 실행하는 AI 고객관리 앱."/>
+<meta name="theme-color" content="#14120F"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="AIVO"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="AIVO"/>
+<meta property="og:title" content="AIVO · 고객관리의 처음부터 끝까지"/>
+<meta property="og:description" content="고객을 만들고, 관리하고, 넓혀가는 모든 과정을 하나씩 알려주고 함께 실행하는 AI 고객관리 앱."/>
+<meta property="og:locale" content="ko_KR"/>
+<meta name="twitter:card" content="summary_large_image"/>
+
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="44" fill="%230E1420"/><path d="M96 40 L136 152 H116 L96 92 L76 152 H56 Z" fill="%23D9BE86"/></svg>'/>
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="44" fill="%230E1420"/><path d="M96 40 L136 152 H116 L96 92 L76 152 H56 Z" fill="%23D9BE86"/></svg>'/>
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"AIVO 고객관리","short_name":"AIVO","start_url":".","display":"standalone","background_color":"%23F6F7F9","theme_color":"%230E1420","orientation":"portrait"}'/>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&display=swap"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
+<!-- ═══ 광고(AdMob / AdSense) ═══
+     · 웹으로 배포할 때  : 아래 AdSense 스크립트 주석을 풀고 client 값을 바꾸세요.
+     · 앱으로 감쌀 때(WebView/Capacitor) : ADS.admob 값을 채우면 네이티브 배너·전면광고가 붙습니다.
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+<style>
+:root{
+  --bg:#F3F1EC; --paper:#FFFFFF; --raised:#FBFAF7;
+  --ink:#14120F; --ink2:#4C463D; --ink3:#8B8377; --ink4:#B5AD9F;
+  --line:#E4DFD5; --line2:#EFEBE2; --track:#EAE6DC;
+  --pri:#14120F; --pri-fg:#FFFFFF;
+  --gold:#96762B; --gold2:#C6A45C; --goldbg:#F8F2E4; --goldline:#E7D9BA;
+  --blue:#27509C; --bluebg:#EDF1F9;
+  --good:#1E6B45; --goodbg:#E9F3ED;
+  --warn:#A32E1C; --warnbg:#FBEDEA;
+  --shadow:0 1px 1px rgba(20,18,15,.03),0 6px 18px rgba(20,18,15,.05);
+  --shadow2:0 2px 6px rgba(20,18,15,.05),0 20px 44px rgba(20,18,15,.10);
+  --hdr:#14120F; --hdr-fg:#F5F1E9; --hdr-dim:#8E877A; --hdr-soft:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.86);
+  --r:22px; --r2:15px; --safe:env(safe-area-inset-bottom,0px);
+  --serif:'Noto Serif KR',ui-serif,Georgia,'Times New Roman',serif;
+}
+[data-theme="dark"]{
+  --bg:#0E0E0D; --paper:#181816; --raised:#201F1C;
+  --ink:#F2EEE6; --ink2:#BEB8AC; --ink3:#8B857A; --ink4:#655F56;
+  --line:#2B2A26; --line2:#232320; --track:#2B2A26;
+  --pri:#EFE9DD; --pri-fg:#14120F;
+  --gold:#D2B478; --gold2:#E2C994; --goldbg:#241E12; --goldline:#3C3220;
+  --blue:#87A6E8; --bluebg:#161B26;
+  --good:#5FBF8C; --goodbg:#12211A;
+  --warn:#E8836E; --warnbg:#2A1613;
+  --shadow:0 1px 2px rgba(0,0,0,.45); --shadow2:0 12px 38px rgba(0,0,0,.55);
+  --hdr:#000000; --hdr-fg:#F2EEE6; --hdr-dim:#857F74; --hdr-soft:rgba(255,255,255,.07);
+  --glass:rgba(24,24,22,.86);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg)}
+body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;letter-spacing:-.011em;
+  transition:background .25s,color .25s}
+button{font-family:inherit;color:inherit}
+.app{max-width:462px;margin:0 auto;min-height:100vh;min-height:100dvh;background:var(--bg);
+  position:relative;overflow-x:hidden}
+@media(min-width:520px){.app{box-shadow:0 0 0 1px var(--line),0 0 80px rgba(20,18,15,.14)}}
+.pad{padding:0 20px}
+.pb{padding-bottom:calc(116px + var(--safe))}
+.loading{padding:130px 20px;text-align:center;color:var(--ink3);font-size:15px}
+
+/* ── 타이포 ── */
+.serif{font-family:var(--serif);font-weight:600}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--ink4);text-transform:uppercase;display:block}
+.h1{font-family:var(--serif);font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.36;margin:8px 0 10px}
+.h2{font-size:13.5px;font-weight:800;letter-spacing:-.02em;color:var(--ink2);
+  margin:28px 0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.h2 .more{font-size:12px;font-weight:800;color:var(--ink3);
+  cursor:pointer;display:flex;align-items:center;gap:2px}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold2),transparent);margin:0 0 16px;opacity:.55}
+.sub{font-size:14.5px;color:var(--ink3);line-height:1.68;margin:0 0 18px}
+.tiny{font-size:12.5px;color:var(--ink4);line-height:1.5}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+
+/* ── 헤더 ── */
+.top{position:relative;background:var(--hdr);color:var(--hdr-fg);
+  padding:calc(16px + env(safe-area-inset-top,0px)) 20px 26px;overflow:hidden}
+.top::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 82% -18%,rgba(198,164,92,.26),transparent 58%)}
+.top::after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:1px;
+  background:linear-gradient(90deg,rgba(198,164,92,.5),transparent)}
+.top>*{position:relative;z-index:1}
+.trow{display:flex;justify-content:space-between;align-items:flex-start}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .nm{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:.10em;line-height:1.1}
+.brand .tagline{font-size:11.5px;color:var(--hdr-dim);margin-top:3px;letter-spacing:0}
+.mark{width:34px;height:34px;border-radius:11px;border:1px solid rgba(198,164,92,.5);
+  display:flex;align-items:center;justify-content:center;color:var(--gold2);font-family:var(--serif);
+  font-weight:600;font-size:17px;flex:none}
+.hbtns{display:flex;gap:7px;align-items:center}
+.iconbtn{width:34px;height:34px;border-radius:11px;border:1px solid var(--hdr-soft);background:none;
+  color:var(--hdr-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.plan{font-size:11px;font-weight:800;padding:8px 12px;border-radius:11px;border:1px solid rgba(198,164,92,.4);
+  background:none;color:var(--gold2);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;
+  letter-spacing:.04em}
+.plan.pro{background:linear-gradient(140deg,#E2C994,#B08E3C);color:#20180A;border-color:transparent}
+
+.kpis{display:flex;margin-top:22px;border-top:1px solid var(--hdr-soft);padding-top:16px}
+.kpi{flex:1;text-align:center;position:relative}
+.kpi+.kpi::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--hdr-soft)}
+.kpi b{display:block;font-size:25px;font-weight:700;letter-spacing:-.045em;line-height:1.15;font-family:var(--serif)}
+.kpi span{font-size:10.5px;color:var(--hdr-dim);font-weight:700;letter-spacing:.05em}
+.kpi.alert b{color:#F09A85}
+.kpi.gold b{color:var(--gold2)}
+
+.seg{display:flex;background:var(--hdr-soft);border-radius:12px;padding:3px;margin-top:20px}
+.seg button{flex:1;border:0;background:none;color:var(--hdr-dim);font-size:13.5px;font-weight:800;
+  padding:11px 0;border-radius:10px;cursor:pointer;transition:.2s;letter-spacing:-.02em}
+.seg button.on{background:var(--hdr-fg);color:var(--hdr)}
+
+/* ── 카드 ── */
+.card{background:var(--paper);border-radius:var(--r);padding:19px;box-shadow:var(--shadow);
+  margin-bottom:12px;border:1px solid var(--line2)}
+.card.flat{box-shadow:none}
+.card.pop{box-shadow:var(--shadow2)}
+.card.gold{background:var(--goldbg);border-color:var(--goldline);box-shadow:none}
+.card.center{text-align:center;padding:36px 22px}
+.card.hair{border:1px solid var(--line);box-shadow:none;background:none}
+
+/* ── 통계 ── */
+.stats{display:flex;background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);
+  padding:16px 0;margin-bottom:12px;box-shadow:var(--shadow)}
+.st{flex:1;text-align:center;position:relative}
+.st+.st::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line2)}
+.st b{display:block;font-size:23px;font-weight:700;letter-spacing:-.045em;font-family:var(--serif);line-height:1.2}
+.st span{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.03em}
+
+/* ── 버튼 ── */
+.btn{width:100%;border:0;border-radius:15px;font-size:16px;font-weight:800;cursor:pointer;
+  padding:16px 18px;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;
+  letter-spacing:-.02em;line-height:1.35;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.985)}
+.btn.dark{background:var(--pri);color:var(--pri-fg)}
+.btn.dark:disabled{opacity:.3}
+.btn.gold{background:linear-gradient(140deg,#E2C994,#AF8C39);color:#211809}
+.btn.line{background:var(--paper);color:var(--ink2);border:1px solid var(--line)}
+.btn.quiet{background:var(--line2);color:var(--ink2)}
+.btn.sm{padding:12px 14px;font-size:14px;border-radius:12px;margin:0}
+.row2{display:flex;gap:9px;margin-bottom:10px}
+.row2 .btn{margin:0}
+.chip{border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:9px 13px;
+  font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--pri);color:var(--pri-fg);border-color:var(--pri)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}
+.chips.scroll::-webkit-scrollbar{display:none}
+.back{background:none;border:0;font-size:13.5px;font-weight:700;color:var(--ink3);cursor:pointer;
+  padding:16px 0 8px;display:flex;align-items:center;gap:5px}
+.ghostlink{background:none;border:0;color:var(--ink4);font-size:12.5px;font-weight:700;text-decoration:underline;
+  cursor:pointer;display:block;margin:24px auto 0;padding:8px}
+
+/* ── 입력 ── */
+.field{margin-bottom:14px}
+.label{font-size:12.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink2);margin-bottom:8px;display:block}
+.inp,.area{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font-size:16px;
+  font-family:inherit;background:var(--paper);color:var(--ink);line-height:1.6}
+.inp:focus,.area:focus{outline:none;border-color:var(--ink3);box-shadow:0 0 0 3px var(--line2)}
+.area{resize:vertical;min-height:120px}
+.err{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:14px;
+  margin-bottom:10px;font-weight:700}
+.note{background:var(--goldbg);border:1px solid var(--goldline);border-radius:13px;padding:13px 15px;
+  font-size:13.5px;color:var(--gold);line-height:1.65;margin-bottom:12px;font-weight:600}
+.note b{cursor:pointer;border-bottom:1px solid currentColor}
+
+/* ── 진행 ── */
+.bar{height:5px;background:var(--track);border-radius:4px;overflow:hidden;width:100%}
+.bar i{display:block;height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.steps{display:flex;gap:4px;flex:1}
+.steps i{flex:1;height:3px;border-radius:3px;background:var(--line);transition:.3s}
+.steps i.on{background:var(--gold2)}
+.flowtop{display:flex;align-items:center;gap:14px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 20px}
+.flowtop .back{padding:0}
+.ring{position:relative;width:76px;height:76px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .val b{font-size:20px;font-weight:700;letter-spacing:-.045em;line-height:1;font-family:var(--serif)}
+.ring .val span{font-size:9px;color:var(--ink4);font-weight:800;margin-top:3px;letter-spacing:.08em}
+
+/* ── 리스트 ── */
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:13px;background:var(--paper);border:1px solid var(--line2);
+  border-radius:var(--r2);padding:14px;width:100%;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.item:active{background:var(--raised)}
+.av{width:42px;height:42px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;letter-spacing:-.02em}
+.av.ink{background:var(--pri);color:var(--pri-fg)}
+.av.soft{background:var(--line2);color:var(--ink2)}
+.item .mid{flex:1;min-width:0}
+.item .mid b{font-size:15.5px;font-weight:800;display:block;letter-spacing:-.02em}
+.item .mid .l2{font-size:12.5px;color:var(--ink3);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.dot{width:3px;height:3px;border-radius:50%;background:var(--ink4);flex:none}
+.late{color:var(--warn);font-weight:800}
+.tagpill{font-size:10.5px;font-weight:800;padding:4px 8px;border-radius:7px;background:var(--line2);
+  color:var(--ink2);letter-spacing:.02em;white-space:nowrap}
+.tagpill.warn{background:var(--warnbg);color:var(--warn)}
+.tagpill.good{background:var(--goodbg);color:var(--good)}
+.tagpill.gold{background:var(--goldbg);color:var(--gold)}
+.tagpill.blue{background:var(--bluebg);color:var(--blue)}
+.blank{text-align:center;padding:46px 24px;color:var(--ink3);font-size:14.5px;line-height:1.8}
+
+/* ── 퍼널 ── */
+.fun{display:flex;flex-direction:column}
+.funrow{display:flex;align-items:center;gap:12px;cursor:pointer;padding:9px 0;border-bottom:1px solid var(--line2)}
+.funrow:last-child{border:0;padding-bottom:0}
+.funrow .nm{width:54px;font-size:12.5px;font-weight:800;flex:none;color:var(--ink2)}
+.funbar{flex:1;height:8px;background:var(--track);border-radius:5px;overflow:hidden}
+.funbar i{display:block;height:100%;border-radius:5px;transition:width .55s}
+.funrow .ct{width:44px;text-align:right;font-size:15px;font-weight:700;flex:none;font-family:var(--serif)}
+.funrow .ct em{font-style:normal;font-size:11px;color:var(--ink4);font-family:Pretendard,sans-serif;margin-left:2px}
+
+/* ── 미션 카드 ── */
+.mission{padding:22px 20px}
+.mission .who{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.mission h3{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.025em;
+  line-height:1.45;margin:0 0 9px}
+.mission .why{font-size:13px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.script{background:var(--raised);border:1px solid var(--line2);border-radius:14px;padding:15px;margin-top:17px}
+.script .sh{font-size:11.5px;font-weight:800;letter-spacing:-.01em;color:var(--ink4);margin-bottom:9px}
+.script p{margin:0 0 13px;font-size:15px;line-height:1.78;color:var(--ink2);white-space:pre-wrap}
+
+/* ── 코칭 ── */
+.coach{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r2);padding:16px 17px;
+  margin-bottom:10px;border-left:3px solid;box-shadow:var(--shadow)}
+.coach .ch{font-size:12.5px;font-weight:800;letter-spacing:-.01em;margin-bottom:7px;display:flex;
+  align-items:center;gap:6px}
+.coach p{margin:0;font-size:15.5px;line-height:1.75;color:var(--ink2)}
+.c-good{border-left-color:var(--good)} .c-good .ch{color:var(--good)}
+.c-miss{border-left-color:var(--gold)} .c-miss .ch{color:var(--gold)}
+.c-say{border-left-color:var(--blue)} .c-say .ch{color:var(--blue)}
+.c-say p{font-weight:700;color:var(--ink)}
+.c-pat{border-left-color:#8A6BE0} .c-pat .ch{color:#8A6BE0}
+
+/* ── 상세 ── */
+.kv{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);font-size:14.5px;align-items:flex-start}
+.kv:last-child{border:0;padding-bottom:0}
+.kv>span{color:var(--ink4);width:92px;flex:none;font-weight:700;font-size:12.5px;padding-top:2px}
+.kv>b{font-weight:700;flex:1}
+.kv>b.warn{color:var(--warn)}
+.stars{display:flex;gap:5px}
+.stars button{width:36px;height:36px;border-radius:11px;border:1px solid var(--line);background:var(--paper);
+  cursor:pointer;padding:0;color:var(--ink4);display:flex;align-items:center;justify-content:center}
+.stars button.on{background:var(--goldbg);border-color:var(--goldline);color:var(--gold)}
+.timeline{position:relative;padding-left:19px}
+.timeline::before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:1px;background:var(--line)}
+.tl{position:relative;padding:0 0 17px}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;
+  background:var(--paper);border:1.5px solid var(--ink4)}
+.tl.hot::before{border-color:var(--gold);background:var(--gold)}
+.tl .d{font-size:10.5px;font-weight:800;color:var(--ink4);letter-spacing:.08em}
+.tl .t{font-size:14.5px;font-weight:700;margin-top:3px;line-height:1.6}
+.tl .x{font-size:13.5px;color:var(--ink3);margin-top:4px;line-height:1.65}
+
+/* ── 캘린더 ── */
+.week{display:flex;gap:6px}
+.day{flex:1;border:1px solid var(--line2);background:var(--paper);border-radius:13px;padding:10px 2px;
+  text-align:center;cursor:pointer;position:relative}
+.day.on{background:var(--pri);border-color:var(--pri)}
+.day.on .dw,.day.on .dn{color:var(--pri-fg)}
+.day .dw{font-size:10px;font-weight:800;color:var(--ink4);letter-spacing:.04em}
+.day .dn{font-size:16px;font-weight:700;font-family:var(--serif);margin-top:3px}
+.day .pip{display:block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin:6px auto 0}
+.day .pip.none{background:transparent}
+.day.on .pip{background:var(--gold2)}
+.day.today{border-color:var(--gold2)}
+.mbars{display:flex;align-items:flex-end;gap:7px;height:96px;margin-top:16px}
+.mbars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px}
+.mbars .mb i{width:58%;border-radius:5px 5px 2px 2px;background:var(--track);display:block;transition:height .5s}
+.mbars .mb span{font-size:9.5px;color:var(--ink4);font-weight:700}
+
+/* ── 채팅 ── */
+.chatwrap{display:flex;flex-direction:column;height:100vh;height:100dvh;background:var(--bg)}
+.chathead{background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  padding:calc(11px + env(safe-area-inset-top,0px)) 15px 11px;display:flex;align-items:center;gap:11px;flex:none}
+.chathead b{display:block;font-size:15px;font-weight:800}
+.chathead span{font-size:11.5px;color:var(--ink3)}
+.chatlog{flex:1;overflow-y:auto;padding:16px 15px 8px;display:flex;flex-direction:column;gap:10px}
+.bub{max-width:86%;padding:13px 15px;border-radius:18px;font-size:15px;line-height:1.72;white-space:pre-wrap}
+.bub.me{align-self:flex-end;background:var(--pri);color:var(--pri-fg);border-bottom-right-radius:6px}
+.bub.ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line2);
+  border-bottom-left-radius:6px;box-shadow:var(--shadow);cursor:pointer}
+.bub.think{color:var(--ink3);font-style:italic;box-shadow:none;background:var(--line2);border:0}
+.chatbar{display:flex;gap:8px;padding:10px 14px calc(14px + var(--safe));background:var(--bg);flex:none;align-items:flex-end}
+.chatin{flex:1;border:1px solid var(--line);border-radius:22px;padding:13px 16px;font-size:16px;
+  font-family:inherit;resize:none;max-height:120px;line-height:1.5;background:var(--paper);color:var(--ink)}
+.chatin:focus{outline:none;border-color:var(--ink3)}
+.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--pri);color:var(--pri-fg);
+  cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+.send:disabled{opacity:.3}
+
+/* ── 음성 ── */
+.dict{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);padding:26px 18px;
+  text-align:center;box-shadow:var(--shadow);margin-bottom:14px}
+.dict.live{border-color:var(--warn);background:var(--warnbg)}
+.micbig{width:84px;height:84px;border-radius:50%;border:0;background:var(--pri);color:var(--pri-fg);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.micbig.on{background:var(--warn);color:#fff;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.wave{display:flex;gap:4px;justify-content:center;align-items:flex-end;height:22px;margin-top:15px}
+.wave i{width:4px;background:var(--warn);border-radius:3px;animation:wv .95s infinite ease-in-out}
+.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}
+.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}
+.wave i:nth-child(6){animation-delay:.5s}
+@keyframes wv{0%,100%{height:6px}50%{height:20px}}
+@media(prefers-reduced-motion:reduce){.micbig.on,.wave i{animation:none}.wave i{height:12px}}
+.interim{font-size:14.5px;color:var(--ink2);margin-top:13px;line-height:1.68;background:var(--raised);
+  border:1px solid var(--line2);border-radius:12px;padding:11px 13px;text-align:left}
+.micbtn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--paper);
+  cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.micbtn.on{background:var(--warn);border-color:var(--warn);color:#fff;animation:pulse 1.5s infinite}
+.speak{background:none;border:0;font-size:12px;font-weight:800;color:var(--ink4);cursor:pointer;
+  display:flex;align-items:center;gap:5px;margin-left:auto;padding:6px 0}
+
+/* ── 교육 ── */
+.track{background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);margin-bottom:10px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.trackh{display:flex;align-items:center;gap:13px;padding:17px;cursor:pointer}
+.trackic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.trackh b{font-size:15px;font-weight:800;display:block;letter-spacing:-.02em}
+.trackh span{font-size:12px;color:var(--ink3)}
+.lesson{display:flex;gap:12px;align-items:center;padding:14px 17px;border-top:1px solid var(--line2);cursor:pointer}
+.ck{width:21px;height:21px;border-radius:50%;border:1px solid var(--line);flex:none;display:flex;
+  align-items:center;justify-content:center;color:#fff}
+.ck.on{background:var(--good);border-color:var(--good)}
+.lesson b{font-size:14.5px;font-weight:700;display:block}
+.lesson span{font-size:12px;color:var(--ink3)}
+.point{display:flex;gap:12px;margin-bottom:15px;font-size:15.5px;line-height:1.75;color:var(--ink2)}
+.point:last-child{margin-bottom:0}
+.point b{flex:none;width:21px;height:21px;border-radius:7px;background:var(--goldbg);color:var(--gold);
+  font-size:11.5px;display:flex;align-items:center;justify-content:center;font-weight:800;margin-top:4px}
+
+/* ── 광고 ── */
+.ad{background:var(--raised);border:1px dashed var(--line);border-radius:var(--r2);padding:15px;
+  margin:16px 0;text-align:center;position:relative}
+.ad .lb{position:absolute;top:8px;left:11px;font-size:9px;font-weight:800;color:var(--ink4);letter-spacing:.14em}
+.ad .body{min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.ad .body b{font-size:13.5px;font-weight:800;color:var(--ink3)}
+.ad .body span{font-size:11.5px;color:var(--ink4)}
+.ad .rm{margin-top:10px;font-size:11px;font-weight:800;color:var(--gold);background:none;border:0;
+  cursor:pointer;letter-spacing:.02em;border-bottom:1px solid var(--goldline)}
+.sheet{position:fixed;inset:0;background:rgba(10,9,8,.6);z-index:90;display:flex;align-items:flex-end;
+  justify-content:center;backdrop-filter:blur(4px);animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheetin{background:var(--bg);width:100%;max-width:462px;border-radius:26px 26px 0 0;
+  padding:24px 20px calc(24px + var(--safe));max-height:92vh;overflow-y:auto;
+  animation:up .3s cubic-bezier(.3,1,.4,1);border-top:1px solid var(--line)}
+@keyframes up{from{transform:translateY(46px)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;border-radius:3px;background:var(--line);margin:0 auto 18px}
+.full{position:fixed;inset:0;background:rgba(10,9,8,.95);z-index:95;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:26px;color:#fff;text-align:center}
+.full .box{background:var(--paper);color:var(--ink);border-radius:var(--r);padding:30px 22px;max-width:330px;width:100%}
+.full .close{margin-top:20px;background:none;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:22px;
+  padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer}
+.full .close:disabled{opacity:.4}
+.pricerow{display:flex;align-items:baseline;gap:6px;justify-content:center;margin:8px 0 2px}
+.pricerow b{font-size:34px;font-weight:600;letter-spacing:-.04em;font-family:var(--serif)}
+.pricerow span{font-size:14px;color:var(--ink3);font-weight:700}
+.feat{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;line-height:1.6;margin-bottom:12px;color:var(--ink2)}
+.feat .ic{color:var(--gold);flex:none;margin-top:3px}
+.lockrow{display:flex;align-items:center;gap:10px;background:var(--goldbg);border:1px solid var(--goldline);
+  border-radius:var(--r2);padding:14px 16px;font-size:13.5px;font-weight:700;color:var(--gold);
+  cursor:pointer;margin-bottom:10px}
+
+/* ── 탭바 ── */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:462px;
+  background:var(--glass);backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  display:flex;padding:9px 0 calc(10px + var(--safe));z-index:40}
+.tb{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:10.5px;font-weight:800;color:var(--ink4);cursor:pointer;padding:4px 0;position:relative;letter-spacing:.02em}
+.tb.on{color:var(--ink)}
+.tb .bdg{position:absolute;top:-2px;right:50%;margin-right:-20px;background:var(--warn);color:#fff;font-size:9.5px;
+  font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;padding:0 4px}
+.tbplus{width:42px;height:42px;border-radius:14px;background:var(--pri);color:var(--pri-fg);display:flex;
+  align-items:center;justify-content:center;margin-top:-13px;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.toast{position:fixed;left:50%;bottom:calc(110px + var(--safe));transform:translateX(-50%);background:var(--pri);
+  color:var(--pri-fg);font-size:14px;font-weight:700;padding:13px 20px;border-radius:13px;z-index:80;
+  box-shadow:var(--shadow2);max-width:86vw;text-align:center;animation:up .22s}
+.done{text-align:center;padding:60px 22px}
+.bigck{width:64px;height:64px;border-radius:50%;background:var(--goodbg);color:var(--good);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const {useState,useEffect,useRef,useMemo,useCallback}=React;
+
+/* ══════════════════════════════════════════════════════════════
+   1. 설정 — 광고 / 요금제 / 한도
+   ══════════════════════════════════════════════════════════════ */
+const ADS={
+  enabled:true,
+  // 앱(WebView·Capacitor)으로 감쌀 때 쓰는 AdMob 단위 ID
+  admob:{ appId:"ca-app-pub-0000000000000000~0000000000",
+          banner:"ca-app-pub-0000000000000000/1111111111",
+          interstitial:"ca-app-pub-0000000000000000/2222222222",
+          rewarded:"ca-app-pub-0000000000000000/3333333333" },
+  // 웹으로 배포할 때 쓰는 AdSense
+  adsense:{ client:"", slot:"" },      // 값을 채우면 실제 광고가 노출됩니다
+  interstitialEvery:4,                 // 실행 4개 완료마다 전면광고
+  rewardAiCalls:3                      // 보상형 광고 1회 = AI 3회 충전
+};
+const PLAN={
+  free:{ name:"무료", customers:15, aiPerDay:5, tracks:1, playbooks:3, ads:true,
+         team:false, deepStats:false, export:false },
+  pro :{ name:"프로", customers:Infinity, aiPerDay:Infinity, tracks:99, playbooks:99, ads:false,
+         team:true, deepStats:true, export:true, price:"9,900", period:"월" }
+};
+const PRO_FEATURES=[
+  "고객 무제한 등록 (무료는 15명)",
+  "AI 코칭·분석 무제한 (무료는 하루 5회)",
+  "광고 없이 사용",
+  "전체 교육과정 3단계 모두 열림",
+  "상황별 대본 24종 전부",
+  "심화 대시보드 — 전환율·예상매출·주간리포트",
+  "팀 관리 (그룹원 성장 추적)",
+  "데이터 내보내기 / 백업"
+];
+
+/* ══════════════════════════════════════════════════════════════
+   2. 고객관리 엔진 — 단계 / 케이던스
+   업계 표준: 소규모 사업은 4~6단계가 최적, 계약까지 평균 8회 접촉 필요
+   ══════════════════════════════════════════════════════════════ */
+const STAGES=[
+ {k:"new",  n:"신규",   d:"이름만 아는 분",       act:"첫 연락을 해보세요",       cad:2,  c:"#8A93A6", w:5},
+ {k:"reach",n:"연결",   d:"연락이 닿았어요",       act:"만날 약속을 잡으세요",     cad:4,  c:"#2350D8", w:15},
+ {k:"need", n:"니즈확인",d:"무엇이 필요한지 알았어요", act:"맞는 제안을 준비하세요",  cad:4,  c:"#0E8A8A", w:35},
+ {k:"offer",n:"제안",   d:"제안을 드렸어요",       act:"반응을 확인하세요",       cad:3,  c:"#B98B2E", w:60},
+ {k:"nego", n:"협상",   d:"조건을 맞추는 중",      act:"결정을 도와주세요",       cad:2,  c:"#C2622A", w:80},
+ {k:"won",  n:"성사",   d:"함께하기로 했어요",     act:"만족도를 챙기세요",       cad:14, c:"#1F7A4C", w:100},
+ {k:"hold", n:"보류",   d:"지금은 때가 아니에요",   act:"때가 되면 다시 노크",     cad:45, c:"#A9B2C0", w:0},
+];
+const SK=Object.fromEntries(STAGES.map(s=>[s.k,s]));
+const ACTIVE=["new","reach","need","offer","nego"];
+const TOUCH_GOAL=8;   // 계약까지 평균 8회 접촉
+
+const JOBS=[
+ {k:"any",   n:"그 외 · 공통",   ex:"고객을 만나는 모든 일",      unit:"고객"},
+ {k:"ins",   n:"보험 · 금융",    ex:"설계사, 자산관리",          unit:"고객"},
+ {k:"est",   n:"부동산",        ex:"공인중개, 분양",            unit:"손님"},
+ {k:"net",   n:"네트워크마케팅",  ex:"건강식품, 화장품 유통",      unit:"고객"},
+ {k:"well",  n:"건강 · 뷰티",    ex:"트레이너, 원장, 관리사",     unit:"회원"},
+ {k:"edu",   n:"교육 · 코칭",    ex:"강사, 컨설턴트, 상담",       unit:"수강생"},
+ {k:"free",  n:"프리랜서 · 디자인",ex:"제작, 촬영, 개발",         unit:"클라이언트"},
+ {k:"shop",  n:"매장 · 자영업",   ex:"카페, 공방, 소매",          unit:"단골"},
+];
+const JOBMAP=Object.fromEntries(JOBS.map(j=>[j.k,j]));
+const SOURCES=["소개받음","지인","SNS·온라인","방문·행사","광고문의","기존고객 재방문","직접 개척"];
+
+/* ══════════════════════════════════════════════════════════════
+   3. 교육과정 — 고객관리 A to Z (업종 공통)
+   ══════════════════════════════════════════════════════════════ */
+const TRACKS=[
+ {id:"t1",name:"1단계 · 기초 다지기",sub:"고객을 만들기 전에",icon:"seed",c:"#1F7A4C",bg:"#1F7A4C22",lessons:[
+  {id:"l11",t:"고객관리는 기억이 아니라 시스템",d:"왜 수첩으로는 안 되는가",
+   p:["사람은 3일이 지나면 대화의 70%를 잊습니다. 잊은 만큼 기회도 사라집니다.",
+      "잘하는 사람과 못하는 사람의 차이는 기억력이 아니라 '다시 연락하는 시점을 정해두느냐'입니다.",
+      "기록은 길게 쓰는 게 아니라 '다음에 무엇을 할지' 한 줄을 남기는 것입니다."],
+   x:"오늘 만난 사람 한 명을 등록하고, 다음 연락 날짜를 정해보세요."},
+  {id:"l12",t:"명단 30명 만들기",d:"어디서 시작할 것인가",
+   p:["처음부터 '살 것 같은 사람'을 고르지 마세요. 판단은 대화 뒤에 하는 겁니다.",
+      "휴대폰 연락처, 카톡 목록, 명함첩을 열고 이름만 30개 옮겨 적으세요.",
+      "30명이 모이면 패턴이 보입니다. 그 전까지 성과를 세는 건 의미가 없습니다."],
+   x:"연락 가능한 사람 10명을 지금 등록하세요."},
+  {id:"l13",t:"첫 연락은 팔지 않는다",d:"거부감 없이 문을 여는 법",
+   p:["첫 연락의 목적은 판매가 아니라 '다음 대화의 약속'입니다.",
+      "용건보다 상대의 근황을 먼저 물으세요. 사람은 관심받은 만큼 마음을 엽니다.",
+      "끝맺을 때 반드시 다음 일정을 남기세요. \"다음 주에 다시 연락드려도 될까요?\""],
+   x:"명단에서 3명에게 안부 연락을 보내세요.",
+   s:"안녕하세요 OO님, 오랜만이에요. 요즘 어떻게 지내세요? 문득 생각나서 연락드렸어요."},
+  {id:"l14",t:"거절은 실패가 아니다",d:"명단이 정리되는 과정",
+   p:["\"관심 없어요\"는 대부분 '지금은 아니다'라는 뜻입니다. 영원한 거절이 아닙니다.",
+      "깨끗하게 물러난 사람에게는 3개월 뒤 다시 문이 열립니다. 매달리면 영영 닫힙니다.",
+      "거절한 고객은 지우지 말고 '보류'로 옮기세요. 나중에 가장 좋은 명단이 됩니다."],
+   x:"거절받은 분을 보류 단계로 옮기고, 다시 연락할 날짜를 정하세요.",
+   s:"알겠습니다. 지금은 때가 아니신 것 같네요. 나중에 필요하실 때 편하게 연락 주세요. 그때까지 건강하세요."},
+ ]},
+ {id:"t2",name:"2단계 · 실전 영업",sub:"만나서 계약까지",icon:"target",c:"#2350D8",bg:"#2350D822",pro:true,lessons:[
+  {id:"l21",t:"말하지 말고 질문하라",d:"니즈를 찾아내는 4가지 질문",
+   p:["설명이 길어질수록 계약은 멀어집니다. 말하는 비율은 3, 듣는 비율은 7입니다.",
+      "네 가지만 물으면 됩니다 — 지금 상황 / 불편한 점 / 그게 계속되면 / 해결되면 어떨지.",
+      "고객이 스스로 필요를 말하게 만드세요. 내가 말한 필요는 설득이고, 고객이 말한 필요는 확신입니다."],
+   x:"고객 한 분에게 네 가지 질문을 해보고 답을 기록하세요.",
+   s:"지금 그 부분 때문에 가장 불편하신 게 뭐예요? 그게 계속되면 어떻게 될 것 같으세요?"},
+  {id:"l22",t:"결정권자를 확인하라",d:"엉뚱한 사람을 설득하지 않기",
+   p:["가장 흔한 실수는 결정하지 못하는 사람에게 온 힘을 쓰는 것입니다.",
+      "\"이런 건 보통 누구와 상의해서 정하세요?\" — 이 한마디면 확인됩니다.",
+      "결정권자를 만나기 전까지는 협상 단계로 넘어간 게 아닙니다."],
+   x:"제안 단계 고객의 결정권자를 확인해 기록하세요.",
+   s:"혹시 이런 건 보통 어떤 분과 상의해서 정하세요? 함께 자리하시면 제가 한 번에 설명드릴게요."},
+  {id:"l23",t:"제안은 짧고 구체적으로",d:"세 가지만 남긴다",
+   p:["고객은 전부를 기억하지 못합니다. 무엇을 / 얼마에 / 언제부터, 세 가지면 충분합니다.",
+      "고객이 말한 단어를 그대로 써서 제안하세요. \"말씀하신 그 부분 때문에\"가 가장 강한 문장입니다.",
+      "제안 후 48시간 안에 반드시 다시 연락하세요. 열기는 이틀이면 식습니다."],
+   x:"제안 드린 고객에게 이틀 안에 확인 연락을 넣으세요."},
+  {id:"l24",t:"가격 앞에서 흔들리지 않기",d:"값을 깎지 않고 조건을 바꾸는 법",
+   p:["\"비싸다\"는 대개 \"확신이 서지 않는다\"는 뜻입니다. 먼저 가치를 다시 확인하세요.",
+      "값을 내리면 제품과 나의 가치도 함께 내려갑니다. 대신 조건(수량·기간·구성)을 바꾸세요.",
+      "한 번 깎아준 가격은 다음 고객에게도 기준이 됩니다."],
+   x:"가격 이야기가 나온 고객에게 조건 변경안을 만들어 보세요.",
+   s:"금액을 낮추긴 어렵지만, 시작 시점이나 구성을 조정해 부담을 줄이는 방법은 있습니다. 어떤 쪽이 편하실까요?"},
+  {id:"l25",t:"마무리 짓는 한마디",d:"클로징은 압박이 아니라 정리",
+   p:["\"어떻게 하시겠어요?\"보다 \"이렇게 진행해 드릴까요?\"가 부담이 적습니다.",
+      "선택지는 두 개까지만 주세요. 셋을 넘으면 사람은 결정을 미룹니다.",
+      "결정하지 않으셨다면 그것도 결과입니다. 다음 연락 날짜만 잡고 깔끔히 마치세요."],
+   x:"협상 단계 고객에게 두 가지 선택지를 제시해보세요.",
+   s:"그럼 이번 주에 시작하시는 것과 다음 달 초에 시작하시는 것 중 어느 쪽이 편하실까요?"},
+ ]},
+ {id:"t3",name:"3단계 · 넓혀가기",sub:"한 명을 열 명으로",icon:"grow",c:"#B98B2E",bg:"#B98B2E22",pro:true,lessons:[
+  {id:"l31",t:"재구매가 진짜 사업이다",d:"신규보다 3배 쉬운 매출",
+   p:["첫 구매는 관계로, 두 번째는 효과로, 세 번째부터는 습관으로 이어집니다.",
+      "떨어질 때쯤 먼저 연락하는 사람이 이깁니다. 고객이 아쉬워서 연락하게 만들지 마세요.",
+      "기존 고객 1명 유지가 신규 3명 만드는 것보다 쉽고 이익이 큽니다."],
+   x:"성사된 고객 중 재연락 시점이 지난 분을 찾아 연락하세요."},
+  {id:"l32",t:"소개는 부탁이 아니라 설계다",d:"자연스럽게 소개받는 순서",
+   p:["소개는 만족의 정점에서 요청해야 합니다. 좋다는 말을 들은 그 순간입니다.",
+      "\"누구 소개해 주세요\"는 막연합니다. \"OO 같은 상황이신 분\"으로 좁혀야 이름이 나옵니다.",
+      "소개해 준 분에게 진행 상황을 꼭 알려주세요. 그래야 두 번째 소개가 옵니다."],
+   x:"만족도가 높은 고객 한 분에게 소개를 요청하세요.",
+   s:"혹시 주변에 예전의 OO님처럼 같은 고민 하시는 분 계실까요? 부담 없이 소개만 해주셔도 제가 잘 챙기겠습니다."},
+  {id:"l33",t:"나를 알리는 콘텐츠",d:"찾아오게 만드는 법",
+   p:["매일 파는 글은 사람을 지치게 합니다. 도움 되는 글 4번에 제안 1번이 적당합니다.",
+      "전문성보다 '진짜 경험'이 반응을 만듭니다. 내가 겪은 한 줄이 정보 열 줄을 이깁니다.",
+      "꾸준함이 전부입니다. 잘 쓴 글 한 편보다 평범한 글 30편이 고객을 데려옵니다."],
+   x:"콘텐츠 만들기로 이번 주 게시글 하나를 만드세요."},
+  {id:"l34",t:"혼자에서 팀으로",d:"사람을 키우는 리더의 일",
+   p:["새로 합류한 사람은 첫 3주 안에 작은 성공 하나를 경험해야 남습니다.",
+      "가르치는 것보다 같이 한 번 해보는 것이 열 배 빠릅니다.",
+      "성과가 좋은 사람이 아니라 꾸준한 사람이 리더가 됩니다. 질문이 많은 사람에게 시간을 쓰세요."],
+   x:"팀 관리에서 그룹원의 3주 계획을 세워보세요."},
+ ]},
+];
+const LESSON_TOTAL=TRACKS.reduce((a,t)=>a+t.lessons.length,0);
+
+/* ── 상황별 대본 (바로 쓰는 문장) ── */
+const PLAYBOOKS=[
+ {id:"pb1",cat:"첫 연락",t:"오랜만인 지인에게",s:"안녕하세요 OO님, 오랜만이에요! 요즘 어떻게 지내세요?\n문득 생각나서 안부 여쭤요. 조만간 얼굴 한번 봬요 :)"},
+ {id:"pb2",cat:"첫 연락",t:"소개받은 분에게",s:"안녕하세요, OO님 소개로 연락드렸습니다. 말씀 많이 들었어요.\n부담 갖지 마시고, 편하실 때 5분만 통화 가능하실까요?"},
+ {id:"pb3",cat:"무응답",t:"답이 없을 때",s:"바쁘신 것 같아 짧게만 남겨요. 편하실 때 알려주시면 됩니다.\n언제든 괜찮으니 부담 갖지 마세요!"},
+ {id:"pb4",cat:"거절",t:"관심 없다고 할 때",s:"알겠습니다. 지금은 때가 아니신 것 같네요.\n나중에 필요하실 때 편하게 연락 주세요. 그때까지 건강하세요!",pro:true},
+ {id:"pb5",cat:"가격",t:"비싸다고 할 때",s:"금액만 보면 그렇게 느끼실 수 있어요.\n다만 OO님께서 말씀하신 그 부분을 생각하면 어떠실까요?\n금액을 낮추긴 어렵지만 시작 시점이나 구성을 조정하는 방법은 있습니다.",pro:true},
+ {id:"pb6",cat:"결정권자",t:"상의해봐야 한다고 할 때",s:"그럼요, 당연히 상의하셔야죠.\n혹시 함께 자리하시면 제가 한 번에 설명드릴 수 있는데, 그게 편하실까요?",pro:true},
+ {id:"pb7",cat:"클로징",t:"마무리 지을 때",s:"그럼 이번 주에 시작하시는 것과 다음 달 초 중 어느 쪽이 편하실까요?\n어느 쪽이든 제가 처음부터 챙겨드릴게요.",pro:true},
+ {id:"pb8",cat:"재구매",t:"떨어질 때쯤",s:"OO님, 슬슬 다 쓰셨을 것 같아 연락드렸어요.\n지난번보다 편해지신 부분이 있으실까요? 필요하시면 바로 준비해 드릴게요.",pro:true},
+ {id:"pb9",cat:"소개",t:"소개를 요청할 때",s:"좋게 봐주셔서 감사해요.\n혹시 주변에 예전의 OO님처럼 같은 고민 하시는 분 계실까요?\n소개만 해주셔도 제가 잘 챙기겠습니다.",pro:true},
+ {id:"pb10",cat:"사후",t:"계약 후 첫 연락",s:"OO님, 시작하신 지 일주일 됐네요! 불편한 점은 없으셨어요?\n작은 것도 편하게 말씀해 주세요. 그게 제 일이에요.",pro:true},
+ {id:"pb11",cat:"부재중",t:"전화를 못 받았을 때",s:"통화가 어려우셨나 봐요. 급한 일은 아니니 편하실 때 주세요.\n간단히 말씀드리면 — (한 줄 용건) 입니다.",pro:true},
+ {id:"pb12",cat:"보류",t:"3개월 뒤 다시 노크",s:"OO님 안녕하세요, 오랜만이에요.\n예전에 말씀하셨던 그 부분, 그 뒤로 좀 나아지셨을까요? 문득 생각나서요.",pro:true},
+];
+
+/* ══════════════════════════════════════════════════════════════
+   4. 아이콘 (선 아이콘 세트)
+   ══════════════════════════════════════════════════════════════ */
+const P={fill:"none",stroke:"currentColor",strokeWidth:1.8,strokeLinecap:"round",strokeLinejoin:"round"};
+const PATHS={
+ home:"M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5",
+ target:"M12 20.5a8.5 8.5 0 100-17 8.5 8.5 0 000 17zM12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22",
+ users:"M16 19v-1.5A3.5 3.5 0 0012.5 14h-5A3.5 3.5 0 004 17.5V19M10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7M20 19v-1.5a3.5 3.5 0 00-2.6-3.4M15 4.2a3.5 3.5 0 010 6.6",
+ chart:"M4 20V10M10 20V4M16 20v-7M22 20H2",
+ book:"M4 4.5A1.5 1.5 0 015.5 3H19v14H5.5A1.5 1.5 0 004 18.5zM4 18.5A1.5 1.5 0 015.5 17H19v4H5.5A1.5 1.5 0 014 19.5z",
+ spark:"M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z",
+ plus:"M12 5v14M5 12h14",
+ check:"M4.5 12.5l5 5 10-11",
+ chev:"M9 5l7 7-7 7",
+ chevd:"M6 9l6 6 6-6",
+ back:"M15 5l-7 7 7 7",
+ mic:"M12 15a3 3 0 003-3V6a3 3 0 10-6 0v6a3 3 0 003 3zM5.5 11.5a6.5 6.5 0 0013 0M12 18.5V21",
+ stop:"M7 7h10v10H7z",
+ phone:"M6 3.5h3l1.5 4-2 1.5a12 12 0 005.5 5.5l1.5-2 4 1.5v3a1.5 1.5 0 01-1.7 1.5C10.3 18 6 13.7 4.5 5.2A1.5 1.5 0 016 3.5z",
+ msg:"M20.5 12a7.5 7.5 0 01-11 6.7L4 20l1.4-4.6A7.5 7.5 0 1120.5 12z",
+ lock:"M6.5 10.5h11V20h-11zM8.5 10.5V7a3.5 3.5 0 017 0v3.5",
+ crown:"M4.6 17.5h14.8M4.2 7.2l3.6 3.2L12 4.6l4.2 5.8 3.6-3.2-1.6 9.1H5.8z",
+ send:"M4 12l16-8-6 8 6 8z",
+ pen:"M4 20l1-4L16 5l3 3L8 19zM14.5 6.5l3 3",
+ seed:"M12 21v-7M12 14c0-4 3-7 8-7 0 4-3 7-8 7zM12 14c0-3-2.5-5.5-6.5-5.5 0 3 2.5 5.5 6.5 5.5z",
+ grow:"M4 19h16M7 19v-5M12 19V9M17 19v-8M15 6l2-2 2 2",
+ clock:"M12 21a9 9 0 100-18 9 9 0 000 18zM12 7.5V12l3 2",
+ flag:"M6 21V4h11l-1.5 3.5L17 11H6",
+ star:"M12 4l2.4 5 5.6.7-4 3.8 1 5.5-5-2.7-5 2.7 1-5.5-4-3.8 5.6-.7z",
+ close:"M6 6l12 12M18 6L6 18",
+ arrow:"M5 12h14M13 6l6 6-6 6",
+ export:"M12 16V4m0 0L8 8m4-4l4 4M4 17v2.5A1.5 1.5 0 005.5 21h13a1.5 1.5 0 001.5-1.5V17",
+ filter:"M4 6h16M7 12h10M10 18h4",
+ refresh:"M20 12a8 8 0 11-2.6-5.9M20 4v4h-4",
+ heart:"M12 20s-7-4.4-7-9.2A3.9 3.9 0 0112 8.4a3.9 3.9 0 017 2.4C19 15.6 12 20 12 20z",
+ speaker:"M11 5L6.5 9H3v6h3.5L11 19zM15.5 9.5a3.5 3.5 0 010 5M18 7a7 7 0 010 10",
+ copy:"M9 9h10v11H9zM5 15V4h11",
+ sun:"M12 17a5 5 0 100-10 5 5 0 000 10zM12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8",
+ moon:"M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z",
+ cal:"M4 6.5h16V20H4zM4 10.5h16M8.5 3v3M15.5 3v3",
+ coin:"M12 21a9 9 0 100-18 9 9 0 000 18zM9.5 9.2A2.5 2.5 0 0114.4 9M14.5 14.8A2.5 2.5 0 019.6 15M12 6.5v11",
+ bell:"M18 15.5V11a6 6 0 10-12 0v4.5L4.5 18h15zM10 20.5a2.2 2.2 0 004 0",
+ upload:"M12 16V4m0 12l-4-4m4 4l4-4M4 17v2.5A1.5 1.5 0 005.5 21h13a1.5 1.5 0 001.5-1.5V17",
+ gift:"M4 11h16v9H4zM3.5 7.5h17V11h-17zM12 7.5V20M12 7.5S10.5 4 8.5 4a2 2 0 100 3.5zM12 7.5S13.5 4 15.5 4a2 2 0 110 3.5z",
+ note:"M6 3.5h9L19 8v12.5H6zM14.5 3.5V8H19M9 12h7M9 15.5h5",
+ sparkles:"M9 3l1.4 4.1L14.5 8.5 10.4 9.9 9 14l-1.4-4.1L3.5 8.5l4.1-1.4zM17 13l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z",
+};
+function I({n,s=20,c}){ return <svg width={s} height={s} viewBox="0 0 24 24" style={c?{color:c}:null} {...P}><path d={PATHS[n]}/></svg>; }
+
+/* ══════════════════════════════════════════════════════════════
+   5. 유틸
+   ══════════════════════════════════════════════════════════════ */
+const KEY="aivo-crm-v2";
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const today=()=>new Date().toISOString().slice(0,10);
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);};
+const gap=(a,b)=>Math.round((new Date(b)-new Date(a))/86400000);
+const fmt=d=>{const x=new Date(d);return `${x.getMonth()+1}.${x.getDate()}`;};
+const fmtL=d=>{const x=new Date(d);return `${x.getMonth()+1}월 ${x.getDate()}일`;};
+const won=n=>!n?"":n>=10000?`${(n/10000).toLocaleString(undefined,{maximumFractionDigits:1})}만원`:`${n.toLocaleString()}원`;
+const initial=s=>(s||"?").trim().slice(0,1);
+const hue=s=>{let h=0;for(let i=0;i<(s||"").length;i++)h=(h*31+s.charCodeAt(i))%360;return h;};
+const avStyle=name=>({background:`hsl(${hue(name)} 38% 50% / .13)`,color:`hsl(${hue(name)} 42% 44%)`});
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const emptyState=()=>({v:2,
+  profile:{name:"",job:"any",goal:5,onboarded:false,plan:"free"},
+  usage:{date:today(),ai:0,bonus:0,steps:0},
+  streak:{count:0,last:null},
+  customers:[],tasks:[],records:[],learned:[],contents:[],members:[],chats:{},skipped:[]});
+
+/* 저장소 */
+const memStore={};
+const store={
+  async get(k){ if(window.storage&&window.storage.get){try{const r=await window.storage.get(k);return r?r.value:null;}catch(e){}}
+    try{return localStorage.getItem(k);}catch(e){return memStore[k]||null;} },
+  async set(k,v){ if(window.storage&&window.storage.set){try{await window.storage.set(k,v);return;}catch(e){}}
+    try{localStorage.setItem(k,v);}catch(e){memStore[k]=v;} }
+};
+
+/* 태그 누적 */
+function bump(list,inc){ const out=(list||[]).map(x=>({...x}));
+  (inc||[]).forEach(tag=>{ if(typeof tag!=="string")return; const t=tag.trim().slice(0,20); if(!t)return;
+    const f=out.find(x=>x.tag===t); if(f){f.count++;f.last=today();} else out.push({tag:t,count:1,last:today()}); });
+  return out; }
+
+/* 고객 상태 계산 — 케이던스(연락주기) + 정체 감지 */
+function enrich(c){
+  const st=SK[c.stage]||SK.new;
+  const since=c.lastContact?gap(c.lastContact,today()):null;
+  const due=c.nextContact?gap(c.nextContact,today()):(since==null?999:since-st.cad);
+  const overdue=due>0;
+  const stale=since!=null&&ACTIVE.indexOf(c.stage)>=0&&since>st.cad*3;   // 정체된 딜
+  const heat=clamp(Math.round((c.temp||3)*20),0,100);
+  return {...c,st,since,due,overdue,stale,heat};
+}
+/* 우선순위 점수 */
+function rank(c){
+  let s=0;
+  if(c.overdue) s+=60+Math.min(c.due,20)*4;
+  else if(c.due===0) s+=45;
+  else s+=Math.max(0,20+c.due*2);
+  s+=(c.st.w||0)*.45;
+  s+=(c.temp||3)*6;
+  if(c.stale) s+=25;
+  if(c.value) s+=Math.min(20,c.value/100000*4);
+  return Math.round(s);
+}
+function taskRank(t,c){
+  const d=gap(t.due,today());
+  let s=d>0?110+d*5:d===0?90:Math.max(10,50+d*6);
+  if(t.kind==="promise") s+=30;     // 약속한 일은 최우선
+  if(c) s+=(c.st.w||0)*.3+(c.temp||3)*4;
+  return {s,late:d,why:d>0?`${d}일 지났어요`:d===0?"오늘까지예요":`${-d}일 남았어요`};
+}
+
+/* 단계 변경 시 적용할 값 (성사 시 매출 확정) */
+function stagePatch(c,k){ const o={stage:k,nextContact:addDays(today(),(SK[k]||SK.new).cad)};
+  if(k==="won"&&!c.wonAt){ o.wonAt=today(); o.wonValue=c.value||0; }
+  return o; }
+/* 대본의 OO → 실제 이름, {나} → 내 이름 */
+const fill=(t,c,me)=>String(t||"").replace(/OO/g,(c&&c.name)||"OO").replace(/\{나\}/g,me||"");
+/* 생일까지 남은 날 (MM-DD 저장) */
+function bdayIn(md){ if(!md||!/^\d{2}-\d{2}$/.test(md)) return null;
+  const now=new Date(), y=now.getFullYear();
+  let d=new Date(`${y}-${md}`); if(isNaN(d)) return null;
+  if(gap(today(),d.toISOString().slice(0,10))<0) d=new Date(`${y+1}-${md}`);
+  return gap(today(),d.toISOString().slice(0,10)); }
+/* 매출 집계 */
+const wonValueOf=c=>(c.wonValue!=null?c.wonValue:(c.value||0));
+function revenueOf(db,ym){ return db.customers.filter(c=>c.stage==="won"&&c.wonAt&&c.wonAt.slice(0,7)===ym)
+  .reduce((a,c)=>a+wonValueOf(c),0); }
+function monthsBack(n){ const out=[],d=new Date();
+  for(let i=n-1;i>=0;i--){ const x=new Date(d.getFullYear(),d.getMonth()-i,1);
+    out.push({ym:`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}`,m:x.getMonth()+1}); }
+  return out; }
+
+/* ══════════════════════════════════════════════════════════════
+   6. 오늘의 실행 큐 — 한 번에 하나씩
+   ══════════════════════════════════════════════════════════════ */
+function buildQueue(db){
+  const cs=db.customers.map(enrich);
+  const byId=Object.fromEntries(cs.map(c=>[c.id,c]));
+  const skip=new Set((db.skipped||[]).filter(s=>s.d===today()).map(s=>s.k));
+  const q=[];
+  db.tasks.filter(t=>!t.done).forEach(t=>{
+    const c=byId[t.customerId]; const r=taskRank(t,c);
+    if(r.late>=-1) q.push({k:"task:"+t.id,type:"task",score:r.s,late:r.late,why:r.why,task:t,cust:c,
+      title:t.title,sub:c?`${c.name}${c.org?" · "+c.org:""}`:"나의 일",script:t.script,channel:t.channel});
+  });
+  cs.forEach(c=>{
+    if(c.stage==="won"||!ACTIVE.concat(["won","hold"]).length) {}
+    if(c.overdue&&!db.tasks.some(t=>!t.done&&t.customerId===c.id)){
+      q.push({k:"reach:"+c.id,type:"reach",score:rank(c),late:c.due,cust:c,
+        title:`${c.name}님께 연락할 때가 됐어요`,sub:`${c.st.n} · ${c.st.act}`,
+        why:c.since==null?"아직 연락 기록이 없어요":`${c.since}일째 연락이 없어요`});
+    }
+  });
+  cs.filter(c=>c.stale).slice(0,2).forEach(c=>{
+    q.push({k:"stale:"+c.id,type:"stale",score:rank(c)-5,cust:c,
+      title:`${c.name}님, 다음 단계로 옮길까요?`,sub:`${c.st.n} 단계에서 ${c.since}일 멈춰 있어요`,
+      why:"멈춘 고객은 정리하거나 밀어야 해요"});
+  });
+  cs.forEach(c=>{ const d=bdayIn(c.birthday);
+    if(d!=null&&d<=3) q.push({k:"bday:"+c.id+":"+today(),type:"bday",score:88,cust:c,
+      title:`${c.name}님 생일이 ${d===0?"오늘":d+"일 뒤"}예요`,sub:"축하 한마디가 관계를 바꿔요",
+      why:"기념일은 부담 없이 연락할 가장 좋은 구실이에요"}); });
+  const lesson=nextLesson(db);
+  if(lesson) q.push({k:"learn:"+lesson.id,type:"learn",score:34,lesson,
+    title:lesson.t,sub:"오늘의 배움 · 2분",why:lesson.d});
+  const active=cs.filter(c=>ACTIVE.indexOf(c.stage)>=0).length;
+  if(active<(db.profile.goal||5)) q.push({k:"add:daily",type:"add",score:30,
+    title:"오늘 만난 사람 한 명 등록하기",sub:`진행 중인 ${lbl(db)} ${active}명 / 목표 ${db.profile.goal||5}명`,
+    why:"명단이 줄면 매출도 줄어요"});
+  if(db.records.filter(r=>r.date===today()).length===0&&db.customers.length>0)
+    q.push({k:"rec:daily",type:"record",score:28,title:"오늘 있었던 일 기록하기",
+      sub:"말로 남기면 AI가 정리해요",why:"기억은 3일이면 70%가 사라져요"});
+  return q.filter(x=>!skip.has(x.k)).sort((a,b)=>b.score-a.score);
+}
+function nextLesson(db){
+  const done=new Set(db.learned);
+  for(const tr of TRACKS){ if(tr.pro&&db.profile.plan!=="pro") continue;
+    for(const l of tr.lessons) if(!done.has(l.id)) return {...l,track:tr}; }
+  return null;
+}
+const lbl=db=>(JOBMAP[db.profile.job]||JOBMAP.any).unit;
+
+/* ══════════════════════════════════════════════════════════════
+   7. 음성 · AI
+   ══════════════════════════════════════════════════════════════ */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function useDictation(apply){
+  const [on,setOn]=useState(false),[interim,setInterim]=useState(""),[err,setErr]=useState("");
+  const ref=useRef(null),base=useRef(""),want=useRef(false),fin=useRef("");
+  const start=t0=>{
+    if(!SR){setErr("이 브라우저는 음성 입력을 지원하지 않아요. 크롬으로 열어보세요.");return;}
+    base.current=t0?t0.trim()+" ":""; fin.current=""; want.current=true; setErr("");
+    const x=new SR(); x.lang="ko-KR"; x.continuous=true; x.interimResults=true;
+    x.onresult=e=>{ let itm="";
+      for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript;
+        if(e.results[i].isFinal) fin.current+=t; else itm+=t; }
+      setInterim(itm); apply(base.current+fin.current+itm); };
+    x.onerror=ev=>{ if(ev.error==="no-speech")return; want.current=false; setOn(false);
+      setErr(ev.error==="not-allowed"?"마이크 사용을 허용해 주세요.":"잘 안 들렸어요. 다시 눌러주세요."); };
+    x.onend=()=>{ if(want.current){try{x.start();}catch(e){}} else {setOn(false);setInterim("");} };
+    try{ x.start(); ref.current=x; setOn(true); }catch(e){ setErr("음성 입력을 시작하지 못했어요."); }
+  };
+  const stop=()=>{ want.current=false; if(ref.current){try{ref.current.stop();}catch(e){}} setOn(false); setInterim(""); };
+  useEffect(()=>()=>{want.current=false; if(ref.current){try{ref.current.stop();}catch(e){}}},[]);
+  return {on,interim,err,supported:!!SR,start,stop};
+}
+function speak(t){ try{ if(!window.speechSynthesis)return; window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t); u.lang="ko-KR"; u.rate=.96; window.speechSynthesis.speak(u); }catch(e){} }
+
+/* AI 호출 — 배포 시 서버리스 프록시(/api/ai)로 바꾸면 키가 노출되지 않습니다 */
+const AI_ENDPOINT="https://api.anthropic.com/v1/messages";
+async function askAI(prompt,history){
+  const msgs=(history||[]).concat([{role:"user",content:prompt}]);
+  const r=await fetch(AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1400,messages:msgs})});
+  if(!r.ok) throw new Error("ai");
+  const j=await r.json();
+  return (j.content||[]).map(i=>i.text||"").join("");
+}
+
+/* ── 오프라인(간단) 분석 — 인터넷/AI가 없어도 앱이 멈추지 않게 ── */
+function offlineAnalyze(text,cust){
+  const t=text,has=(...k)=>k.some(w=>t.includes(w));
+  const name=(t.match(/([가-힣]{2,4})\s*(사장님|대표님|원장님|선생님|과장님|팀장님|씨|님)/)||[])[1]||"";
+  const org=(t.match(/([가-힣A-Za-z0-9]{2,14})(헬스케어|병원|약국|카페|필라테스|센터|회사|상사|학원|공방|스튜디오|매장)/)||[])[0]||"";
+  const phone=(t.match(/01[016-9][-. ]?\d{3,4}[-. ]?\d{4}/)||[])[0]||"";
+  const dm=has("대표","윗분","남편","아내","상의","승인","물어","결재","가족");
+  const price=has("가격","비용","예산","단가","얼마","부담","비싸","할인");
+  const sample=has("샘플","체험","시식","무료","드리기로","보내드리기로");
+  const later=has("나중","다음에","생각해","고민","바빠");
+  const good=has("좋다","괜찮","마음에","해볼","하고 싶");
+  let stage=cust?cust.stage:"reach";
+  if(good&&price) stage="nego"; else if(price||sample) stage="offer";
+  else if(has("필요","고민","불편","힘들")) stage="need"; else if(later) stage="hold";
+  const cares=[],objs=[],works=[],sT=[],wT=[],tasks=[];
+  if(price){cares.push("비용 대비 효과");objs.push("비용 부담");}
+  if(dm)objs.push("결정권자 승인 필요");
+  if(later)objs.push("결정을 미룸");
+  if(sample){sT.push("거절을 제안으로 전환");works.push("체험·샘플 제안");}
+  if(has("질문","여쭤","물어보"))sT.push("질문으로 대화를 염");
+  wT.push(dm?"결정권자 확인 안 함":later?"다음 약속을 못 잡음":"고객 말을 더 들을 여지");
+  if(price)tasks.push({title:"약속한 자료·견적 보내기",channel:"카카오톡",days:0,kind:"promise",
+    script:`${name||"고객"}님, 오늘 말씀 나눈 내용으로 정리해서 보내드립니다. 편하실 때 보시고 궁금한 점 말씀 주세요.`});
+  tasks.push({title:dm?"결정하시는 분을 함께 뵐 수 있는지 여쭙기":"다시 연락드리기",
+    channel:dm?"전화":"전화",days:2,kind:"followup",
+    script:dm?`${name||"고객"}님, 지난번 건은 상의해 보셨을까요? 함께 자리하시면 제가 한 번에 설명드릴게요.`
+             :`${name||"고객"}님, 지난번 말씀 나눈 건 어떻게 생각하셨는지 궁금해 연락드렸어요.`});
+  return {offline:true,
+    summary:`${name?name+"님과 ":""}이야기를 나누셨어요.`+(price?" 비용 이야기가 있었고":"")+
+      (sample?" 먼저 체험해 보시기로 했습니다.":".")+(dm?" 결정하시는 분이 따로 계신 것 같아요.":""),
+    customer:{name,org,contact:phone,decider:dm?"확인 필요":"",stage},
+    praise:sample?"부담된다는 말에 바로 체험을 제안하신 게 좋았어요. 거절을 다음 기회로 바꾸셨습니다."
+                 :"상황을 구체적으로 남기셨어요. 이게 다음 대화를 만듭니다.",
+    miss:dm?"결정하시는 분이 따로 있다는 신호가 나왔는데 확인하지 않고 넘어가셨어요."
+           :later?"고객이 미루는 진짜 이유를 더 묻지 않으셨어요."
+           :"다음에 언제 뵐지 정하지 않고 마무리하셨어요.",
+    betterScript:dm?"이런 건 보통 어떤 분과 상의해서 정하세요? 함께 자리하시면 제가 한 번에 설명드릴게요."
+                   :"지금 가장 걸리는 부분이 무엇인지 편하게 말씀해 주시겠어요?",
+    pattern:"",strengthTags:sT,weaknessTags:wT,cares,objections:objs,works,tasks};
+}
+function offlineChat(msg){
+  const h=(...k)=>k.some(w=>msg.includes(w));
+  if(h("거절","싫다","안 한","됐다","관심 없")) return PLAYBOOKS[3].s+"\n\n거절은 실패가 아니라 명단 정리예요. 보류로 옮기고 3개월 뒤 다시 노크하세요.";
+  if(h("가격","깎","할인","비싸","싸게")) return PLAYBOOKS[4].s+"\n\n값을 내리면 제 가치도 같이 내려갑니다. 조건을 바꾸세요.";
+  if(h("연락","답장","읽씹","무응답")) return PLAYBOOKS[2].s+"\n\n재촉은 역효과입니다. 짧게, 부담 없이가 정답이에요.";
+  if(h("대표","승인","상의","결정")) return PLAYBOOKS[5].s;
+  if(h("소개","추천")) return PLAYBOOKS[8].s;
+  if(h("첫","처음","시작","뭐부터")) return "① 명단 30명 적기 → ② 안부 연락 3명 → ③ 만난 사람 바로 등록.\n\n오늘은 여기까지만 하세요. 하루에 하나면 충분합니다.";
+  return "조금 더 자세히 알려주시겠어요? 고객이 실제로 한 말을 그대로 적어주시면 그에 맞는 문장을 만들어 드릴게요.\n\n(지금은 간단 코칭 모드예요.)";
+}
+function offlineContent(kind,topic,target){
+  if(kind==="sns") return `${topic}\n\n처음엔 저도 반신반의했어요. 그런데 꾸준히 해보니 확실히 다르더라고요.\n\n${target}이신 분들이 특히 공감하실 것 같아요. 저도 그 시기를 지나봤거든요.\n\n궁금하신 분은 편하게 댓글이나 메시지 주세요 :)\n\n#기록 #꾸준함 #오늘도한걸음`;
+  if(kind==="dm") return `안녕하세요! 지난번에 ${topic} 이야기 나눴었죠.\n\n관련해서 정리한 내용이 있어 보내드려요. 부담 갖지 마시고 편하게 보시면 됩니다.\n\n궁금한 점 있으시면 언제든 말씀해 주세요!`;
+  if(kind==="offer") return `[제안] ${topic}\n\n1. 지금 상황\n- ${target} 기준으로 가장 자주 나오는 고민 한 가지\n\n2. 제안 내용\n- 무엇을 / 얼마에 / 언제부터, 세 줄로 정리\n\n3. 시작 방법\n- 오늘 결정하지 않으셔도 됩니다. 다음 확인 날짜만 정해요.`;
+  return `[${topic}] 자료\n\n1. 왜 중요한가\n2. 무엇을 알아야 하나 (${target} 기준 3가지)\n3. 오늘 바로 해볼 것 하나\n\n※ 인터넷에 연결되면 더 자세히 만들어집니다.`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. 광고 · 요금제 컴포넌트
+   ══════════════════════════════════════════════════════════════ */
+function AdSlot({pro,onUpgrade,label="스폰서"}){
+  const ref=useRef(null);
+  const live=ADS.enabled&&ADS.adsense.client&&ADS.adsense.slot;
+  useEffect(()=>{ if(!live||pro)return;
+    try{ (window.adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){} },[live,pro]);
+  if(pro||!ADS.enabled) return null;
+  return (<div className="ad" ref={ref}>
+    <span className="lb">{label}</span>
+    {live?(<ins className="adsbygoogle" style={{display:"block"}} data-ad-client={ADS.adsense.client}
+        data-ad-slot={ADS.adsense.slot} data-ad-format="auto" data-full-width-responsive="true"/>)
+      :(<div className="body"><b>광고 영역</b><span>AdMob 배너 320×100 / AdSense 반응형</span></div>)}
+    <button className="rm" onClick={onUpgrade}>광고 없이 쓰기 →</button>
+  </div>);
+}
+function Interstitial({onClose,onUpgrade}){
+  const [sec,setSec]=useState(4);
+  useEffect(()=>{ const t=setInterval(()=>setSec(s=>s>0?s-1:0),1000); return ()=>clearInterval(t); },[]);
+  return (<div className="full">
+    <div className="box">
+      <span className="eyebrow">스폰서 · 전면광고</span>
+      <h3 style={{fontSize:20,fontWeight:800,margin:"10px 0 6px",letterSpacing:"-.03em"}}>잘 하고 계세요 👏</h3>
+      <p style={{fontSize:14,color:"var(--ink3)",margin:"0 0 16px",lineHeight:1.6}}>
+        무료 버전은 실행 {ADS.interstitialEvery}개마다 광고가 한 번 나와요.<br/>프로로 바꾸면 광고가 사라집니다.</p>
+      <button className="btn gold sm" onClick={onUpgrade}>프로 살펴보기</button>
+    </div>
+    <button className="close" disabled={sec>0} onClick={onClose}>{sec>0?`${sec}초 후 닫기`:"닫기"}</button>
+  </div>);
+}
+function Paywall({db,save,close,notify,reason}){
+  const pro=db.profile.plan==="pro";
+  return (<div className="sheet" onClick={close}>
+    <div className="sheetin" onClick={e=>e.stopPropagation()}>
+      <div className="grab"/>
+      <div style={{textAlign:"center",marginBottom:20}}>
+        <div style={{width:52,height:52,borderRadius:16,margin:"0 auto 14px",display:"flex",alignItems:"center",
+          justifyContent:"center",background:"linear-gradient(140deg,#E2C994,#AF8C39)",color:"#211809"}}><I n="crown" s={26}/></div>
+        <h2 style={{fontSize:23,fontWeight:800,letterSpacing:"-.035em",margin:"0 0 6px"}}>AIVO 프로</h2>
+        <p style={{fontSize:14.5,color:"var(--ink3)",margin:0}}>{reason||"제한 없이, 광고 없이 고객관리"}</p>
+        <div className="pricerow"><b>{PLAN.pro.price}원</b><span>/ {PLAN.pro.period}</span></div>
+        <div className="tiny">언제든 해지할 수 있어요</div>
+      </div>
+      <div className="card">
+        {PRO_FEATURES.map(f=>(<div className="feat" key={f}><span className="ic"><I n="check" s={17}/></span><span>{f}</span></div>))}
+      </div>
+      {pro?(<button className="btn line" onClick={()=>{save({...db,profile:{...db.profile,plan:"free"}});notify("무료 버전으로 돌아왔어요");close();}}>
+          무료로 되돌리기 (데모)</button>)
+        :(<button className="btn gold" onClick={()=>{save({...db,profile:{...db.profile,plan:"pro"}});notify("프로가 켜졌어요 🎉");close();}}>
+          프로 시작하기</button>)}
+      <button className="btn quiet" onClick={close}>{pro?"닫기":"나중에 할게요"}</button>
+      <p className="tiny" style={{textAlign:"center",marginTop:6,lineHeight:1.6}}>
+        데모에서는 결제 없이 바로 켜집니다.<br/>실제 배포 시 인앱결제·구독 연동이 들어가는 자리예요.</p>
+    </div>
+  </div>);
+}
+function Locked({text,onClick}){
+  return (<div className="lockrow" onClick={onClick}><I n="lock" s={17}/><span style={{flex:1}}>{text}</span><I n="chev" s={16}/></div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. 앱 셸
+   ══════════════════════════════════════════════════════════════ */
+function App(){
+  const [db,setDb]=useState(null);
+  const [view,setView]=useState({n:"home"});
+  const [toast,setToast]=useState("");
+  const [pay,setPay]=useState(null);
+  const [inter,setInter]=useState(false);
+  const [quick,setQuick]=useState(false);
+  const [dark,setDark]=useState(false);
+
+  useEffect(()=>{ store.get(KEY).then(v=>{ let d=null; try{d=v?JSON.parse(v):null;}catch(e){}
+    const s=d?{...emptyState(),...d,profile:{...emptyState().profile,...(d.profile||{})}}:emptyState();
+    if(s.usage.date!==today()) s.usage={date:today(),ai:0,bonus:0,steps:0};
+    const th=s.profile.theme||"light";
+    const isDark=th==="dark"||(th==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+    setDark(isDark); document.documentElement.dataset.theme=isDark?"dark":"light";
+    setDb(s); if(!s.profile.onboarded) setView({n:"onboard"});
+  }); },[]);
+
+  const save=useCallback(n=>{ setDb(n); store.set(KEY,JSON.stringify(n)); },[]);
+  const notify=useCallback(m=>{ setToast(m); setTimeout(()=>setToast(""),2400); },[]);
+  const nav=useCallback(v=>{ setView(v); window.scrollTo(0,0); },[]);
+  const toggleTheme=()=>{ const nx=!dark; setDark(nx);
+    document.documentElement.dataset.theme=nx?"dark":"light";
+    const mc=document.querySelector('meta[name="theme-color"]'); if(mc) mc.setAttribute("content",nx?"#000000":"#14120F");
+    save2(d=>({...d,profile:{...d.profile,theme:nx?"dark":"light"}})); };
+  /* 매일 정해진 시각 알림 (앱이 열려 있을 때) */
+  useEffect(()=>{ if(!db||!db.profile.remindAt) return;
+    const tick=()=>{ const n=new Date();
+      const hm=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+      if(hm!==db.profile.remindAt) return;
+      const k="aivo-noti-"+today();
+      try{ if(localStorage.getItem(k))return; localStorage.setItem(k,"1"); }catch(e){}
+      const left=buildQueue(db).length;
+      if(typeof Notification!=="undefined"&&Notification.permission==="granted")
+        new Notification("AIVO",{body:left?`오늘 할 일 ${left}개가 기다리고 있어요.`
+          :"오늘은 비어 있어요. 새로운 분을 한 명 만나보세요."});
+    };
+    const t=setInterval(tick,30000); return ()=>clearInterval(t);
+  },[db]);
+  const upgrade=r=>setPay(r||true);
+  if(!db) return <div className="app"><div className="loading">잠시만요…</div></div>;
+
+  const pro=db.profile.plan==="pro";
+  const lim=pro?PLAN.pro:PLAN.free;
+  const aiLeft=pro?Infinity:Math.max(0,lim.aiPerDay+(db.usage.bonus||0)-(db.usage.ai||0));
+  const canAI=()=>{ if(pro)return true;
+    if(aiLeft<=0){ upgrade("오늘 AI 사용을 다 쓰셨어요"); return false; } return true; };
+  const spendAI=()=>{ if(!pro) save2(d=>({...d,usage:{...d.usage,ai:(d.usage.ai||0)+1}})); };
+  const save2=fn=>{ setDb(prev=>{ const n=fn(prev); store.set(KEY,JSON.stringify(n)); return n; }); };
+  const rewardAd=()=>{ setInter(true);
+    save2(d=>({...d,usage:{...d.usage,bonus:(d.usage.bonus||0)+ADS.rewardAiCalls}}));
+    notify(`AI ${ADS.rewardAiCalls}회를 충전했어요`); };
+
+  /* 고객 기록 남기기 */
+  const pushHist=(cid,entry)=>save2(d=>({...d,customers:d.customers.map(c=>c.id!==cid?c:
+    ({...c,history:[{id:uid(),date:today(),...entry},...(c.history||[])].slice(0,60)})) }));
+
+  /* 실행 1건 완료 처리 */
+  const bumpStep=()=>{ save2(d=>{ const steps=(d.usage.steps||0)+1;
+      const last=d.streak.last, sc=last===today()?d.streak.count:(last&&gap(last,today())===1?d.streak.count+1:1);
+      return {...d,usage:{...d.usage,steps},streak:{count:sc,last:today()}}; });
+    const n=(db.usage.steps||0)+1;
+    if(!pro&&ADS.enabled&&n%ADS.interstitialEvery===0) setTimeout(()=>setInter(true),350);
+  };
+  const skipStep=k=>save2(d=>({...d,skipped:[...(d.skipped||[]).filter(s=>s.d===today()),{d:today(),k}]}));
+
+  const S={db,save,save2,notify,nav,pro,lim,aiLeft,canAI,spendAI,upgrade,pushHist,bumpStep,skipStep,rewardAd,
+    dark,toggleTheme};
+  const queue=buildQueue(db);
+  const tabs=["home","run","schedule","customers","growth"];
+  const showTabs=tabs.indexOf(view.n)>=0;
+
+  let body;
+  switch(view.n){
+    case "onboard":   body=<Onboard {...S}/>; break;
+    case "home":      body=<Home {...S} queue={queue}/>; break;
+    case "run":       body=<Runner {...S} queue={queue}/>; break;
+    case "customers": body=<Customers {...S}/>; break;
+    case "customer":  body=<Detail {...S} id={view.id}/>; break;
+    case "addcust":   body=<AddCustomer {...S} preset={view.preset}/>; break;
+    case "record":    body=<RecordFlow {...S} id={view.id}/>; break;
+    case "coach":     body=<Coach {...S} id={view.id}/>; break;
+    case "content":   body=<Content {...S}/>; break;
+    case "learn":     body=<Learn {...S}/>; break;
+    case "lesson":    body=<Lesson {...S} id={view.id}/>; break;
+    case "plays":     body=<Plays {...S}/>; break;
+    case "team":      body=<Team {...S}/>; break;
+    case "schedule":  body=<Schedule {...S} queue={queue}/>; break;
+    case "import":    body=<ImportPeople {...S}/>; break;
+    case "report":    body=<Report {...S}/>; break;
+    case "revenue":   body=<Revenue {...S}/>; break;
+    case "settings":  body=<Settings {...S}/>; break;
+    default:          body=<Growth {...S} queue={queue}/>;
+  }
+  return (<div className={showTabs?"app pb":"app"}>
+    {body}
+    {showTabs&&(<React.Fragment>
+      <nav className="tabbar">
+        <Tab n="home"  cur={view.n} ic="home"  l="홈"   go={nav}/>
+        <Tab n="run"   cur={view.n} ic="target" l="실행" go={nav} badge={queue.filter(q=>q.late>0).length}/>
+        <Tab n="schedule" cur={view.n} ic="cal" l="일정" go={nav}/>
+        <button className="tb" onClick={()=>setQuick(true)} aria-label="빠른 작업">
+          <span className="tbplus"><I n="plus" s={21}/></span></button>
+        <Tab n="customers" cur={view.n} ic="users" l="고객" go={nav}/>
+        <Tab n="growth" cur={view.n} ic="chart" l="성장" go={nav}/>
+      </nav>
+    </React.Fragment>)}
+    {quick&&(<div className="sheet" onClick={()=>setQuick(false)}>
+      <div className="sheetin" onClick={e=>e.stopPropagation()}>
+        <div className="grab"/>
+        <h2 style={{fontSize:19,fontWeight:800,margin:"0 0 4px",letterSpacing:"-.03em"}}>무엇을 할까요?</h2>
+        <p className="sub" style={{marginBottom:16}}>하나씩만 하면 됩니다.</p>
+        {[["addcust","users","고객 등록하기","이름만 알아도 괜찮아요"],
+          ["record","mic","오늘 있었던 일 기록","말하면 AI가 정리해요"],
+          ["coach","msg","AI 코치에게 묻기","막힌 곳을 바로 풀어요"],
+          ["content","pen","콘텐츠 만들기","SNS·메시지·제안서"],
+          ["import","upload","연락처 일괄 등록","이름을 붙여넣으면 한 번에 등록"],
+          ["revenue","coin","매출 기록하기","성사 금액과 이번 달 목표"],
+          ["plays","book","상황별 대본 보기","그대로 복사해서 쓰세요"]].map(([n,ic,t,s])=>(
+          <button key={n} className="item" style={{marginBottom:9}} onClick={()=>{setQuick(false);nav({n});}}>
+            <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={ic} s={19}/></span>
+            <span className="mid"><b>{t}</b><span className="l2">{s}</span></span><I n="chev" s={17} c="var(--ink4)"/>
+          </button>))}
+      </div></div>)}
+    {pay&&<Paywall db={db} save={save} close={()=>setPay(null)} notify={notify}
+      reason={typeof pay==="string"?pay:null}/>}
+    {inter&&<Interstitial onClose={()=>setInter(false)} onUpgrade={()=>{setInter(false);upgrade();}}/>}
+    {toast&&<div className="toast">{toast}</div>}
+  </div>);
+}
+function Tab({n,cur,ic,l,go,badge}){
+  return (<button className={cur===n?"tb on":"tb"} onClick={()=>go({n})}>
+    <I n={ic} s={21}/><span>{l}</span>{badge>0&&<span className="bdg">{badge}</span>}</button>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   10. 온보딩 — 한 화면에 하나씩
+   ══════════════════════════════════════════════════════════════ */
+function Onboard({db,save,nav}){
+  const [s,setS]=useState(0);
+  const [job,setJob]=useState("any"); const [name,setName]=useState(""); const [goal,setGoal]=useState(5);
+  const done=()=>{ save({...db,profile:{...db.profile,name:name.trim()||"대표",job,goal,onboarded:true}}); nav({n:"home"}); };
+  const P0=(<div>
+    <div style={{textAlign:"center",padding:"52px 0 30px"}}>
+      <div className="mark" style={{width:56,height:56,borderRadius:18,fontSize:28,margin:"0 auto 22px"}}>A</div>
+      <h1 className="h1" style={{fontSize:29}}>고객관리의<br/>처음부터 끝까지</h1>
+      <p className="sub" style={{marginBottom:0}}>사람을 만나고, 기억하고, 다시 연락하고,<br/>계약까지 가는 모든 과정을<br/><b style={{color:"var(--ink)"}}>하루에 하나씩</b> 알려드릴게요.</p>
+    </div>
+    {[["users","고객을 만들어요","이름만 알아도 시작할 수 있어요"],
+      ["clock","놓치지 않게 알려줘요","연락할 때가 되면 먼저 알려드려요"],
+      ["spark","무엇을 말할지 알려줘요","상황마다 쓸 문장을 만들어 드려요"]].map(([ic,t,d])=>(
+      <div className="item" key={t} style={{cursor:"default",marginBottom:9}}>
+        <span className="av" style={{background:"var(--goldbg)",color:"var(--gold)"}}><I n={ic} s={20}/></span>
+        <span className="mid"><b>{t}</b><span className="l2">{d}</span></span></div>))}
+    <button className="btn dark" style={{marginTop:20}} onClick={()=>setS(1)}>시작하기<I n="arrow" s={18}/></button>
+  </div>);
+  const P1=(<div>
+    <span className="eyebrow">1 / 3</span><h1 className="h1">어떤 일을 하고 계세요?</h1>
+    <p className="sub">하는 일에 맞춰 단계와 문장을 바꿔 드려요.</p>
+    <div className="list">
+      {JOBS.map(j=>(<button key={j.k} className="item" onClick={()=>setJob(j.k)}
+        style={job===j.k?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
+        <span className="mid"><b>{j.n}</b><span className="l2">{j.ex}</span></span>
+        {job===j.k&&<I n="check" s={19} c="var(--ink)"/>}</button>))}
+    </div>
+    <button className="btn dark" style={{marginTop:18}} onClick={()=>setS(2)}>다음</button>
+  </div>);
+  const P2=(<div>
+    <span className="eyebrow">2 / 3</span><h1 className="h1">진행 중인 {JOBMAP[job].unit},<br/>몇 명을 유지할까요?</h1>
+    <p className="sub">이 숫자보다 적어지면 새 사람을 만나라고 알려드려요. 처음엔 5명이면 충분합니다.</p>
+    <div className="card center" style={{padding:"26px 20px"}}>
+      <b className="num" style={{fontSize:52,fontWeight:800,letterSpacing:"-.05em"}}>{goal}</b>
+      <div className="tiny" style={{marginBottom:16}}>명</div>
+      <input type="range" min="3" max="30" value={goal} onChange={e=>setGoal(+e.target.value)}
+        style={{width:"100%",accentColor:"var(--gold)"}}/>
+      <div style={{display:"flex",justifyContent:"space-between"}} className="tiny"><span>3</span><span>30</span></div>
+    </div>
+    <button className="btn dark" onClick={()=>setS(3)}>다음</button>
+  </div>);
+  const P3=(<div>
+    <span className="eyebrow">3 / 3</span><h1 className="h1">뭐라고 불러 드릴까요?</h1>
+    <p className="sub">코치가 부를 이름이에요. 비워두셔도 괜찮아요.</p>
+    <input className="inp" value={name} placeholder="예) 김성호" onChange={e=>setName(e.target.value)}/>
+    <button className="btn dark" style={{marginTop:14}} onClick={done}>AIVO 시작하기</button>
+    <p className="tiny" style={{textAlign:"center",lineHeight:1.7}}>
+      모든 기록은 이 기기에만 저장돼요.<br/>무료로 {PLAN.free.customers}명까지 관리할 수 있습니다.</p>
+  </div>);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    {s>0&&(<div className="flowtop">
+      <button className="back" onClick={()=>setS(s-1)}><I n="back" s={18}/></button>
+      <div className="steps">{[1,2,3].map(n=><i key={n} className={n<=s?"on":""}/>)}</div></div>)}
+    {[P0,P1,P2,P3][s]}
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   11. 홈 — 집중(한 번에 하나) / 전체(대시보드) 전환
+   ══════════════════════════════════════════════════════════════ */
+function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd,dark,toggleTheme}){
+  const [mode,setMode]=useState(()=>{ try{return localStorage.getItem("aivo-mode")||"focus";}catch(e){return "focus";} });
+  const setM=m=>{ setMode(m); try{localStorage.setItem("aivo-mode",m);}catch(e){} };
+  const cs=db.customers.map(enrich);
+  const doneToday=db.tasks.filter(t=>t.done&&t.doneAt===today()).length+(db.usage.steps||0);
+  const total=queue.length+doneToday;
+  const pct=total?Math.round(doneToday/total*100):0;
+  const late=queue.filter(q=>q.late>0).length;
+  const unit=lbl(db);
+  const hour=new Date().getHours();
+  const greet=hour<11?"좋은 아침이에요":hour<17?"오늘도 한 걸음":"오늘 하루 고생하셨어요";
+
+  return (<div>
+    <header className="top">
+      <div className="trow">
+        <div className="brand">
+          <span className="mark">A</span>
+          <div><div className="nm">AIVO</div>
+            <div className="tagline">{greet}{db.profile.name?`, ${db.profile.name}님`:""}</div></div>
+        </div>
+        <div className="hbtns">
+          <button className="iconbtn" onClick={toggleTheme} aria-label="화면 밝기">
+            <I n={dark?"sun":"moon"} s={17}/></button>
+          <button className={pro?"plan pro":"plan"} onClick={()=>upgrade()}>
+            <I n="crown" s={12}/>{pro?"PRO":"FREE"}</button>
+        </div>
+      </div>
+      <div className="kpis">
+        <div className="kpi"><b className="num">{queue.length}</b><span>오늘 할 일</span></div>
+        <div className={late?"kpi alert":"kpi"}><b className="num">{late}</b><span>지연</span></div>
+        <div className="kpi"><b className="num">{cs.filter(c=>ACTIVE.indexOf(c.stage)>=0).length}</b><span>진행 중</span></div>
+        <div className="kpi gold"><b className="num">{db.streak.count}</b><span>연속일</span></div>
+      </div>
+      <div className="seg">
+        <button className={mode==="focus"?"on":""} onClick={()=>setM("focus")}>집중 · 하나씩</button>
+        <button className={mode==="all"?"on":""} onClick={()=>setM("all")}>전체 대시보드</button>
+      </div>
+    </header>
+    <div className="pad" style={{paddingTop:16}}>
+      {mode==="focus"
+        ? <FocusHome db={db} nav={nav} queue={queue} pct={pct} doneToday={doneToday} unit={unit}
+            pro={pro} upgrade={upgrade} aiLeft={aiLeft} rewardAd={rewardAd}/>
+        : <Overview db={db} nav={nav} queue={queue} cs={cs} pro={pro} upgrade={upgrade} unit={unit}/>}
+    </div>
+  </div>);
+}
+
+/* ── 집중 모드: 다음 할 일 딱 하나 ── */
+function FocusHome({db,nav,queue,pct,doneToday,unit,pro,upgrade,aiLeft,rewardAd}){
+  const next=queue[0];
+  const R=42,C=2*Math.PI*R;
+  return (<div>
+    <div className="card pop" style={{display:"flex",gap:16,alignItems:"center",padding:"18px"}}>
+      <div className="ring">
+        <svg width="74" height="74" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r={R} fill="none" stroke="var(--track)" strokeWidth="9"/>
+          <circle cx="50" cy="50" r={R} fill="none" stroke="var(--gold)" strokeWidth="9" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={C*(1-pct/100)} style={{transition:"stroke-dashoffset .6s"}}/>
+        </svg>
+        <div className="val"><b className="num">{pct}%</b><span>오늘</span></div>
+      </div>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontSize:15.5,fontWeight:800,letterSpacing:"-.02em"}}>
+          {queue.length===0?"오늘 할 일을 다 하셨어요":`남은 일 ${queue.length}개`}</div>
+        <div className="tiny" style={{marginTop:3,lineHeight:1.55}}>
+          오늘 {doneToday}개 완료 · 연속 {db.streak.count}일<br/>한 번에 하나씩만 보여드릴게요.</div>
+      </div>
+    </div>
+
+    {next?(<React.Fragment>
+      <div className="h2"><span>지금 이것부터</span><span className="tiny">1 / {queue.length}</span></div>
+      <div className="card pop mission">
+        <div className="who">
+          <span className="av" style={next.cust?avStyle(next.cust.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
+            {next.cust?initial(next.cust.name):<I n={next.type==="learn"?"book":next.type==="add"?"plus":"spark"} s={19}/>}</span>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13.5,fontWeight:800,color:"var(--ink2)"}}>{next.sub}</div>
+            {next.cust&&<div className="tiny">{next.cust.st.n} 단계 · 접촉 {next.cust.touches||0}/{TOUCH_GOAL}회</div>}
+          </div>
+        </div>
+        <h3>{next.title}</h3>
+        <div className="why">{next.late>0&&<span className="late">{next.late}일 지남</span>}
+          {next.late>0&&<span className="dot"/>}<span>{next.why||""}</span></div>
+        <button className="btn dark" style={{marginTop:18,marginBottom:0}} onClick={()=>nav({n:"run"})}>
+          하나씩 시작하기<I n="arrow" s={18}/></button>
+      </div>
+    </React.Fragment>):(
+      <div className="card center">
+        <div className="bigck"><I n="check" s={30}/></div>
+        <h3 style={{fontSize:19,fontWeight:800,margin:"0 0 8px",letterSpacing:"-.03em"}}>오늘은 여기까지예요</h3>
+        <p className="sub" style={{marginBottom:16}}>남은 힘은 내일 쓰세요.<br/>새 {unit}을 한 분 더 등록해두면 내일이 편해집니다.</p>
+        <button className="btn line" style={{marginBottom:0}} onClick={()=>nav({n:"addcust"})}>{unit} 등록하기</button>
+      </div>)}
+
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+
+    <div className="h2"><span>바로 하기</span></div>
+    <div className="list">
+      {[["record","mic","오늘 있었던 일 기록","말하면 AI가 정리하고 다음 할 일까지 만들어요"],
+        ["coach","msg","AI 코치에게 묻기",pro?"무제한":`오늘 ${aiLeft}회 남음`],
+        ["plays","book","상황별 대본","첫 연락 · 거절 · 가격 · 소개"],
+        ["learn","seed","오늘의 배움",`${db.learned.length} / ${LESSON_TOTAL}과 완료`]].map(([n,ic,t,s])=>(
+        <button key={n} className="item" onClick={()=>nav({n})}>
+          <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={ic} s={19}/></span>
+          <span className="mid"><b>{t}</b><span className="l2">{s}</span></span>
+          <I n="chev" s={17} c="var(--ink4)"/></button>))}
+    </div>
+    {!pro&&aiLeft<=2&&(<button className="btn line" style={{marginTop:12}} onClick={rewardAd}>
+      <I n="spark" s={18}/>광고 보고 AI {ADS.rewardAiCalls}회 더 받기</button>)}
+    <div style={{height:8}}/>
+  </div>);
+}
+
+/* ── 전체 대시보드 ── */
+function Overview({db,nav,queue,cs,pro,upgrade,unit}){
+  const act=cs.filter(c=>ACTIVE.indexOf(c.stage)>=0);
+  const won=cs.filter(c=>c.stage==="won");
+  const pipeline=act.reduce((a,c)=>a+(c.value||0)*(c.st.w/100),0);
+  const wonVal=won.reduce((a,c)=>a+(c.value||0),0);
+  const overdue=cs.filter(c=>c.overdue&&c.stage!=="won");
+  const stale=cs.filter(c=>c.stale);
+  const max=Math.max(1,...STAGES.map(s=>cs.filter(c=>c.stage===s.k).length));
+  const monthRec=db.records.filter(r=>r.date.slice(0,7)===today().slice(0,7)).length;
+  const doneRate=db.tasks.length?Math.round(db.tasks.filter(t=>t.done).length/db.tasks.length*100):0;
+  const winRate=(won.length+cs.filter(c=>c.stage==="hold").length)
+    ? Math.round(won.length/(won.length+cs.filter(c=>c.stage==="hold").length)*100):0;
+  const week=[...Array(7)].map((_,i)=>{ const d=addDays(today(),-6+i);
+    return {d,n:db.records.filter(r=>r.date===d).length+db.tasks.filter(t=>t.doneAt===d).length}; });
+  const wmax=Math.max(1,...week.map(w=>w.n));
+  return (<div>
+    <div className="stats">
+      <div className="st"><b className="num">{db.customers.length}</b><span>전체 {unit}</span></div>
+      <div className="st"><b className="num">{act.length}</b><span>진행 중</span></div>
+      <div className="st"><b className="num" style={{color:overdue.length?"var(--warn)":undefined}}>{overdue.length}</b><span>연락 지연</span></div>
+    </div>
+
+    <div className="card">
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+        <span className="eyebrow">파이프라인</span>
+        <span className="tiny">단계를 누르면 해당 {unit}만 보여요</span>
+      </div>
+      <div className="fun">
+        {STAGES.map(s=>{ const n=cs.filter(c=>c.stage===s.k).length;
+          return (<div className="funrow" key={s.k} onClick={()=>nav({n:"customers",stage:s.k})}>
+            <span className="nm">{s.n}</span>
+            <span className="funbar"><i style={{width:`${n?Math.max(6,n/max*100):0}%`,background:s.c}}/></span>
+            <span className="ct num">{n}<em>명</em></span></div>); })}
+      </div>
+    </div>
+
+    {pro?(<div className="card">
+      <span className="eyebrow">예상 매출</span>
+      <div style={{display:"flex",gap:14,marginTop:10}}>
+        <div style={{flex:1}}><div className="tiny">진행 중 (단계 가중)</div>
+          <b className="num" style={{fontSize:22,fontWeight:800,letterSpacing:"-.04em"}}>{won2(pipeline)}</b></div>
+        <div style={{flex:1}}><div className="tiny">성사 누적</div>
+          <b className="num" style={{fontSize:22,fontWeight:800,letterSpacing:"-.04em",color:"var(--good)"}}>{won2(wonVal)}</b></div>
+      </div>
+      <div style={{display:"flex",gap:14,marginTop:16,paddingTop:14,borderTop:"1px solid var(--line2)"}}>
+        <div style={{flex:1}}><div className="tiny">성사율</div><b className="num" style={{fontSize:18,fontWeight:800}}>{winRate}%</b></div>
+        <div style={{flex:1}}><div className="tiny">실행 완료율</div><b className="num" style={{fontSize:18,fontWeight:800}}>{doneRate}%</b></div>
+        <div style={{flex:1}}><div className="tiny">이번 달 기록</div><b className="num" style={{fontSize:18,fontWeight:800}}>{monthRec}</b></div>
+      </div>
+    </div>):<Locked text="예상 매출 · 성사율 · 주간 리포트 보기" onClick={()=>upgrade("심화 분석은 프로 기능이에요")}/>}
+
+    {db.profile.revGoal>0&&(<div className="card gold" onClick={()=>nav({n:"revenue"})}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+        <span className="eyebrow">{new Date().getMonth()+1}월 매출</span>
+        <span className="tiny">목표 {won2(db.profile.revGoal)}</span></div>
+      <b className="serif num" style={{fontSize:28,display:"block",margin:"6px 0 10px"}}>
+        {won2(revenueOf(db,today().slice(0,7)))}</b>
+      <div className="bar"><i style={{width:`${Math.min(100,Math.round(revenueOf(db,today().slice(0,7))/db.profile.revGoal*100))}%`,
+        background:"var(--gold)"}}/></div>
+    </div>)}
+    <div className="card">
+      <span className="eyebrow">최근 7일 활동</span>
+      <div style={{display:"flex",gap:6,alignItems:"flex-end",height:74,marginTop:14}}>
+        {week.map(w=>(<div key={w.d} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+          <div style={{width:"100%",height:`${Math.max(6,w.n/wmax*54)}px`,borderRadius:6,
+            background:w.d===today()?"var(--gold)":"var(--track)"}}/>
+          <span className="tiny" style={{fontSize:10}}>{new Date(w.d).getDate()}</span>
+        </div>))}
+      </div>
+    </div>
+
+    {overdue.length>0&&(<React.Fragment>
+      <div className="h2"><span>지금 연락해야 할 분</span>
+        <span className="more" onClick={()=>nav({n:"customers",filter:"overdue"})}>전체<I n="chev" s={14}/></span></div>
+      <div className="list">{overdue.slice(0,4).map(c=><CustRow key={c.id} c={c} go={()=>nav({n:"customer",id:c.id})}/>)}</div>
+    </React.Fragment>)}
+
+    {stale.length>0&&(<React.Fragment>
+      <div className="h2"><span>멈춰 있는 {unit}</span><span className="tiny">밀거나 정리하세요</span></div>
+      <div className="list">{stale.slice(0,3).map(c=><CustRow key={c.id} c={c} go={()=>nav({n:"customer",id:c.id})}/>)}</div>
+    </React.Fragment>)}
+
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+
+    <div className="h2"><span>오늘의 실행 전체</span>
+      <span className="more" onClick={()=>nav({n:"run"})}>하나씩 하기<I n="chev" s={14}/></span></div>
+    <div className="list">
+      {queue.slice(0,8).map(q=>(<div className="item" key={q.k} style={{cursor:"default"}}>
+        <span className="av" style={q.cust?avStyle(q.cust.name):{background:"var(--line2)",color:"var(--ink3)"}}>
+          {q.cust?initial(q.cust.name):<I n={q.type==="learn"?"book":"spark"} s={18}/>}</span>
+        <span className="mid"><b>{q.title}</b>
+          <span className="l2">{q.sub}{q.late>0&&<React.Fragment><span className="dot"/><span className="late">{q.late}일 지남</span></React.Fragment>}</span></span>
+      </div>))}
+      {queue.length===0&&<div className="blank">오늘 할 일을 모두 마쳤어요.<br/>새 {unit}을 등록하면 다음 할 일이 생겨요.</div>}
+    </div>
+    <div style={{height:8}}/>
+  </div>);
+}
+const won2=n=>n>=100000000?`${(n/100000000).toFixed(1)}억`:n>=10000?`${Math.round(n/10000).toLocaleString()}만원`:n?`${n.toLocaleString()}원`:"—";
+
+function CustRow({c,go}){
+  return (<button className="item" onClick={go}>
+    <span className="av" style={avStyle(c.name)}>{initial(c.name)}</span>
+    <span className="mid"><b>{c.name}{c.org&&<span style={{fontWeight:600,color:"var(--ink3)",fontSize:13}}> · {c.org}</span>}</b>
+      <span className="l2"><span className="tagpill" style={{background:c.st.c+"1A",color:c.st.c}}>{c.st.n}</span>
+        {c.since==null?<span>연락 기록 없음</span>
+          :<span className={c.overdue?"late":""}>{c.overdue?`${c.due}일 지남`:`${c.since}일 전 연락`}</span>}
+        {c.stale&&<React.Fragment><span className="dot"/><span>멈춤</span></React.Fragment>}
+      </span></span>
+    <I n="chev" s={17} c="var(--ink4)"/></button>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   12. 실행 러너 — 한 번에 하나씩 (핵심)
+   ══════════════════════════════════════════════════════════════ */
+function stageScript(c,me){
+  const n=c.name||"고객";
+  switch(c.stage){
+    case "new":  return `안녕하세요 ${n}님, ${me||""}입니다.\n연락처 남겨주셔서 인사드려요. 부담 갖지 마시고, 편하실 때 5분만 이야기 나눌 수 있을까요?`;
+    case "reach":return `${n}님 안녕하세요! 지난번 이야기 즐거웠어요.\n이번 주 중에 잠깐 뵐 수 있을까요? 편하신 요일 알려주시면 제가 맞출게요.`;
+    case "need": return `${n}님, 지난번에 말씀하신 그 부분 계속 생각했어요.\n제가 도움 드릴 수 있는 방법을 정리해 봤는데, 짧게 보여드려도 될까요?`;
+    case "offer":return `${n}님, 보내드린 내용 보셨을까요?\n한 번에 결정하지 않으셔도 괜찮아요. 궁금한 점만 편하게 말씀해 주세요.`;
+    case "nego": return `${n}님, 말씀하신 부분 반영해서 조정해 봤어요.\n이번 주 시작과 다음 달 시작 중 어느 쪽이 편하실까요?`;
+    case "won":  return `${n}님, 시작하신 뒤로 불편한 점은 없으셨어요?\n작은 것도 편하게 말씀해 주세요. 그게 제 일이에요!`;
+    default:     return `${n}님 안녕하세요, 오랜만이에요.\n예전에 말씀하셨던 그 부분, 그 뒤로 좀 나아지셨을까요? 문득 생각나서 연락드렸어요.`;
+  }
+}
+function bdayScript(c,me){ return `${c.name}님, 생일 축하드려요!\n좋은 일만 가득한 한 해 되시길 바랍니다. 오늘 하루 행복하게 보내세요 :)`; }
+function Runner({db,save2,notify,nav,queue,pushHist,bumpStep,skipStep,pro,upgrade}){
+  const [i,setI]=useState(0);
+  const [fin,setFin]=useState(false);
+  const total=queue.length;
+  const q=queue[i];
+  const advance=()=>{ if(i+1>=total) setFin(true); else setI(i+1); window.scrollTo(0,0); };
+  const copy=t=>{ try{navigator.clipboard.writeText(t);}catch(e){} notify("복사했어요"); };
+
+  const contact=(c,ch)=>{
+    save2(d=>({...d,customers:d.customers.map(x=>x.id!==c.id?x:({...x,lastContact:today(),
+      touches:(x.touches||0)+1,nextContact:addDays(today(),(SK[x.stage]||SK.new).cad)}))}));
+    pushHist(c.id,{kind:"contact",text:`${ch||"연락"}함`});
+    bumpStep(); notify("기록했어요. 다음 연락일도 잡아뒀어요"); advance();
+  };
+  const finishTask=t=>{
+    save2(d=>({...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,done:true,doneAt:today()}:x),
+      customers:d.customers.map(c=>c.id!==t.customerId?c:({...c,lastContact:today(),touches:(c.touches||0)+1,
+        nextContact:addDays(today(),(SK[c.stage]||SK.new).cad)}))}));
+    if(t.customerId) pushHist(t.customerId,{kind:"task",text:t.title});
+    bumpStep(); notify("잘하셨어요!"); advance();
+  };
+  const delay=(t,n)=>{ save2(d=>({...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,due:addDays(today(),n)}:x)}));
+    notify(`${n}일 뒤로 미뤘어요`); advance(); };
+  const moveStage=(c,k)=>{ save2(d=>({...d,customers:d.customers.map(x=>x.id!==c.id?x:({...x,...stagePatch(x,k)}))}));
+    pushHist(c.id,{kind:"stage",text:`${c.st.n} → ${SK[k].n}`}); bumpStep(); notify("단계를 옮겼어요"); advance(); };
+  const learnDone=l=>{ save2(d=>({...d,learned:d.learned.indexOf(l.id)>=0?d.learned:[...d.learned,l.id]}));
+    bumpStep(); notify("한 과 끝냈어요 👏"); advance(); };
+
+  if(fin||!q) return (<div className="pad">
+    <div className="done">
+      <div className="bigck"><I n="check" s={32}/></div>
+      <h1 className="h1">{total?"오늘 할 일 끝!":"지금은 할 일이 없어요"}</h1>
+      <p className="sub">{total?`${total}개를 하나씩 처리하셨어요. 연속 ${db.streak.count}일째입니다.`
+        :"고객을 등록하면 오늘의 실행이 만들어져요."}</p>
+      <button className="btn dark" onClick={()=>nav({n:"home"})}>홈으로</button>
+      <button className="btn line" onClick={()=>nav({n:"addcust"})}>{lbl(db)} 한 명 더 등록</button>
+    </div></div>);
+
+  const c=q.cust;
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <div className="flowtop">
+      <button className="back" onClick={()=>i===0?nav({n:"home"}):setI(i-1)}><I n="back" s={18}/></button>
+      <div className="steps">{queue.slice(0,Math.min(total,10)).map((_,n)=><i key={n} className={n<=i?"on":""}/>)}</div>
+      <span className="tiny num" style={{fontWeight:800}}>{i+1}/{total}</span>
+    </div>
+
+    <div className="card pop mission">
+      <div className="who">
+        <span className="av" style={c?avStyle(c.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
+          {c?initial(c.name):<I n={q.type==="learn"?"book":q.type==="add"?"plus":"mic"} s={19}/>}</span>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:13.5,fontWeight:800,color:"var(--ink2)"}}>{q.sub}</div>
+          {c&&<div className="tiny">접촉 {c.touches||0}/{TOUCH_GOAL}회 · 계약까지 평균 8회예요</div>}
+        </div>
+        {c&&<button className="chip" style={{padding:"6px 10px"}} onClick={()=>nav({n:"customer",id:c.id})}>카드</button>}
+      </div>
+      <h3>{q.title}</h3>
+      <div className="why">{q.late>0&&<React.Fragment><span className="late">{q.late}일 지남</span><span className="dot"/></React.Fragment>}
+        <span>{q.why}</span>{q.channel&&<React.Fragment><span className="dot"/><span>{q.channel}</span></React.Fragment>}</div>
+
+      {(q.type==="task"&&q.script)||q.type==="reach"||q.type==="bday"?(
+        <div className="script">
+          <div className="sh">이대로 보내보세요</div>
+          <p>{q.type==="bday"?bdayScript(c,db.profile.name)
+             :q.type==="reach"?stageScript(c,db.profile.name):fill(q.script,c,db.profile.name)}</p>
+          <div className="row2">
+            <button className="btn quiet sm" style={{flex:1}}
+              onClick={()=>copy(q.type==="bday"?bdayScript(c,db.profile.name)
+                :q.type==="reach"?stageScript(c,db.profile.name):fill(q.script,c,db.profile.name))}>
+              <I n="copy" s={16}/>복사</button>
+            {c&&c.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}} href={`sms:${c.phone}`}><I n="msg" s={16}/>문자</a>}
+            {c&&c.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}} href={`tel:${c.phone}`}><I n="phone" s={16}/>전화</a>}
+          </div>
+        </div>):null}
+
+      {q.type==="learn"&&(<div className="script">
+        <div className="sh">핵심 3가지</div>
+        {q.lesson.p.map((p,n)=><div className="point" key={n}><b>{n+1}</b><span>{p}</span></div>)}
+        <div className="sh" style={{marginTop:4}}>오늘 해볼 것</div>
+        <p style={{margin:0,fontWeight:700,color:"var(--ink)"}}>{q.lesson.x}</p>
+      </div>)}
+
+      {q.type==="stale"&&c&&(<div className="script">
+        <div className="sh">어느 단계로 옮길까요?</div>
+        <div className="chips">
+          {STAGES.filter(s=>s.k!==c.stage).map(s=>(
+            <button key={s.k} className="chip" onClick={()=>moveStage(c,s.k)}>{s.n}</button>))}
+        </div>
+      </div>)}
+    </div>
+
+    {/* 액션 */}
+    {q.type==="task"&&(<React.Fragment>
+      <button className="btn dark" onClick={()=>finishTask(q.task)}><I n="check" s={19}/>했어요</button>
+      <div className="row2">
+        <button className="btn line" onClick={()=>delay(q.task,1)}>내일로</button>
+        <button className="btn line" onClick={()=>delay(q.task,3)}>3일 뒤로</button>
+      </div></React.Fragment>)}
+
+    {q.type==="reach"&&(<React.Fragment>
+      <button className="btn dark" onClick={()=>contact(c,"연락")}><I n="check" s={19}/>연락했어요</button>
+      <div className="row2">
+        <button className="btn line" onClick={()=>{ save2(d=>({...d,customers:d.customers.map(x=>x.id!==c.id?x:
+            ({...x,nextContact:addDays(today(),2)}))})); notify("이틀 뒤에 다시 알려드릴게요"); advance(); }}>이틀 뒤로</button>
+        <button className="btn line" onClick={()=>moveStage(c,"hold")}>보류로</button>
+      </div></React.Fragment>)}
+
+    {q.type==="learn"&&(<React.Fragment>
+      <button className="btn dark" onClick={()=>learnDone(q.lesson)}><I n="check" s={19}/>배웠어요</button>
+      {q.lesson.s&&<button className="btn line" onClick={()=>copy(q.lesson.s)}><I n="copy" s={18}/>예시 문장 복사</button>}
+    </React.Fragment>)}
+
+    {q.type==="bday"&&(<button className="btn dark" onClick={()=>contact(c,"생일 축하 연락")}>
+      <I n="check" s={19}/>축하 인사 보냈어요</button>)}
+
+    {q.type==="add"&&<button className="btn dark" onClick={()=>nav({n:"addcust"})}><I n="plus" s={19}/>지금 등록하기</button>}
+    {q.type==="record"&&<button className="btn dark" onClick={()=>nav({n:"record"})}><I n="mic" s={19}/>지금 기록하기</button>}
+
+    {c&&<button className="btn line" onClick={()=>nav({n:"coach",id:c.id})}><I n="msg" s={18}/>어떻게 말할지 코치와 상의</button>}
+    <button className="btn quiet" onClick={()=>{skipStep(q.k);advance();}}>오늘은 건너뛰기</button>
+    {!pro&&i>0&&i%2===0&&<AdSlot pro={pro} onUpgrade={()=>upgrade()}/>}
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   13. 고객 목록 / 상세
+   ══════════════════════════════════════════════════════════════ */
+function Customers({db,nav,pro,upgrade,notify}){
+  const [f,setF]=useState("all");
+  const [qs,setQs]=useState("");
+  const cs=db.customers.map(enrich);
+  const unit=lbl(db);
+  const filtered=cs.filter(c=>{
+    if(qs&&!(c.name+(c.org||"")+(c.memo||"")).toLowerCase().includes(qs.toLowerCase())) return false;
+    if(f==="all") return true;
+    if(f==="overdue") return c.overdue&&c.stage!=="won";
+    return c.stage===f;
+  }).sort((a,b)=>rank(b)-rank(a));
+  const cnt=k=>k==="all"?cs.length:k==="overdue"?cs.filter(c=>c.overdue&&c.stage!=="won").length:cs.filter(c=>c.stage===k).length;
+  const full=!pro&&db.customers.length>=PLAN.free.customers;
+  return (<div className="pad">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",paddingTop:"calc(20px + env(safe-area-inset-top,0px))"}}>
+      <div><h1 className="h1" style={{margin:"0 0 4px"}}>{unit} {cs.length}명</h1>
+        <p className="tiny">급한 순서로 정렬돼요{!pro&&` · 무료 ${PLAN.free.customers}명까지`}</p></div>
+      <button className="btn dark sm" style={{width:"auto",padding:"11px 15px"}}
+        onClick={()=>full?upgrade(`무료는 ${unit} ${PLAN.free.customers}명까지 등록할 수 있어요`):nav({n:"addcust"})}>
+        <I n="plus" s={17}/>등록</button>
+    </div>
+    <input className="inp" style={{margin:"16px 0 12px"}} placeholder="이름 · 소속 · 메모 검색"
+      value={qs} onChange={e=>setQs(e.target.value)}/>
+    <div className="chips scroll" style={{marginBottom:16}}>
+      <button className={f==="all"?"chip on":"chip"} onClick={()=>setF("all")}>전체 {cnt("all")}</button>
+      <button className={f==="overdue"?"chip on":"chip"} onClick={()=>setF("overdue")}
+        style={f!=="overdue"&&cnt("overdue")?{color:"var(--warn)",borderColor:"var(--warn)"}:null}>지연 {cnt("overdue")}</button>
+      {STAGES.map(s=><button key={s.k} className={f===s.k?"chip on":"chip"} onClick={()=>setF(s.k)}>{s.n} {cnt(s.k)}</button>)}
+    </div>
+    {full&&<Locked text={`무료는 ${PLAN.free.customers}명까지예요. 무제한으로 늘리기`} onClick={()=>upgrade()}/>}
+    <div className="list">
+      {filtered.map(c=><CustRow key={c.id} c={c} go={()=>nav({n:"customer",id:c.id})}/>)}
+      {filtered.length===0&&(<div className="blank">
+        {cs.length===0?<React.Fragment>아직 등록된 {unit}이 없어요.<br/>이름만 알아도 등록할 수 있습니다.</React.Fragment>
+          :"조건에 맞는 분이 없어요."}
+        <button className="btn dark" style={{marginTop:18}} onClick={()=>nav({n:"addcust"})}>{unit} 등록하기</button>
+      </div>)}
+    </div>
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+
+function QuickMemo({onSave}){
+  const [t,setT]=useState("");
+  const dict=useDictation(setT);
+  return (<div className="card" style={{padding:14}}>
+    <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
+      <textarea className="chatin" rows={1} style={{border:"1px solid var(--line)"}} value={t}
+        placeholder={dict.on?"듣고 있어요…":"한 줄 메모 (예: 아침 통화 선호)"}
+        onChange={e=>setT(e.target.value)}/>
+      <button className={dict.on?"micbtn on":"micbtn"} style={{width:44,height:44}}
+        onClick={()=>dict.on?dict.stop():dict.start(t)}><I n={dict.on?"stop":"mic"} s={18}/></button>
+      <button className="send" style={{width:44,height:44}} disabled={!t.trim()}
+        onClick={()=>{ onSave(t.trim()); setT(""); if(dict.on)dict.stop(); }}><I n="plus" s={18}/></button>
+    </div>
+    {dict.interim&&<div className="interim">{dict.interim}</div>}
+  </div>);
+}
+function Detail({db,save2,nav,notify,pushHist,id,pro,upgrade}){
+  const raw=db.customers.find(x=>x.id===id);
+  if(!raw) return <div className="pad"><div className="blank">삭제된 고객이에요.</div></div>;
+  const c=enrich(raw);
+  const tasks=db.tasks.filter(t=>t.customerId===id&&!t.done);
+  const recs=db.records.filter(r=>r.customerId===id);
+  const hist=(c.history||[]);
+  const patch=o=>save2(d=>({...d,customers:d.customers.map(x=>x.id===id?{...x,...o}:x)}));
+  const setStage=k=>{ patch(stagePatch(c,k));
+    pushHist(id,{kind:"stage",text:`${c.st.n} → ${SK[k].n}`}); notify(`${SK[k].n} 단계로 옮겼어요`); };
+  const copy=t=>{ try{navigator.clipboard.writeText(t);}catch(e){} notify("복사했어요"); };
+  const listTag=a=>(a||[]).map(x=>x.tag+(x.count>1?` (${x.count})`:"")).join(", ");
+  const del=()=>{ if(!confirm(`${c.name}님을 삭제할까요?`))return;
+    save2(d=>({...d,customers:d.customers.filter(x=>x.id!==id),tasks:d.tasks.filter(t=>t.customerId!==id)}));
+    notify("삭제했어요"); nav({n:"customers"}); };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"customers"})}><I n="back" s={18}/>{lbl(db)} 목록</button>
+    <div style={{display:"flex",gap:14,alignItems:"center",margin:"8px 0 18px"}}>
+      <span className="av" style={{...avStyle(c.name),width:54,height:54,borderRadius:17,fontSize:21}}>{initial(c.name)}</span>
+      <div style={{flex:1,minWidth:0}}>
+        <h1 className="h1" style={{margin:0,fontSize:24}}>{c.name}</h1>
+        <div className="tiny">{[c.org,c.source].filter(Boolean).join(" · ")||"메모 없음"}</div>
+      </div>
+    </div>
+
+    <div className="row2">
+      {c.phone&&<a className="btn dark sm" style={{flex:1,textDecoration:"none"}} href={`tel:${c.phone}`}><I n="phone" s={17}/>전화</a>}
+      {c.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}} href={`sms:${c.phone}`}><I n="msg" s={17}/>문자</a>}
+      <button className="btn line sm" style={{flex:1}} onClick={()=>nav({n:"coach",id})}><I n="spark" s={17}/>코치</button>
+    </div>
+
+    <div className="card" style={{marginTop:12}}>
+      <span className="eyebrow">지금 단계</span>
+      <div className="chips" style={{margin:"10px 0 4px"}}>
+        {STAGES.map(s=><button key={s.k} className={c.stage===s.k?"chip on":"chip"} onClick={()=>setStage(s.k)}>{s.n}</button>)}
+      </div>
+      <div className="tiny" style={{marginTop:8,lineHeight:1.6}}>{c.st.d} → <b style={{color:"var(--ink2)"}}>{c.st.act}</b></div>
+      <div style={{marginTop:14,paddingTop:14,borderTop:"1px solid var(--line2)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",marginBottom:7}}>
+          <span className="tiny">접촉 {c.touches||0}회</span><span className="tiny">계약까지 평균 {TOUCH_GOAL}회</span></div>
+        <div className="bar"><i style={{width:`${Math.min(100,(c.touches||0)/TOUCH_GOAL*100)}%`,background:c.st.c}}/></div>
+      </div>
+    </div>
+
+    <div className="card">
+      <span className="eyebrow">연락 시점</span>
+      <div style={{fontSize:17,fontWeight:800,letterSpacing:"-.02em",marginTop:8,
+        color:c.overdue?"var(--warn)":"var(--ink)"}}>
+        {c.since==null?"아직 연락 기록이 없어요":c.overdue?`${c.due}일 지났어요 · 지금 연락하세요`:
+         c.due===0?"오늘이 연락할 날이에요":`${-c.due}일 뒤에 연락하면 돼요`}</div>
+      <div className="tiny" style={{marginTop:4}}>
+        {c.st.n} 단계 권장 주기는 {c.st.cad}일{c.lastContact?` · 마지막 연락 ${fmtL(c.lastContact)}`:""}</div>
+      <div className="row2" style={{marginTop:14,marginBottom:0}}>
+        <button className="btn dark sm" style={{flex:1}} onClick={()=>{
+          patch({lastContact:today(),touches:(c.touches||0)+1,nextContact:addDays(today(),c.st.cad)});
+          pushHist(id,{kind:"contact",text:"연락함"}); notify("연락을 기록했어요"); }}>연락 기록</button>
+        <button className="btn line sm" style={{flex:1}} onClick={()=>copy(stageScript(c,db.profile.name))}>대본 복사</button>
+      </div>
+    </div>
+
+    <div className="card">
+      <span className="eyebrow">관심도</span>
+      <div className="stars" style={{margin:"9px 0 16px"}}>
+        {[1,2,3,4,5].map(n=><button key={n} className={(c.temp||3)>=n?"on":""}
+          onClick={()=>patch({temp:n})}><I n="star" s={15}/></button>)}
+      </div>
+      <div className="kv"><span>생일</span>
+        <b><input className="inp" style={{padding:"8px 11px",fontSize:14.5,width:130}} placeholder="MM-DD 예) 03-14"
+          value={c.birthday||""} onChange={e=>patch({birthday:e.target.value.trim()})}/>
+          {bdayIn(c.birthday)!=null&&<span className="tagpill gold" style={{marginLeft:8}}>
+            {bdayIn(c.birthday)===0?"오늘!":`${bdayIn(c.birthday)}일 뒤`}</span>}</b></div>
+      {c.phone&&<div className="kv"><span>연락처</span><b>{c.phone}</b></div>}
+      {c.source&&<div className="kv"><span>알게 된 곳</span><b>{c.source}</b></div>}
+      {c.needs&&<div className="kv"><span>필요한 것</span><b>{c.needs}</b></div>}
+      {c.decider&&<div className="kv"><span>결정하는 분</span><b>{c.decider}</b></div>}
+      {c.value>0&&<div className="kv"><span>예상 금액</span><b>{won(c.value)}</b></div>}
+      {(c.cares||[]).length>0&&<div className="kv"><span>신경 쓰는 것</span><b>{listTag(c.cares)}</b></div>}
+      {(c.objections||[]).length>0&&<div className="kv"><span>망설인 이유</span><b className="warn">{listTag(c.objections)}</b></div>}
+      {(c.works||[]).length>0&&<div className="kv"><span>통했던 방식</span><b>{listTag(c.works)}</b></div>}
+      {c.memo&&<div className="kv"><span>메모</span><b style={{fontWeight:600,color:"var(--ink2)"}}>{c.memo}</b></div>}
+    </div>
+
+    {tasks.length>0&&(<React.Fragment><div className="h2"><span>할 일 {tasks.length}</span></div>
+      <div className="list">{tasks.map(t=>(<div className="item" key={t.id} style={{cursor:"default"}}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink3)"}}><I n="flag" s={18}/></span>
+        <span className="mid"><b>{t.title}</b><span className="l2">{fmtL(t.due)} · {t.channel}</span></span>
+        <button className="chip" onClick={()=>{ save2(d=>({...d,tasks:d.tasks.map(x=>x.id===t.id?{...x,done:true,doneAt:today()}:x)}));
+          notify("완료했어요"); }}>완료</button></div>))}</div></React.Fragment>)}
+
+    <div className="h2"><span>기록</span>
+      <span className="more" onClick={()=>nav({n:"record",id})}>말로 남기기<I n="plus" s={14}/></span></div>
+    <QuickMemo onSave={t=>{ pushHist(id,{kind:"memo",text:t}); notify("메모를 남겼어요"); }}/>
+    {(recs.length||hist.length)?(<div className="card"><div className="timeline">
+      {recs.map(r=>(<div className="tl hot" key={r.id}>
+        <div className="d">{fmtL(r.date)}</div><div className="t">{r.summary}</div>
+        {r.praise&&<div className="x">👏 {r.praise}</div>}
+        {r.miss&&<div className="x" style={{color:"var(--gold)"}}>🔍 {r.miss}</div>}</div>))}
+      {hist.map(h=>(<div className="tl" key={h.id}>
+        <div className="d">{fmtL(h.date)}</div><div className="t">{h.text}</div></div>))}
+    </div></div>):<div className="blank">아직 기록이 없어요.<br/>만난 이야기를 남기면 다음 할 일이 만들어져요.</div>}
+    <button className="ghostlink" onClick={del}>이 {lbl(db)} 삭제하기</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   14. 고객 등록 — 한 화면에 질문 하나
+   ══════════════════════════════════════════════════════════════ */
+function AddCustomer({db,save2,nav,notify,pro,upgrade}){
+  const unit=lbl(db);
+  const [s,setS]=useState(0);
+  const [f,setF]=useState({name:"",org:"",phone:"",source:"",needs:"",stage:"new",temp:3,value:0,memo:""});
+  const set=o=>setF({...f,...o});
+  const dict=useDictation(t=>set({needs:t}));
+  if(!pro&&db.customers.length>=PLAN.free.customers){
+    return (<div className="pad"><button className="back" onClick={()=>nav({n:"customers"})}><I n="back" s={18}/>뒤로</button>
+      <div className="card center"><div style={{color:"var(--gold)",marginBottom:12}}><I n="lock" s={30}/></div>
+        <h2 className="h1" style={{fontSize:21}}>무료는 {PLAN.free.customers}명까지예요</h2>
+        <p className="sub">프로로 바꾸면 {unit}을 무제한으로 등록할 수 있어요.</p>
+        <button className="btn gold" onClick={()=>upgrade()}>프로 살펴보기</button></div></div>);
+  }
+  const done=()=>{
+    const id=uid();
+    save2(d=>({...d,customers:[{id,name:f.name.trim(),org:f.org.trim(),phone:f.phone.trim(),source:f.source,
+      needs:f.needs.trim(),memo:f.memo.trim(),stage:f.stage,temp:f.temp,value:+f.value||0,
+      createdAt:today(),lastContact:f.stage==="new"?null:today(),touches:f.stage==="new"?0:1,
+      nextContact:addDays(today(),SK[f.stage].cad),cares:[],objections:[],works:[],
+      history:[{id:uid(),date:today(),kind:"add",text:`${unit}으로 등록`}]},...d.customers]}));
+    notify(`${f.name}님을 등록했어요`); nav({n:"customer",id});
+  };
+  const steps=[
+   {t:`${unit}의 이름을 알려주세요`,d:"이름만 알아도 시작할 수 있어요. 나머지는 나중에 채워도 됩니다.",
+    ok:()=>f.name.trim().length>0,
+    body:(<React.Fragment>
+      <div className="field"><label className="label">이름 *</label>
+        <input className="inp" autoFocus value={f.name} onChange={e=>set({name:e.target.value})} placeholder="예) 김성호"/></div>
+      <div className="field"><label className="label">소속 · 하는 일</label>
+        <input className="inp" value={f.org} onChange={e=>set({org:e.target.value})} placeholder="예) 성호헬스케어 대표"/></div>
+      <div className="field"><label className="label">연락처</label>
+        <input className="inp" type="tel" value={f.phone} onChange={e=>set({phone:e.target.value})} placeholder="010-0000-0000"/></div>
+    </React.Fragment>)},
+   {t:"어떻게 알게 되셨어요?",d:"알게 된 경로에 따라 접근 방법이 달라져요.",ok:()=>true,
+    body:(<div className="chips">{SOURCES.map(x=>(
+      <button key={x} className={f.source===x?"chip on":"chip"} onClick={()=>set({source:x})}>{x}</button>))}</div>)},
+   {t:"지금 어느 단계인가요?",d:"정확하지 않아도 괜찮아요. 언제든 바꿀 수 있습니다.",ok:()=>true,
+    body:(<div className="list">{STAGES.filter(x=>x.k!=="hold").map(x=>(
+      <button key={x.k} className="item" onClick={()=>set({stage:x.k})}
+        style={f.stage===x.k?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
+        <span className="av" style={{background:x.c+"1A",color:x.c}}><I n="flag" s={18}/></span>
+        <span className="mid"><b>{x.n}</b><span className="l2">{x.d} · {x.cad}일마다 연락</span></span>
+        {f.stage===x.k&&<I n="check" s={18}/>}</button>))}</div>)},
+   {t:"무엇이 필요한 분인가요?",d:"한 줄이면 충분해요. 이게 다음 대화의 재료가 됩니다.",ok:()=>true,
+    body:(<React.Fragment>
+      <textarea className="area" style={{minHeight:100}} value={f.needs} onChange={e=>set({needs:e.target.value})}
+        placeholder="예) 직원 복지로 뭔가 찾고 있음. 비용에 민감."/>
+      <button className={dict.on?"btn line":"btn line"} style={dict.on?{borderColor:"var(--warn)",color:"var(--warn)"}:null}
+        onClick={()=>dict.on?dict.stop():dict.start(f.needs)}>
+        <I n={dict.on?"stop":"mic"} s={18}/>{dict.on?"듣는 중… 누르면 멈춰요":"말로 입력하기"}</button>
+      {dict.interim&&<div className="interim">{dict.interim}</div>}
+      {dict.err&&<div className="err">{dict.err}</div>}
+      <div className="field" style={{marginTop:10}}><label className="label">예상 금액 (선택)</label>
+        <input className="inp" type="number" inputMode="numeric" value={f.value||""}
+          onChange={e=>set({value:e.target.value})} placeholder="예) 300000"/></div>
+    </React.Fragment>)},
+   {t:"얼마나 관심 있어 보이세요?",d:"관심도가 높을수록 먼저 알려드려요.",ok:()=>true,
+    body:(<React.Fragment>
+      <div className="card flat" style={{textAlign:"center"}}>
+        <div className="stars" style={{justifyContent:"center",marginBottom:10}}>
+          {[1,2,3,4,5].map(n=><button key={n} className={f.temp>=n?"on":""} style={{width:44,height:44}}
+            onClick={()=>set({temp:n})}><I n="star" s={19}/></button>)}
+        </div>
+        <div className="tiny">{["","아직 잘 모르겠어요","가볍게 듣기만 하셨어요","관심은 있어 보여요","꽤 적극적이세요","곧 결정하실 것 같아요"][f.temp]}</div>
+      </div>
+      <div className="field"><label className="label">메모 (선택)</label>
+        <input className="inp" value={f.memo} onChange={e=>set({memo:e.target.value})} placeholder="예) 아침에 통화 편하다고 하심"/></div>
+    </React.Fragment>)},
+  ];
+  const cur=steps[s];
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <div className="flowtop">
+      <button className="back" onClick={()=>s===0?nav({n:"customers"}):setS(s-1)}><I n="back" s={18}/></button>
+      <div className="steps">{steps.map((_,n)=><i key={n} className={n<=s?"on":""}/>)}</div>
+      <span className="tiny num" style={{fontWeight:800}}>{s+1}/{steps.length}</span>
+    </div>
+    <h1 className="h1">{cur.t}</h1>
+    <p className="sub">{cur.d}</p>
+    {cur.body}
+    <button className="btn dark" style={{marginTop:20}} disabled={!cur.ok()}
+      onClick={()=>s===steps.length-1?done():setS(s+1)}>{s===steps.length-1?"등록 완료":"다음"}</button>
+    {s>0&&s<steps.length-1&&<button className="btn quiet" onClick={done} disabled={!f.name.trim()}>여기까지만 저장</button>}
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   15. 기록 → AI 코칭 → 할 일 생성
+   ══════════════════════════════════════════════════════════════ */
+const EXAMPLE="오늘 성호헬스케어 김성호 사장님 만났어요. 직원이 스무 명인데 비용이 부담된다고 하셔서 먼저 체험해보시기로 했고, 대표님 승인이 필요하다고 하셨어요. 연락처는 010-2211-3344예요.";
+function RecordFlow({db,save2,nav,notify,id,canAI,spendAI,pro,upgrade,aiLeft,bumpStep}){
+  const [s,setS]=useState(id?1:0);
+  const [cid,setCid]=useState(id||null);
+  const [mode,setMode]=useState("voice");
+  const [text,setText]=useState("");
+  const [busy,setBusy]=useState(false);
+  const [err,setErr]=useState("");
+  const [res,setRes]=useState(null);
+  const [saved,setSaved]=useState(null);
+  const cust=db.customers.find(c=>c.id===cid);
+  const dict=useDictation(setText);
+
+  const analyze=async()=>{
+    if(text.trim().length<12){setErr("조금만 더 자세히 남겨주세요.");return;}
+    setErr("");
+    if(!canAI()){ setRes(offlineAnalyze(text,cust)); setS(3); return; }
+    setBusy(true);
+    const hist=db.records.filter(r=>r.customerId===cid).slice(0,4).map(r=>`- ${r.date}: ${r.summary}`).join("\n")||"없음";
+    const weak=collectTags(db,"w").filter(w=>w.count>=2).map(w=>`${w.tag}(${w.count}회)`).join(", ")||"없음";
+    const prompt=`당신은 따뜻하지만 정확한 한국 영업·고객관리 코치입니다. 쉬운 말과 존댓말을 쓰세요.
+[사용자 직종] ${JOBMAP[db.profile.job].n}
+[반복해온 약점] ${weak}
+[상대] ${cust?`${cust.name} (${cust.org||"소속 미상"}) · ${(SK[cust.stage]||SK.new).n} 단계`:"기록에서 파악하세요"}
+[지난 기록]
+${hist}
+[오늘 남긴 내용]
+${text}
+
+아래 JSON 하나만 출력하세요. 백틱·설명 금지.
+{"summary":"3~4줄 요약, 존댓말","customer":{"name":"","org":"","contact":"","decider":"","needs":"","value":0,"stage":"new|reach|need|offer|nego|won|hold"},"praise":"잘한 점 하나, 2문장 이내","miss":"놓친 점 하나, 2문장 이내","betterScript":"다음에 실제로 쓸 멘트 1~2문장","pattern":"반복 약점과 겹치면 한 문장, 없으면 빈 문자열","strengthTags":["5~12자"],"weaknessTags":["5~12자"],"cares":[],"objections":[],"works":[],"tasks":[{"title":"","channel":"전화|문자|카카오톡|이메일|만나기","days":0,"kind":"promise|followup","script":"바로 보낼 문장 2문장"}]}
+tasks는 1~2개만. 없는 사실을 지어내지 마세요.`;
+    try{ const raw=await askAI(prompt); spendAI();
+      setRes(JSON.parse(raw.replace(/```json|```/g,"").trim())); }
+    catch(e){ setRes(offlineAnalyze(text,cust)); }
+    finally{ setBusy(false); setS(3); }
+  };
+  const commit=()=>{
+    const r=res, ex=r.customer||{};
+    let id2=cid;
+    save2(d=>{
+      let customers=d.customers.map(c=>({...c}));
+      if(!id2&&ex.name){ id2=uid();
+        customers=[{id:id2,name:ex.name,org:ex.org||"",phone:ex.contact||"",needs:ex.needs||"",
+          decider:ex.decider||"",value:+ex.value||0,stage:ex.stage||"reach",temp:3,source:"",
+          createdAt:today(),lastContact:today(),touches:1,nextContact:addDays(today(),SK[ex.stage||"reach"].cad),
+          cares:bump([],r.cares),objections:bump([],r.objections),works:bump([],r.works),
+          history:[{id:uid(),date:today(),kind:"add",text:"기록에서 자동 등록"}]},...customers];
+      } else if(id2){ customers=customers.map(c=>{ if(c.id!==id2)return c; const n={...c};
+        if(ex.contact&&!n.phone)n.phone=ex.contact; if(ex.org&&!n.org)n.org=ex.org;
+        if(ex.decider)n.decider=ex.decider; if(ex.needs)n.needs=ex.needs;
+        if(ex.value&&!n.value)n.value=+ex.value||0;
+        if(ex.stage&&ex.stage!==n.stage)n.stage=ex.stage;
+        n.lastContact=today(); n.touches=(n.touches||0)+1; n.nextContact=addDays(today(),SK[n.stage].cad);
+        n.cares=bump(n.cares,r.cares); n.objections=bump(n.objections,r.objections); n.works=bump(n.works,r.works);
+        n.history=[{id:uid(),date:today(),kind:"record",text:r.summary.slice(0,60)},...(n.history||[])];
+        return n; }); }
+      const rec={id:uid(),customerId:id2,date:today(),raw:text,summary:r.summary,praise:r.praise,
+        miss:r.miss,betterScript:r.betterScript,pattern:r.pattern||"",
+        strengthTags:r.strengthTags||[],weaknessTags:r.weaknessTags||[]};
+      const tasks=(r.tasks||[]).map(t=>({id:uid(),customerId:id2,title:t.title,script:t.script||"",
+        channel:t.channel||"전화",kind:t.kind||"followup",due:addDays(today(),t.days==null?1:t.days),done:false}));
+      const last=d.streak.last, sc=last===today()?d.streak.count:(last&&gap(last,today())===1?d.streak.count+1:1);
+      return {...d,customers,records:[rec,...d.records],tasks:[...d.tasks,...tasks],streak:{count:sc,last:today()}};
+    });
+    setSaved({n:(res.tasks||[]).length}); setS(5);
+  };
+
+  return (<div className="pad" style={{paddingBottom:40}}>
+    {s<5&&(<div className="flowtop">
+      <button className="back" onClick={()=>s===0?nav({n:"home"}):setS(s-1)}><I n="back" s={18}/></button>
+      <div className="steps">{[0,1,2,3,4].map(n=><i key={n} className={n<=s?"on":""}/>)}</div>
+      {!pro&&<span className="tiny">AI {aiLeft}회</span>}
+    </div>)}
+
+    {s===0&&(<React.Fragment>
+      <h1 className="h1">누구를 만나셨어요?</h1>
+      <p className="sub">고르지 않으셔도 됩니다. 새로운 분이면 AI가 알아서 등록해요.</p>
+      <div className="list">
+        <button className="item" onClick={()=>{setCid(null);setS(1);}} style={!cid?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
+          <span className="av" style={{background:"var(--pri)",color:"var(--pri-fg)"}}><I n="plus" s={19}/></span>
+          <span className="mid"><b>처음 만난 분 · 혼자 한 일</b><span className="l2">말하면 자동으로 등록돼요</span></span></button>
+        {db.customers.map(enrich).map(c=>(<button key={c.id} className="item" onClick={()=>{setCid(c.id);setS(1);}}
+          style={cid===c.id?{boxShadow:"0 0 0 2px var(--ink)"}:null}>
+          <span className="av" style={avStyle(c.name)}>{initial(c.name)}</span>
+          <span className="mid"><b>{c.name}</b><span className="l2">{c.org||c.st.n}</span></span></button>))}
+      </div>
+    </React.Fragment>)}
+
+    {s===1&&(<React.Fragment>
+      <h1 className="h1">어떻게 남길까요?</h1>
+      <p className="sub">말로 하면 가장 빠릅니다. 미팅 직후 3분 안에 남기면 코칭이 정확해져요.</p>
+      <button className="item" style={{padding:18,marginBottom:10}} onClick={()=>{setMode("voice");setS(2);}}>
+        <span className="av" style={{background:"var(--pri)",color:"var(--pri-fg)"}}><I n="mic" s={20}/></span>
+        <span className="mid"><b>말로 남기기</b><span className="l2">버튼 누르고 편하게 말씀하세요</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>
+      <button className="item" style={{padding:18}} onClick={()=>{setMode("text");setS(2);}}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="pen" s={20}/></span>
+        <span className="mid"><b>글로 쓰기</b><span className="l2">조용한 곳에서는 이게 편해요</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>
+    </React.Fragment>)}
+
+    {s===2&&(<React.Fragment>
+      <h1 className="h1">{mode==="voice"?"편하게 말씀하세요":"편하게 적어주세요"}</h1>
+      <p className="sub">순서 없이 떠오르는 대로 괜찮아요. 정리는 AI가 합니다.</p>
+      {mode==="voice"&&(<div className={dict.on?"dict live":"dict"}>
+        <button className={dict.on?"micbig on":"micbig"} onClick={()=>dict.on?dict.stop():dict.start(text)}>
+          <I n={dict.on?"stop":"mic"} s={30}/></button>
+        <div style={{fontSize:16.5,fontWeight:800,marginTop:14,letterSpacing:"-.02em"}}>
+          {dict.on?"듣고 있어요":"눌러서 말하기"}</div>
+        <div className="tiny" style={{marginTop:4}}>
+          {dict.on?"다 하시면 다시 눌러주세요":"말한 내용이 아래에 글로 적혀요"}</div>
+        {dict.on&&<div className="wave"><i/><i/><i/><i/><i/><i/></div>}
+        {dict.on&&dict.interim&&<div className="interim">{dict.interim}</div>}
+        {dict.err&&<div className="err" style={{marginTop:12,marginBottom:0}}>{dict.err}</div>}
+      </div>)}
+      <div className="note">처음이신가요? <b onClick={()=>setText(EXAMPLE)}>예시 넣어보기</b>를 누르면 어떻게 되는지 바로 보실 수 있어요.</div>
+      <textarea className="area" style={{minHeight:mode==="voice"?150:210}} value={text}
+        onChange={e=>setText(e.target.value)}
+        placeholder={mode==="voice"?"말씀하시면 여기에 적혀요. 틀린 곳은 고치셔도 됩니다.":"예) 오늘 김성호 사장님을 만났어요…"}/>
+      {err&&<div className="err">{err}</div>}
+      <button className="btn dark" disabled={busy} onClick={analyze}>
+        {busy?"코치가 읽는 중이에요…":"다 됐어요"}</button>
+    </React.Fragment>)}
+
+    {s===3&&res&&(<React.Fragment>
+      <h1 className="h1">이렇게 정리했어요</h1>
+      <p className="sub">맞는지만 확인해 주세요.</p>
+      <div className="card"><p style={{margin:0,fontSize:16,lineHeight:1.8,fontWeight:600}}>{res.summary}</p>
+        {res.customer&&res.customer.name&&(<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid var(--line2)"}}>
+          <span className="eyebrow">알아낸 정보</span>
+          <div style={{marginTop:8}}>
+            {res.customer.name&&<div className="kv"><span>이름</span><b>{res.customer.name}{res.customer.org?` · ${res.customer.org}`:""}</b></div>}
+            {res.customer.contact&&<div className="kv"><span>연락처</span><b>{res.customer.contact}</b></div>}
+            {res.customer.needs&&<div className="kv"><span>필요한 것</span><b>{res.customer.needs}</b></div>}
+            {res.customer.decider&&<div className="kv"><span>결정하는 분</span><b>{res.customer.decider}</b></div>}
+            {res.customer.stage&&<div className="kv"><span>단계</span><b>{(SK[res.customer.stage]||SK.reach).n}</b></div>}
+          </div></div>)}
+      </div>
+      <button className="btn dark" onClick={()=>setS(4)}>맞아요</button>
+      <button className="btn line" onClick={()=>setS(2)}>고칠게요</button>
+    </React.Fragment>)}
+
+    {s===4&&res&&(<React.Fragment>
+      <div style={{display:"flex",alignItems:"center"}}>
+        <h1 className="h1" style={{flex:1}}>코치가 봤어요</h1>
+        <button className="speak" onClick={()=>speak(`잘하셨어요. ${res.praise} 이건 놓치셨어요. ${res.miss} 다음엔 이렇게 말해보세요. ${res.betterScript}`)}>
+          <I n="speaker" s={15}/>읽어주기</button>
+      </div>
+      {res.offline&&<div className="tagpill" style={{display:"inline-block",marginBottom:12}}>간단 코칭 모드</div>}
+      <div className="coach c-good"><div className="ch">👏 잘하셨어요</div><p>{res.praise}</p></div>
+      <div className="coach c-miss"><div className="ch">🔍 이건 놓치셨어요</div><p>{res.miss}</p></div>
+      <div className="coach c-say"><div className="ch">💬 다음엔 이렇게 말해보세요</div><p>{res.betterScript}</p></div>
+      {res.pattern&&<div className="coach c-pat"><div className="ch">📌 반복되는 패턴</div><p>{res.pattern}</p></div>}
+      <button className="btn dark" style={{marginTop:8}} onClick={commit}>
+        할 일 {(res.tasks||[]).length}개 받기</button>
+    </React.Fragment>)}
+
+    {s===5&&saved&&(<div className="done">
+      <div className="bigck"><I n="check" s={32}/></div>
+      <h1 className="h1">{db.streak.count}일째 기록하셨어요</h1>
+      <p className="sub">오늘의 실행에 {saved.n}개가 들어갔어요.<br/>하나씩만 하면 됩니다.</p>
+      <button className="btn dark" onClick={()=>nav({n:"run"})}>바로 실행하기</button>
+      <button className="btn line" onClick={()=>nav({n:"home"})}>홈으로</button>
+    </div>)}
+  </div>);
+}
+function collectTags(db,which){
+  const map={};
+  db.records.forEach(r=>((which==="w"?r.weaknessTags:r.strengthTags)||[]).forEach(t=>{
+    if(typeof t!=="string")return; map[t]=(map[t]||0)+1; }));
+  return Object.keys(map).map(t=>({tag:t,count:map[t]})).sort((a,b)=>b.count-a.count);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   16. AI 코치 (대화)
+   ══════════════════════════════════════════════════════════════ */
+const CHIPS_G=["오늘 뭐부터 할까요?","고객을 어디서 찾죠?","첫 연락 뭐라고 하죠?","거절당했어요","SNS에 뭘 올릴까요?"];
+const CHIPS_C=["지금 뭐라고 답할까요?","다음에 뭘 해야 하나요?","가격을 깎아달래요","연락이 없어요","마무리 짓고 싶어요"];
+function Coach({db,save2,nav,id,canAI,spendAI,pro,aiLeft,upgrade,rewardAd}){
+  const raw=db.customers.find(x=>x.id===id);
+  const c=raw?enrich(raw):null;
+  const key=id||"general";
+  const [msgs,setMsgs]=useState((db.chats&&db.chats[key])||[]);
+  const [text,setText]=useState(""); const [busy,setBusy]=useState(false);
+  const dict=useDictation(setText);
+  const logRef=useRef(null);
+  useEffect(()=>{ if(logRef.current) logRef.current.scrollTop=logRef.current.scrollHeight; },[msgs,busy]);
+  const persist=l=>{ setMsgs(l); save2(d=>({...d,chats:{...(d.chats||{}),[key]:l.slice(-40)}})); };
+  const send=async q=>{
+    const question=(q||text).trim(); if(!question||busy)return;
+    if(dict.on)dict.stop();
+    const next=[...msgs,{role:"user",content:question}]; persist(next); setText("");
+    if(!canAI()){ persist([...next,{role:"assistant",content:offlineChat(question)}]); return; }
+    setBusy(true);
+    const weak=collectTags(db,"w").filter(w=>w.count>=2).map(w=>`${w.tag}(${w.count}회)`).join(", ")||"없음";
+    let ctx;
+    if(c){ const recs=db.records.filter(r=>r.customerId===id).slice(0,5).map(r=>`- ${r.date}: ${r.summary}`).join("\n")||"없음";
+      ctx=`[고객] ${c.name} (${c.org||"소속 미상"}) · ${c.st.n} 단계 · 접촉 ${c.touches||0}회 · 마지막 연락 ${c.since==null?"없음":c.since+"일 전"}
+[필요한 것] ${c.needs||"확인 안 됨"}
+[결정하는 분] ${c.decider||"확인 안 됨"}
+[망설인 이유] ${(c.objections||[]).map(o=>`${o.tag}(${o.count}회)`).join(", ")||"없음"}
+[지난 기록]\n${recs}`;
+    } else {
+      const cs=db.customers.map(enrich);
+      ctx=`[사용자] ${JOBMAP[db.profile.job].n} · 고객 ${cs.length}명 · 진행 중 ${cs.filter(x=>ACTIVE.indexOf(x.stage)>=0).length}명 · 연락 지연 ${cs.filter(x=>x.overdue).length}명 · 교육 ${db.learned.length}/${LESSON_TOTAL}과`;
+    }
+    const sys=`당신은 한국의 영업·고객관리 코치입니다. 사용자는 나이가 있을 수 있으니 쉬운 말, 존댓말, 짧게 답하세요.
+답변은 4~7줄. 실제로 쓸 문장은 따옴표로 감싸 제시하세요. 설교하지 말고 바로 실행할 수 있게 주세요.
+건강기능식품·의료·금융 등 규제 분야라면 효과나 수익을 단정하는 표현을 절대 쓰지 마세요.
+
+${ctx}
+[사용자가 반복해온 약점] ${weak}
+
+질문: ${question}`;
+    try{ const hist=msgs.slice(-6).map(m=>({role:m.role,content:m.content}));
+      const a=await askAI(sys,hist); spendAI();
+      persist([...next,{role:"assistant",content:a.trim()}]);
+    }catch(e){ persist([...next,{role:"assistant",content:offlineChat(question)}]); }
+    finally{ setBusy(false); }
+  };
+  const chips=c?CHIPS_C:CHIPS_G;
+  return (<div className="chatwrap">
+    <div className="chathead">
+      <button className="back" style={{padding:0}} onClick={()=>nav(c?{n:"customer",id}:{n:"home"})}><I n="back" s={20}/></button>
+      <span className="av" style={c?avStyle(c.name):{background:"var(--pri)",color:"var(--pri-fg)"}}>
+        {c?initial(c.name):<I n="spark" s={19}/>}</span>
+      <div style={{flex:1,minWidth:0}}>
+        <b>{c?`${c.name}님 대응 코치`:"AI 코치"}</b>
+        <span>{c?`${c.st.n} 단계 · ${c.st.act}`:pro?"무엇이든 물어보세요":`오늘 ${aiLeft}회 남음`}</span></div>
+      {!pro&&<button className="chip" style={{padding:"6px 10px"}} onClick={()=>upgrade()}><I n="crown" s={13}/></button>}
+    </div>
+    <div className="chatlog" ref={logRef}>
+      {msgs.length===0&&(<div className="bub ai">
+        {c?`${c.name}님 건으로 무엇이든 물어보세요.\n\n고객이 실제로 한 말을 그대로 적어주시면, 뭐라고 답할지 문장으로 만들어 드릴게요.`
+          :`무엇이든 물어보세요.\n\n고객을 어디서 찾을지, 첫 연락은 뭐라고 할지, 거절을 어떻게 넘길지까지 도와드립니다.\n\n말로 물어보셔도 돼요.`}</div>)}
+      {msgs.map((m,n)=>(<div key={n} className={m.role==="user"?"bub me":"bub ai"}
+        onClick={()=>m.role==="assistant"&&speak(m.content)}>{m.content}</div>))}
+      {busy&&<div className="bub ai think">코치가 생각하는 중이에요…</div>}
+    </div>
+    {dict.on&&dict.interim&&<div className="interim" style={{margin:"0 13px"}}>{dict.interim}</div>}
+    {dict.err&&<div className="err" style={{margin:"0 13px 8px"}}>{dict.err}</div>}
+    {!pro&&aiLeft<=0&&(<div style={{padding:"0 13px 8px"}}>
+      <button className="btn line sm" onClick={rewardAd}><I n="spark" s={16}/>광고 보고 {ADS.rewardAiCalls}회 더 받기</button></div>)}
+    <div className="chips scroll" style={{padding:"6px 13px"}}>
+      {chips.map(ch=><button className="chip" key={ch} onClick={()=>send(ch)}>{ch}</button>)}</div>
+    <div className="chatbar">
+      <button className={dict.on?"micbtn on":"micbtn"} onClick={()=>dict.on?dict.stop():dict.start(text)}>
+        <I n={dict.on?"stop":"mic"} s={19}/></button>
+      <textarea className="chatin" rows={1} value={text} placeholder={dict.on?"듣고 있어요…":"무엇이든 물어보세요"}
+        onChange={e=>setText(e.target.value)}
+        onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();} }}/>
+      <button className="send" onClick={()=>send()} disabled={busy||!text.trim()}><I n="send" s={19}/></button>
+    </div>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   17. 콘텐츠 만들기
+   ══════════════════════════════════════════════════════════════ */
+const KINDS=[{k:"sns",t:"SNS 게시글",s:"인스타·블로그·스레드",ic:"pen"},
+ {k:"dm",t:"메시지 · 카톡",s:"고객에게 바로 보낼 글",ic:"msg"},
+ {k:"offer",t:"제안서 초안",s:"무엇을·얼마에·언제부터",ic:"flag"},
+ {k:"edu",t:"교육 자료",s:"팀·고객에게 나눠줄 자료",ic:"book"}];
+function Content({db,save2,nav,notify,canAI,spendAI,pro,upgrade,aiLeft}){
+  const [s,setS]=useState(1);
+  const [kind,setKind]=useState("sns");
+  const [topic,setTopic]=useState("");
+  const [target,setTarget]=useState("40~50대 직장인");
+  const [out,setOut]=useState(""); const [busy,setBusy]=useState(false); const [off,setOff]=useState(false);
+  const dict=useDictation(setTopic);
+  const gen=async()=>{
+    if(!topic.trim()){notify("주제를 적어주세요");return;}
+    if(!canAI()){ setOut(offlineContent(kind,topic,target)); setOff(true); setS(3); return; }
+    setBusy(true); setOff(false);
+    const kt=KINDS.find(x=>x.k===kind).t;
+    const rule=kind==="sns"?"200~350자. 첫 줄이 눈길을 끌어야 합니다. 해시태그 3~5개를 마지막에."
+      :kind==="dm"?"3~5줄. 부담스럽지 않게, 강요 없이. 이모지는 최대 1개."
+      :kind==="offer"?"제목 + 3개 항목(지금 상황 / 제안 / 시작 방법). 각 2~3줄."
+      :"제목과 3개 항목. 각 항목 2~3줄. 마지막에 '오늘 해볼 것' 한 줄.";
+    const prompt=`당신은 한국의 ${JOBMAP[db.profile.job].n} 분야 콘텐츠 작가입니다. ${kt}을 하나 써주세요.
+
+주제: ${topic}
+읽는 사람: ${target}
+형식: ${rule}
+
+중요:
+- 효과·수익을 단정하거나 과장하는 표현 금지 (광고 규정).
+- 파는 글이 아니라 경험을 나누는 어조로.
+- 설명 없이 본문만 출력하세요.`;
+    try{ const a=await askAI(prompt); spendAI(); setOut(a.trim()); }
+    catch(e){ setOut(offlineContent(kind,topic,target)); setOff(true); }
+    finally{ setBusy(false); setS(3); }
+  };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <div className="flowtop">
+      <button className="back" onClick={()=>s===1?nav({n:"home"}):setS(s-1)}><I n="back" s={18}/></button>
+      <div className="steps">{[1,2,3].map(n=><i key={n} className={n<=s?"on":""}/>)}</div>
+      {!pro&&<span className="tiny">AI {aiLeft}회</span>}
+    </div>
+    {s===1&&(<React.Fragment>
+      <h1 className="h1">무엇을 만들까요?</h1>
+      <p className="sub">AI가 초안을 만들어요. 고쳐서 쓰시면 됩니다.</p>
+      <div className="list">{KINDS.map(x=>(
+        <button key={x.k} className="item" style={{padding:16}} onClick={()=>{setKind(x.k);setS(2);}}>
+          <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={x.ic} s={19}/></span>
+          <span className="mid"><b>{x.t}</b><span className="l2">{x.s}</span></span>
+          <I n="chev" s={17} c="var(--ink4)"/></button>))}</div>
+    </React.Fragment>)}
+    {s===2&&(<React.Fragment>
+      <h1 className="h1">어떤 내용인가요?</h1>
+      <p className="sub">한 줄이면 충분해요.</p>
+      <input className="inp" value={topic} onChange={e=>setTopic(e.target.value)}
+        placeholder="예) 3개월 동안 꾸준히 해본 후기"/>
+      <button className="btn line" style={dict.on?{marginTop:10,borderColor:"var(--warn)",color:"var(--warn)"}:{marginTop:10}}
+        onClick={()=>dict.on?dict.stop():dict.start(topic)}>
+        <I n={dict.on?"stop":"mic"} s={18}/>{dict.on?"듣는 중… 누르면 멈춰요":"말로 입력하기"}</button>
+      {dict.interim&&<div className="interim">{dict.interim}</div>}
+      <label className="label" style={{marginTop:14}}>읽는 사람</label>
+      <div className="chips" style={{marginBottom:18}}>
+        {["40~50대 직장인","60대 이상","젊은 부모","사업에 관심 있는 분","기존 고객","20~30대"].map(t=>
+          <button key={t} className={target===t?"chip on":"chip"} onClick={()=>setTarget(t)}>{t}</button>)}
+      </div>
+      <button className="btn dark" onClick={gen} disabled={busy}>{busy?"만드는 중이에요…":"만들기"}</button>
+    </React.Fragment>)}
+    {s===3&&(<React.Fragment>
+      <h1 className="h1">{KINDS.find(x=>x.k===kind).t}</h1>
+      {off&&<div className="tagpill" style={{display:"inline-block",marginBottom:10}}>간단 생성 모드</div>}
+      <div className="card"><p style={{whiteSpace:"pre-wrap",margin:0,fontSize:15.5,lineHeight:1.85}}>{out}</p></div>
+      <div className="note">그대로 올리면 티가 나요. <b>내 경험 한 줄</b>을 꼭 넣어 고쳐 쓰세요.</div>
+      <button className="btn dark" onClick={()=>{try{navigator.clipboard.writeText(out);}catch(e){} notify("복사했어요");}}>
+        <I n="copy" s={18}/>복사하기</button>
+      <div className="row2">
+        <button className="btn line" onClick={gen} disabled={busy}><I n="refresh" s={17}/>다시</button>
+        <button className="btn line" onClick={()=>{ save2(d=>({...d,contents:[{id:uid(),kind,topic,target,out,date:today()},...d.contents]}));
+          notify("저장했어요"); }}>저장</button>
+      </div>
+      <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+      {db.contents.length>0&&(<React.Fragment><div className="h2"><span>저장한 콘텐츠</span></div>
+        <div className="list">{db.contents.slice(0,6).map(x=>(<div className="item" key={x.id} style={{cursor:"default"}}>
+          <span className="av" style={{background:"var(--line2)",color:"var(--ink3)"}}><I n="pen" s={18}/></span>
+          <span className="mid"><b>{x.topic}</b><span className="l2">{(KINDS.find(k=>k.k===x.kind)||{}).t} · {fmtL(x.date)}</span></span>
+          <button className="chip" onClick={()=>{try{navigator.clipboard.writeText(x.out);}catch(e){} notify("복사했어요");}}>복사</button>
+        </div>))}</div></React.Fragment>)}
+    </React.Fragment>)}
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   18. 교육센터 · 대본
+   ══════════════════════════════════════════════════════════════ */
+function Learn({db,nav,pro,upgrade}){
+  const [open,setOpen]=useState("t1");
+  const done=new Set(db.learned);
+  const pct=Math.round(db.learned.length/LESSON_TOTAL*100);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"home"})}><I n="back" s={18}/>홈</button>
+    <h1 className="h1">교육센터</h1>
+    <p className="sub">고객을 만들고 넓혀가는 전 과정을, 하루 한 과씩.</p>
+    <div className="card">
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:9}}>
+        <b style={{fontSize:15,fontWeight:800}}>{db.learned.length} / {LESSON_TOTAL}과 완료</b>
+        <span className="tiny num">{pct}%</span></div>
+      <div className="bar"><i style={{width:pct+"%",background:"linear-gradient(90deg,var(--gold),var(--gold2))"}}/></div>
+    </div>
+    {TRACKS.map(tr=>{ const n=tr.lessons.filter(l=>done.has(l.id)).length;
+      const locked=tr.pro&&!pro;
+      return (<div className="track" key={tr.id}>
+        <div className="trackh" onClick={()=>locked?upgrade("2·3단계 과정은 프로에서 열려요"):setOpen(open===tr.id?null:tr.id)}>
+          <span className="trackic" style={{background:tr.bg,color:tr.c}}><I n={tr.icon} s={20}/></span>
+          <div style={{flex:1,minWidth:0}}>
+            <b>{tr.name}{locked&&<span className="tagpill gold" style={{marginLeft:7}}>프로</span>}</b>
+            <span>{tr.sub} · {n}/{tr.lessons.length}과</span>
+            <div className="bar" style={{marginTop:7}}><i style={{width:`${n/tr.lessons.length*100}%`,background:tr.c}}/></div>
+          </div>
+          <I n={locked?"lock":open===tr.id?"chevd":"chev"} s={17} c="var(--ink4)"/>
+        </div>
+        {open===tr.id&&!locked&&tr.lessons.map(l=>(
+          <div className="lesson" key={l.id} onClick={()=>nav({n:"lesson",id:l.id})}>
+            <span className={done.has(l.id)?"ck on":"ck"}>{done.has(l.id)&&<I n="check" s={12}/>}</span>
+            <span style={{flex:1,minWidth:0}}><b>{l.t}</b><span>{l.d}</span></span>
+            <I n="chev" s={16} c="var(--ink4)"/></div>))}
+      </div>); })}
+    <button className="item" style={{marginTop:6}} onClick={()=>nav({n:"plays"})}>
+      <span className="av" style={{background:"var(--bluebg)",color:"var(--blue)"}}><I n="msg" s={19}/></span>
+      <span className="mid"><b>상황별 대본</b><span className="l2">첫 연락 · 거절 · 가격 · 소개 등 {PLAYBOOKS.length}종</span></span>
+      <I n="chev" s={17} c="var(--ink4)"/></button>
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+function Lesson({db,save2,nav,notify,id,pro,upgrade}){
+  const tr=TRACKS.find(t=>t.lessons.some(l=>l.id===id));
+  if(!tr) return null;
+  const l=tr.lessons.find(x=>x.id===id);
+  const done=db.learned.indexOf(id)>=0;
+  const toggle=()=>{ save2(d=>({...d,learned:done?d.learned.filter(x=>x!==id):[...d.learned,id]}));
+    notify(done?"완료를 취소했어요":"한 과 끝냈어요 👏"); if(!done) nav({n:"learn"}); };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"learn"})}><I n="back" s={18}/>{tr.name}</button>
+    <h1 className="h1">{l.t}</h1>
+    <div style={{display:"flex",alignItems:"center",marginBottom:14}}>
+      <p className="sub" style={{margin:0,flex:1}}>{l.d}</p>
+      <button className="speak" onClick={()=>speak(`${l.t}. ${l.p.join(" ")}`)}><I n="speaker" s={15}/>읽어주기</button>
+    </div>
+    <div className="card">{l.p.map((p,n)=><div className="point" key={n}><b>{n+1}</b><span>{p}</span></div>)}</div>
+    {l.s&&(<div className="card">
+      <span className="eyebrow">이렇게 말해보세요</span>
+      <p style={{margin:"10px 0 12px",fontSize:15.5,lineHeight:1.8,fontWeight:700,whiteSpace:"pre-wrap"}}>{l.s}</p>
+      <button className="btn quiet sm" onClick={()=>{try{navigator.clipboard.writeText(l.s);}catch(e){} notify("복사했어요");}}>
+        <I n="copy" s={16}/>복사</button></div>)}
+    <div className="card gold">
+      <span className="eyebrow">오늘 해볼 것</span>
+      <div style={{fontSize:16.5,fontWeight:800,lineHeight:1.65,marginTop:8,letterSpacing:"-.02em"}}>{l.x}</div>
+    </div>
+    <button className="btn dark" onClick={toggle}>{done?"완료 취소":"다 배웠어요"}</button>
+    <button className="btn line" onClick={()=>nav({n:"coach"})}><I n="msg" s={18}/>이 내용 코치에게 더 묻기</button>
+  </div>);
+}
+function Plays({db,nav,notify,pro,upgrade}){
+  const cats=[...new Set(PLAYBOOKS.map(p=>p.cat))];
+  const [f,setF]=useState("전체");
+  const [who,setWho]=useState(null);
+  const target=db.customers.find(c=>c.id===who)||null;
+  const list=PLAYBOOKS.filter(p=>f==="전체"||p.cat===f);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"learn"})}><I n="back" s={18}/>교육센터</button>
+    <h1 className="h1">상황별 대본</h1>
+    <p className="sub">받는 분을 고르면 이름이 자동으로 채워져요. 복사해서 그대로 보내셔도 됩니다.</p>
+    {db.customers.length>0&&(<React.Fragment>
+      <label className="label">누구에게 보낼까요? (이름이 자동으로 채워져요)</label>
+      <div className="chips scroll" style={{marginBottom:14}}>
+        <button className={!who?"chip on":"chip"} onClick={()=>setWho(null)}>선택 안 함</button>
+        {db.customers.slice(0,12).map(c=>(
+          <button key={c.id} className={who===c.id?"chip on":"chip"} onClick={()=>setWho(c.id)}>{c.name}</button>))}
+      </div></React.Fragment>)}
+    <div className="chips scroll" style={{marginBottom:16}}>
+      <button className={f==="전체"?"chip on":"chip"} onClick={()=>setF("전체")}>전체</button>
+      {cats.map(c=><button key={c} className={f===c?"chip on":"chip"} onClick={()=>setF(c)}>{c}</button>)}
+    </div>
+    {list.map(p=>{ const locked=p.pro&&!pro;
+      return (<div className="card" key={p.id} onClick={()=>locked&&upgrade("전체 대본은 프로에서 열려요")}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+          <span className="tagpill blue">{p.cat}</span>
+          <b style={{fontSize:15.5,fontWeight:800,flex:1}}>{p.t}</b>
+          {locked&&<I n="lock" s={16} c="var(--gold)"/>}
+        </div>
+        {locked?<p style={{margin:0,color:"var(--ink4)",fontSize:14.5}}>프로에서 볼 수 있어요 →</p>
+          :(<React.Fragment>
+            <p style={{margin:"0 0 12px",fontSize:15,lineHeight:1.8,color:"var(--ink2)",whiteSpace:"pre-wrap"}}>
+              {fill(p.s,target,db.profile.name)}</p>
+            <div className="row2" style={{marginBottom:0}}>
+              <button className="btn quiet sm" style={{flex:1}}
+                onClick={()=>{try{navigator.clipboard.writeText(fill(p.s,target,db.profile.name));}catch(e){} notify("복사했어요");}}>
+                <I n="copy" s={16}/>복사</button>
+              {target&&target.phone&&<a className="btn line sm" style={{flex:1,textDecoration:"none"}}
+                href={`sms:${target.phone}?body=${encodeURIComponent(fill(p.s,target,db.profile.name))}`}>
+                <I n="msg" s={16}/>문자로</a>}
+            </div></React.Fragment>)}
+      </div>); })}
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   19. 성장 · 팀 · 설정
+   ══════════════════════════════════════════════════════════════ */
+function Growth({db,nav,pro,upgrade,queue}){
+  const cs=db.customers.map(enrich);
+  const st=collectTags(db,"s").slice(0,6);
+  const wk=collectTags(db,"w").slice(0,6);
+  const focus=wk.filter(w=>w.count>=3)[0];
+  const month=db.records.filter(r=>r.date.slice(0,7)===today().slice(0,7)).length;
+  const rate=db.tasks.length?Math.round(db.tasks.filter(t=>t.done).length/db.tasks.length*100):0;
+  const won=cs.filter(c=>c.stage==="won").length;
+  const touchAvg=cs.length?Math.round(cs.reduce((a,c)=>a+(c.touches||0),0)/cs.length*10)/10:0;
+  return (<div className="pad" style={{paddingTop:"calc(20px + env(safe-area-inset-top,0px))",paddingBottom:20}}>
+    <h1 className="h1">나의 성장</h1>
+    <p className="sub">숫자보다 중요한 건 어제보다 하나 더 하는 것.</p>
+    <div className="stats">
+      <div className="st"><b className="num">{db.streak.count}</b><span>연속 실행일</span></div>
+      <div className="st"><b className="num">{month}</b><span>이번 달 기록</span></div>
+      <div className="st"><b className="num">{rate}%</b><span>실행 완료율</span></div>
+    </div>
+    <div className="stats">
+      <div className="st"><b className="num">{won}</b><span>성사</span></div>
+      <div className="st"><b className="num">{touchAvg}</b><span>평균 접촉</span></div>
+      <div className="st"><b className="num">{db.learned.length}</b><span>이수한 과</span></div>
+    </div>
+
+    {focus?(<div className="card gold">
+      <span className="eyebrow">이달의 집중 과제</span>
+      <h2 style={{fontSize:20,fontWeight:800,letterSpacing:"-.03em",margin:"8px 0 6px"}}>{focus.tag}</h2>
+      <p className="sub" style={{margin:0}}>{focus.count}번 반복해서 나왔어요. 이것 하나만 고쳐도 크게 달라집니다.</p>
+    </div>):(<div className="card">
+      <p className="sub" style={{margin:0}}>같은 지적이 3번 쌓이면 AI가 집중 과제를 정해드려요. 기록을 이어가 보세요.</p></div>)}
+
+    {st.length>0&&(<React.Fragment><div className="h2"><span>잘하고 계신 것</span></div>
+      <div className="chips">{st.map(s=><span key={s.tag} className="tagpill good" style={{fontSize:13,padding:"7px 12px"}}>
+        {s.tag}{s.count>1&&` ${s.count}`}</span>)}</div></React.Fragment>)}
+    {wk.length>0&&(<React.Fragment><div className="h2"><span>더 좋아질 수 있는 것</span></div>
+      <div className="chips">{wk.map(s=><span key={s.tag} className="tagpill" style={{fontSize:13,padding:"7px 12px",
+        background:"var(--goldbg)",color:"var(--gold)"}}>{s.tag}{s.count>1&&` ${s.count}`}</span>)}</div></React.Fragment>)}
+
+    <div className="h2"><span>더 보기</span></div>
+    <div className="list">
+      {[["revenue","coin","매출 관리",`이번 달 ${won2(revenueOf(db,today().slice(0,7)))}`],
+        ["report","note","주간 리포트",pro?"한 주 요약 보기":"프로 기능"],
+        ["schedule","cal","연락 일정","이번 주 계획"],
+        ["learn","book","교육센터",`${db.learned.length}/${LESSON_TOTAL}과 완료`],
+        ["plays","msg","상황별 대본",`${PLAYBOOKS.length}종`],
+        ["content","pen","콘텐츠 만들기","SNS · 메시지 · 제안서"],
+        ["team","users","팀 관리",pro?`그룹원 ${db.members.length}명`:"프로 기능"],
+        ["settings","chart","설정 · 내 정보","요금제 · 백업 · 초기화"]].map(([n,ic,t,s])=>(
+        <button key={n} className="item" onClick={()=>n==="team"&&!pro?upgrade("팀 관리는 프로 기능이에요"):nav({n})}>
+          <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={ic} s={19}/></span>
+          <span className="mid"><b>{t}</b><span className="l2">{s}</span></span>
+          <I n={n==="team"&&!pro?"lock":"chev"} s={17} c="var(--ink4)"/></button>))}
+    </div>
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+
+function Team({db,save2,nav,notify,pro,upgrade}){
+  const [add,setAdd]=useState(false);
+  const [nf,setNf]=useState({name:"",note:""});
+  const ms=db.members.map(m=>{ const g=m.lastActive?gap(m.lastActive,today()):999;
+    const jd=m.joined?gap(m.joined,today()):999;
+    return {...m,gap:g,joinDays:jd,risk:g>7,newbie:jd<=21}; }).sort((a,b)=>b.gap-a.gap);
+  const risk=ms.filter(m=>m.risk).length, cand=ms.filter(m=>m.candidate).length, nb=ms.filter(m=>m.newbie).length;
+  const touch=id=>{ save2(d=>({...d,members:d.members.map(m=>m.id===id?{...m,lastActive:today(),activity:(m.activity||0)+1}:m)}));
+    notify("연락을 기록했어요"); };
+  const flip=id=>save2(d=>({...d,members:d.members.map(m=>m.id===id?{...m,candidate:!m.candidate}:m)}));
+  const Bar2=({v,max,c})=>(<div className="bar" style={{marginTop:4}}><i style={{width:`${Math.min(100,v/max*100)}%`,background:c}}/></div>);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={18}/>성장</button>
+    <h1 className="h1">팀 관리</h1>
+    <p className="sub">신입은 첫 3주, 리더 후보는 꾸준함으로 찾습니다.</p>
+    <div className="stats">
+      <div className="st"><b className="num">{ms.length}</b><span>그룹원</span></div>
+      <div className="st"><b className="num" style={{color:risk?"var(--warn)":undefined}}>{risk}</b><span>연락 필요</span></div>
+      <div className="st"><b className="num" style={{color:"var(--gold)"}}>{cand}</b><span>리더 후보</span></div>
+    </div>
+    {nb>0&&<div className="note">합류 3주 안쪽인 분이 {nb}명 있어요. 이 시기에 작은 성공 하나를 만들어 주세요.</div>}
+    {ms.map(m=>(<div className="card" key={m.id}>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <span className="av" style={avStyle(m.name)}>{initial(m.name)}</span>
+        <b style={{flex:1,fontSize:16,fontWeight:800}}>{m.name}</b>
+        {m.newbie&&<span className="tagpill blue">신입 {m.joinDays}일차</span>}
+        {m.candidate&&<span className="tagpill gold">리더 후보</span>}
+        <span className={m.risk?"tagpill warn":"tagpill good"}>{m.gap>900?"기록 없음":`${m.gap}일 전`}</span>
+      </div>
+      {m.note&&<div className="tiny" style={{marginTop:9}}>{m.note}</div>}
+      <div style={{display:"flex",gap:10,marginTop:12}}>
+        <div style={{flex:1}}><span className="tiny">활동 {m.activity||0}</span><Bar2 v={m.activity||0} max={10} c="#2350D8"/></div>
+        <div style={{flex:1}}><span className="tiny">교육 {m.lessons||0}과</span><Bar2 v={m.lessons||0} max={LESSON_TOTAL} c="#1F7A4C"/></div>
+        <div style={{flex:1}}><span className="tiny">소개 {m.recruits||0}명</span><Bar2 v={m.recruits||0} max={6} c="#B98B2E"/></div>
+      </div>
+      <div className="row2" style={{marginTop:12,marginBottom:0}}>
+        <button className="btn quiet sm" style={{flex:1}} onClick={()=>touch(m.id)}>연락했어요</button>
+        <button className="btn line sm" style={{flex:1}} onClick={()=>flip(m.id)}>{m.candidate?"후보 해제":"리더 후보로"}</button>
+      </div>
+    </div>))}
+    {ms.length===0&&<div className="blank">아직 그룹원이 없어요.<br/>함께 일하는 분을 추가해 보세요.</div>}
+    {add?(<div className="card">
+      <span className="eyebrow">새 그룹원</span>
+      <input className="inp" style={{marginTop:10}} placeholder="이름" value={nf.name} onChange={e=>setNf({...nf,name:e.target.value})}/>
+      <input className="inp" placeholder="메모 (예: 이번 주 합류)" value={nf.note} onChange={e=>setNf({...nf,note:e.target.value})}/>
+      <div className="row2" style={{marginBottom:0}}>
+        <button className="btn dark sm" style={{flex:1}} disabled={!nf.name.trim()} onClick={()=>{
+          save2(d=>({...d,members:[...d.members,{id:uid(),name:nf.name.trim(),note:nf.note.trim(),joined:today(),
+            lastActive:today(),activity:0,lessons:0,recruits:0,candidate:false}]}));
+          setNf({name:"",note:""}); setAdd(false); notify("추가했어요"); }}>추가</button>
+        <button className="btn line sm" style={{flex:1}} onClick={()=>setAdd(false)}>취소</button>
+      </div></div>):<button className="btn line" onClick={()=>setAdd(true)}><I n="plus" s={18}/>그룹원 추가</button>}
+  </div>);
+}
+
+function Settings({db,save,save2,nav,notify,pro,upgrade,dark}){
+  const cs=db.customers.map(enrich);
+  const [,setTheme]=useState(dark);
+  const [noti,setNoti]=useState(typeof Notification!=="undefined"?Notification.permission:"unsupported");
+  const askNoti=()=>{ if(typeof Notification==="undefined"){notify("이 브라우저는 알림을 지원하지 않아요");return;}
+    Notification.requestPermission().then(r=>{ setNoti(r);
+      notify(r==="granted"?"알림을 켰어요":"알림이 허용되지 않았어요"); }); };
+  const importJson=e=>{ const f=e.target.files&&e.target.files[0]; if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{ try{ const j=JSON.parse(rd.result);
+        if(!j||!Array.isArray(j.customers)) throw new Error("bad");
+        if(!confirm(`고객 ${j.customers.length}명이 담긴 백업이에요. 지금 기록을 덮어쓸까요?`))return;
+        save({...emptyState(),...j}); notify("복원했어요"); nav({n:"home"});
+      }catch(err){ notify("백업 파일을 읽지 못했어요"); } };
+    rd.readAsText(f); e.target.value=""; };
+  const exportJson=()=>{
+    if(!pro){ upgrade("데이터 내보내기는 프로 기능이에요"); return; }
+    const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=`aivo-backup-${today()}.json`; a.click(); notify("백업 파일을 내려받았어요");
+  };
+  const share=()=>{
+    const t="고객관리, 하루에 하나씩. AIVO";
+    const url=window.location.href;
+    if(navigator.share){ navigator.share({title:t,text:t,url}).catch(()=>{}); return; }
+    try{ navigator.clipboard.writeText(`${t}\n${url}`); notify("공유 문구를 복사했어요"); }catch(e){}
+  };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={18}/>성장</button>
+    <h1 className="h1">설정</h1>
+    <div className={pro?"card gold":"card"}>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <span className="av" style={pro?{background:"linear-gradient(140deg,#E2C994,#AF8C39)",color:"#211809"}
+          :{background:"var(--line2)",color:"var(--ink3)"}}><I n="crown" s={19}/></span>
+        <div style={{flex:1}}><b style={{fontSize:16,fontWeight:800}}>{pro?"AIVO 프로":"무료 버전"}</b>
+          <div className="tiny">{pro?"모든 기능이 열려 있어요":`고객 ${db.customers.length}/${PLAN.free.customers}명 · AI 하루 ${PLAN.free.aiPerDay}회`}</div></div>
+        <button className="btn dark sm" style={{width:"auto",padding:"10px 14px"}} onClick={()=>upgrade()}>
+          {pro?"관리":"업그레이드"}</button>
+      </div>
+      {!pro&&(<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid var(--line2)"}}>
+        <div className="tiny" style={{marginBottom:6}}>고객 등록 {db.customers.length} / {PLAN.free.customers}</div>
+        <div className="bar"><i style={{width:`${Math.min(100,db.customers.length/PLAN.free.customers*100)}%`,
+          background:db.customers.length>=PLAN.free.customers?"var(--warn)":"var(--ink)"}}/></div>
+      </div>)}
+    </div>
+    <div className="card">
+      <div className="field"><label className="label">이름</label>
+        <input className="inp" value={db.profile.name} onChange={e=>save2(d=>({...d,profile:{...d.profile,name:e.target.value}}))}/></div>
+      <label className="label">하는 일</label>
+      <div className="chips" style={{marginBottom:14}}>
+        {JOBS.map(j=><button key={j.k} className={db.profile.job===j.k?"chip on":"chip"}
+          onClick={()=>save2(d=>({...d,profile:{...d.profile,job:j.k}}))}>{j.n}</button>)}
+      </div>
+      <label className="label">유지할 진행 중 {lbl(db)} 수 · {db.profile.goal}명</label>
+      <input type="range" min="3" max="30" value={db.profile.goal} style={{width:"100%",accentColor:"var(--gold)"}}
+        onChange={e=>save2(d=>({...d,profile:{...d.profile,goal:+e.target.value}}))}/>
+    </div>
+    <div className="card">
+      <label className="label">화면</label>
+      <div className="chips" style={{marginBottom:16}}>
+        {[["light","밝게"],["dark","어둡게"],["auto","기기 설정 따라"]].map(([k,n])=>(
+          <button key={k} className={(db.profile.theme||"light")===k?"chip on":"chip"}
+            onClick={()=>{ save2(d=>({...d,profile:{...d.profile,theme:k}}));
+              const isD=k==="dark"||(k==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+              document.documentElement.dataset.theme=isD?"dark":"light"; setTheme(isD); }}>{n}</button>))}
+      </div>
+      <label className="label">매일 알림 받을 시각</label>
+      <div style={{display:"flex",gap:9,alignItems:"center"}}>
+        <input className="inp" type="time" style={{flex:1,marginBottom:0}} value={db.profile.remindAt||"09:00"}
+          onChange={e=>save2(d=>({...d,profile:{...d.profile,remindAt:e.target.value}}))}/>
+        <button className="btn line sm" style={{width:"auto",padding:"13px 15px"}} onClick={askNoti}>
+          <I n="bell" s={17}/>{noti==="granted"?"켜짐":"허용하기"}</button>
+      </div>
+      <div className="tiny" style={{marginTop:8}}>앱이 열려 있을 때 그 시각에 오늘 할 일을 알려드려요.</div>
+    </div>
+    <div className="list">
+      <button className="item" onClick={exportJson}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="export" s={19}/></span>
+        <span className="mid"><b>데이터 내보내기</b><span className="l2">기기가 바뀌어도 옮길 수 있어요</span></span>
+        <I n={pro?"chev":"lock"} s={17} c="var(--ink4)"/></button>
+      <label className="item" style={{cursor:"pointer"}}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="upload" s={19}/></span>
+        <span className="mid"><b>백업 파일 불러오기</b><span className="l2">기기를 바꿨을 때 그대로 복원</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/>
+        <input type="file" accept="application/json" style={{display:"none"}} onChange={importJson}/></label>
+      <button className="item" onClick={()=>nav({n:"import"})}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="users" s={19}/></span>
+        <span className="mid"><b>연락처 일괄 등록</b><span className="l2">이름을 붙여넣어 한 번에</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>
+      <button className="item" onClick={share}>
+        <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n="heart" s={19}/></span>
+        <span className="mid"><b>AIVO 알리기</b><span className="l2">동료에게 공유하기</span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>
+    </div>
+    <div className="card" style={{marginTop:12}}>
+      <span className="eyebrow">저장 현황</span>
+      <div className="kv" style={{marginTop:8}}><span>고객</span><b>{cs.length}명</b></div>
+      <div className="kv"><span>기록</span><b>{db.records.length}건</b></div>
+      <div className="kv"><span>할 일</span><b>{db.tasks.filter(t=>!t.done).length}건 남음</b></div>
+      <div className="kv"><span>저장 위치</span><b style={{fontWeight:600,color:"var(--ink3)"}}>이 기기 (오프라인)</b></div>
+    </div>
+    <button className="ghostlink" onClick={()=>{ if(confirm("모든 기록을 지울까요? 되돌릴 수 없어요."))
+      { save(emptyState()); notify("초기화했어요"); nav({n:"home"}); } }}>모든 기록 지우기</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   20. 일정 — 이번 주 연락 계획
+   ══════════════════════════════════════════════════════════════ */
+const WD=["일","월","화","수","목","금","토"];
+function Schedule({db,save2,nav,notify,pro,upgrade,queue}){
+  const [sel,setSel]=useState(today());
+  const [off,setOff]=useState(0);
+  const cs=db.customers.map(enrich);
+  const byId=Object.fromEntries(cs.map(c=>[c.id,c]));
+  const base=addDays(today(),off*7);
+  const start=addDays(base,-new Date(base).getDay());
+  const days=[...Array(7)].map((_,i)=>addDays(start,i));
+  const onDay=d=>{
+    const ts=db.tasks.filter(t=>!t.done&&t.due===d).map(t=>({kind:"task",id:t.id,title:t.title,
+      sub:(byId[t.customerId]||{}).name||"나의 일",cust:byId[t.customerId],task:t}));
+    const rs=cs.filter(c=>c.nextContact===d&&!db.tasks.some(t=>!t.done&&t.customerId===c.id&&t.due===d))
+      .map(c=>({kind:"reach",id:c.id,title:`${c.name}님께 연락`,sub:`${c.st.n} · ${c.st.act}`,cust:c}));
+    const bs=cs.filter(c=>{ const n=bdayIn(c.birthday); return n!=null&&addDays(today(),n)===d; })
+      .map(c=>({kind:"bday",id:"b"+c.id,title:`${c.name}님 생일`,sub:"축하 인사 보내기",cust:c}));
+    return [...ts,...rs,...bs];
+  };
+  const items=onDay(sel);
+  const late=cs.filter(c=>c.overdue&&c.stage!=="won");
+  return (<div className="pad" style={{paddingTop:"calc(22px + env(safe-area-inset-top,0px))"}}>
+    <span className="eyebrow">Schedule</span>
+    <h1 className="h1">연락 일정</h1>
+    <div className="rule"/>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+      <button className="chip" onClick={()=>setOff(off-1)}>‹ 지난주</button>
+      <b style={{fontSize:13.5,fontWeight:800}}>{off===0?"이번 주":off===1?"다음 주":`${fmtL(start)} 주`}</b>
+      <button className="chip" onClick={()=>setOff(off+1)}>다음주 ›</button>
+    </div>
+    <div className="week">
+      {days.map(d=>{ const n=onDay(d).length;
+        return (<button key={d} className={"day"+(sel===d?" on":"")+(d===today()?" today":"")} onClick={()=>setSel(d)}>
+          <div className="dw">{WD[new Date(d).getDay()]}</div>
+          <div className="dn">{new Date(d).getDate()}</div>
+          <span className={n?"pip":"pip none"}/></button>); })}
+    </div>
+    <div className="h2"><span>{fmtL(sel)}{sel===today()?" · 오늘":""}</span><span className="tiny">{items.length}건</span></div>
+    <div className="list">
+      {items.map(it=>(<button key={it.kind+it.id} className="item"
+        onClick={()=>it.cust?nav({n:"customer",id:it.cust.id}):nav({n:"run"})}>
+        <span className="av" style={it.cust?avStyle(it.cust.name):{background:"var(--line2)",color:"var(--ink3)"}}>
+          {it.cust?initial(it.cust.name):<I n="flag" s={18}/>}</span>
+        <span className="mid"><b>{it.title}</b>
+          <span className="l2">{it.sub}
+            <span className={"tagpill "+(it.kind==="bday"?"gold":it.kind==="task"?"blue":"")}>
+              {it.kind==="bday"?"기념일":it.kind==="task"?"할 일":"연락"}</span></span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>))}
+      {items.length===0&&<div className="blank">이 날은 예정이 없어요.<br/>비는 날엔 새로운 분을 한 명 만나보세요.</div>}
+    </div>
+    {late.length>0&&(<React.Fragment>
+      <div className="h2"><span>지난 일정 · 밀린 연락</span><span className="tiny">{late.length}명</span></div>
+      <div className="list">{late.slice(0,5).map(c=><CustRow key={c.id} c={c} go={()=>nav({n:"customer",id:c.id})}/>)}</div>
+    </React.Fragment>)}
+    <button className="btn dark" style={{marginTop:16}} onClick={()=>nav({n:"run"})}>
+      <I n="target" s={18}/>오늘 것부터 하나씩 하기</button>
+    <AdSlot pro={pro} onUpgrade={()=>upgrade()}/>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   21. 매출 — 성사 금액과 목표
+   ══════════════════════════════════════════════════════════════ */
+function Revenue({db,save2,nav,notify,pro,upgrade}){
+  const ym=today().slice(0,7);
+  const goal=db.profile.revGoal||0;
+  const cur=revenueOf(db,ym);
+  const pct=goal?Math.min(100,Math.round(cur/goal*100)):0;
+  const ms=monthsBack(6).map(m=>({...m,v:revenueOf(db,m.ym)}));
+  const mx=Math.max(1,...ms.map(m=>m.v));
+  const wonList=db.customers.filter(c=>c.stage==="won").sort((a,b)=>(b.wonAt||"").localeCompare(a.wonAt||""));
+  const pipe=db.customers.map(enrich).filter(c=>ACTIVE.indexOf(c.stage)>=0)
+    .reduce((a,c)=>a+(c.value||0)*(c.st.w/100),0);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Revenue</span>
+    <h1 className="h1">매출</h1>
+    <div className="rule"/>
+    <div className="card gold">
+      <span className="eyebrow">{new Date().getMonth()+1}월 매출</span>
+      <div style={{display:"flex",alignItems:"baseline",gap:8,margin:"8px 0 4px"}}>
+        <b className="num serif" style={{fontSize:32,letterSpacing:"-.045em"}}>{won2(cur)}</b>
+        {goal>0&&<span className="tiny">/ 목표 {won2(goal)}</span>}
+      </div>
+      {goal>0&&(<React.Fragment>
+        <div className="bar" style={{marginTop:10}}><i style={{width:pct+"%",background:"var(--gold)"}}/></div>
+        <div className="tiny" style={{marginTop:7}}>{pct}% 달성 · 남은 금액 {won2(Math.max(0,goal-cur))}</div>
+      </React.Fragment>)}
+    </div>
+    <div className="card">
+      <span className="eyebrow">최근 6개월</span>
+      <div className="mbars">
+        {ms.map(m=>(<div className="mb" key={m.ym}>
+          <i style={{height:`${Math.max(4,m.v/mx*72)}px`,background:m.ym===ym?"var(--gold)":"var(--track)"}}/>
+          <span>{m.m}월</span></div>))}
+      </div>
+      <div className="kv" style={{marginTop:14}}><span>진행 중 예상</span><b>{won2(pipe)}</b></div>
+      <div className="kv"><span>누적 성사</span><b>{won2(db.customers.reduce((a,c)=>a+(c.stage==="won"?wonValueOf(c):0),0))}</b></div>
+    </div>
+    <div className="card">
+      <label className="label">이번 달 목표 (원)</label>
+      <input className="inp" type="number" inputMode="numeric" value={goal||""}
+        placeholder="예) 3000000"
+        onChange={e=>save2(d=>({...d,profile:{...d.profile,revGoal:+e.target.value||0}}))}/>
+      <div className="tiny">목표를 정하면 홈 대시보드에도 진척이 표시돼요.</div>
+    </div>
+    <div className="h2"><span>성사한 {lbl(db)}</span><span className="tiny">{wonList.length}명</span></div>
+    <div className="list">
+      {wonList.map(c=>(<button key={c.id} className="item" onClick={()=>nav({n:"customer",id:c.id})}>
+        <span className="av" style={avStyle(c.name)}>{initial(c.name)}</span>
+        <span className="mid"><b>{c.name}</b>
+          <span className="l2">{c.wonAt?fmtL(c.wonAt):"날짜 미기록"}<span className="dot"/>
+            <span style={{fontWeight:800,color:"var(--good)"}}>{won2(wonValueOf(c))}</span></span></span>
+        <I n="chev" s={17} c="var(--ink4)"/></button>))}
+      {wonList.length===0&&<div className="blank">아직 성사 기록이 없어요.<br/>고객 단계를 '성사'로 바꾸면 여기에 쌓입니다.</div>}
+    </div>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   22. 일괄 등록 — 붙여넣기 한 번으로
+   ══════════════════════════════════════════════════════════════ */
+function parseLines(txt){
+  return txt.split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{
+    const parts=l.split(/[,\t]/).map(x=>x.trim());
+    let name="",org="",phone="";
+    if(parts.length>1){ name=parts[0];
+      parts.slice(1).forEach(x=>{ if(/01[016-9][-. ]?\d{3,4}[-. ]?\d{4}/.test(x)) phone=x; else if(!org) org=x; });
+    } else { const m=l.match(/(01[016-9][-. ]?\d{3,4}[-. ]?\d{4})/);
+      if(m){ phone=m[1]; name=l.replace(m[1],"").trim(); } else name=l; }
+    return {name:name.slice(0,20),org:org.slice(0,30),phone};
+  }).filter(x=>x.name);
+}
+function ImportPeople({db,save2,nav,notify,pro,upgrade}){
+  const [txt,setTxt]=useState("");
+  const [stage,setStage]=useState("new");
+  const rows=useMemo(()=>parseLines(txt),[txt]);
+  const room=pro?rows.length:Math.max(0,PLAN.free.customers-db.customers.length);
+  const willAdd=Math.min(rows.length,room);
+  const unit=lbl(db);
+  const doAdd=()=>{
+    const add=rows.slice(0,willAdd).map(r=>({id:uid(),name:r.name,org:r.org,phone:r.phone,needs:"",memo:"",
+      source:"일괄 등록",stage,temp:3,value:0,createdAt:today(),lastContact:null,touches:0,
+      nextContact:addDays(today(),SK[stage].cad),cares:[],objections:[],works:[],
+      history:[{id:uid(),date:today(),kind:"add",text:"일괄 등록"}]}));
+    save2(d=>({...d,customers:[...add,...d.customers]}));
+    notify(`${add.length}명을 등록했어요`); nav({n:"customers"});
+  };
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"customers"})}><I n="back" s={17}/>뒤로</button>
+    <span className="eyebrow">Import</span>
+    <h1 className="h1">한 번에 등록하기</h1>
+    <p className="sub">이름을 한 줄에 하나씩 붙여넣으세요. 쉼표로 소속·전화번호를 같이 넣어도 됩니다.</p>
+    <div className="note">예시<br/>김성호, 한빛물류, 010-1111-2222<br/>박지훈, 010-3333-4444<br/>이수민</div>
+    <textarea className="area" style={{minHeight:170}} value={txt} onChange={e=>setTxt(e.target.value)}
+      placeholder={"김성호, 한빛물류, 010-1111-2222\n박지훈\n이수민"}/>
+    <label className="label">모두 이 단계로 넣기</label>
+    <div className="chips" style={{marginBottom:16}}>
+      {STAGES.filter(x=>x.k!=="won").map(x=>(
+        <button key={x.k} className={stage===x.k?"chip on":"chip"} onClick={()=>setStage(x.k)}>{x.n}</button>))}
+    </div>
+    {rows.length>0&&(<React.Fragment>
+      <div className="h2"><span>미리보기</span><span className="tiny">{rows.length}명 인식</span></div>
+      <div className="list">
+        {rows.slice(0,8).map((r,i)=>(<div key={i} className="item" style={{cursor:"default",opacity:i<willAdd?1:.4}}>
+          <span className="av" style={avStyle(r.name)}>{initial(r.name)}</span>
+          <span className="mid"><b>{r.name}</b>
+            <span className="l2">{[r.org,r.phone].filter(Boolean).join(" · ")||"정보 없음"}</span></span>
+          {i>=willAdd&&<span className="tagpill warn">한도 초과</span>}</div>))}
+        {rows.length>8&&<div className="tiny" style={{textAlign:"center",padding:8}}>외 {rows.length-8}명</div>}
+      </div>
+    </React.Fragment>)}
+    {!pro&&rows.length>room&&(<div style={{marginTop:12}}>
+      <Locked text={`무료는 ${unit} ${PLAN.free.customers}명까지예요. 무제한으로 늘리기`} onClick={()=>upgrade()}/></div>)}
+    <button className="btn dark" style={{marginTop:14}} disabled={willAdd===0} onClick={doAdd}>
+      {willAdd>0?`${willAdd}명 등록하기`:"등록할 사람이 없어요"}</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   23. 주간 리포트
+   ══════════════════════════════════════════════════════════════ */
+function Report({db,nav,pro,upgrade}){
+  const from=addDays(today(),-6);
+  const inWeek=d=>d&&d>=from&&d<=today();
+  const cs=db.customers.map(enrich);
+  const doneTasks=db.tasks.filter(t=>t.done&&inWeek(t.doneAt));
+  const recs=db.records.filter(r=>inWeek(r.date));
+  const added=db.customers.filter(c=>inWeek(c.createdAt));
+  const wonW=db.customers.filter(c=>c.stage==="won"&&inWeek(c.wonAt));
+  const contacts=cs.reduce((a,c)=>a+((c.history||[]).filter(h=>inWeek(h.date)&&h.kind==="contact").length),0);
+  const next=cs.filter(c=>c.nextContact&&c.nextContact>today()&&c.nextContact<=addDays(today(),7));
+  const overdue=cs.filter(c=>c.overdue&&c.stage!=="won");
+  const strong=collectTags(db,"s")[0], weak=collectTags(db,"w")[0];
+  if(!pro) return (<div className="pad">
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Weekly</span><h1 className="h1">주간 리포트</h1><div className="rule"/>
+    <div className="card center"><div style={{color:"var(--gold)",marginBottom:14}}><I n="lock" s={28}/></div>
+      <p className="sub">한 주 동안의 접촉·성사·다음 주 예정을 한 장으로 정리해 드려요.</p>
+      <button className="btn gold" onClick={()=>upgrade("주간 리포트는 프로 기능이에요")}>프로 살펴보기</button></div></div>);
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Weekly Report</span>
+    <h1 className="h1">{fmtL(from)} – {fmtL(today())}</h1>
+    <div className="rule"/>
+    <div className="stats">
+      <div className="st"><b className="num">{contacts}</b><span>접촉</span></div>
+      <div className="st"><b className="num">{doneTasks.length}</b><span>실행 완료</span></div>
+      <div className="st"><b className="num">{added.length}</b><span>새 {lbl(db)}</span></div>
+    </div>
+    <div className="card">
+      <span className="eyebrow">이번 주 성사</span>
+      <div style={{display:"flex",alignItems:"baseline",gap:8,marginTop:8}}>
+        <b className="serif num" style={{fontSize:28}}>{wonW.length}건</b>
+        <span className="tiny">{won2(wonW.reduce((a,c)=>a+wonValueOf(c),0))}</span></div>
+      {wonW.length>0&&<div className="tiny" style={{marginTop:8}}>{wonW.map(c=>c.name).join(", ")}</div>}
+    </div>
+    <div className="card">
+      <span className="eyebrow">다음 주 예정</span>
+      <div className="kv" style={{marginTop:8}}><span>연락 예정</span><b>{next.length}명</b></div>
+      <div className="kv"><span>밀린 연락</span><b className={overdue.length?"warn":""}>{overdue.length}명</b></div>
+      <div className="kv"><span>기록한 미팅</span><b>{recs.length}건</b></div>
+    </div>
+    {(strong||weak)&&(<div className="card">
+      <span className="eyebrow">코치 총평</span>
+      {strong&&<p style={{margin:"10px 0 0",fontSize:15,lineHeight:1.75,color:"var(--ink2)"}}>
+        <b style={{color:"var(--good)"}}>잘하신 것</b> — “{strong.tag}” {strong.count}번. 계속 이렇게 하세요.</p>}
+      {weak&&<p style={{margin:"10px 0 0",fontSize:15,lineHeight:1.75,color:"var(--ink2)"}}>
+        <b style={{color:"var(--gold)"}}>고칠 것</b> — “{weak.tag}” {weak.count}번 반복. 다음 주엔 이것 하나만 신경 쓰세요.</p>}
+    </div>)}
+    <button className="btn line" onClick={()=>nav({n:"coach"})}><I n="msg" s={18}/>이번 주 어땠는지 코치와 이야기</button>
+  </div>);
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
