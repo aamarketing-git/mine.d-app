@@ -634,7 +634,7 @@ const initial=s=>(s||"?").trim().slice(0,1);
 const hue=s=>{let h=0;for(let i=0;i<(s||"").length;i++)h=(h*31+s.charCodeAt(i))%360;return h;};
 const avStyle=name=>({background:`hsl(${hue(name)} 38% 50% / .13)`,color:`hsl(${hue(name)} 42% 44%)`});
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-const emptyState=()=>({v:2,
+const emptyState=()=>({v:2,updatedAt:0,
   profile:{name:"",job:"any",goal:5,onboarded:false,plan:"free"},
   usage:{date:today(),ai:0,bonus:0,steps:0},
   streak:{count:0,last:null},
@@ -647,6 +647,68 @@ const store={
     try{return localStorage.getItem(k);}catch(e){return memStore[k]||null;} },
   async set(k,v){ if(window.storage&&window.storage.set){try{await window.storage.set(k,v);return;}catch(e){}}
     try{localStorage.setItem(k,v);}catch(e){memStore[k]=v;} }
+};
+
+/* ══════════════════════════════════════════════════════════════
+   5-1. 계정 · 클라우드 동기화
+   ──────────────────────────────────────────────────────────────
+   아래 FIREBASE 값을 채우면 로그인과 기기 간 동기화가 켜집니다.
+   비워두면 지금처럼 이 기기(브라우저)에만 저장됩니다.
+
+   설정 방법
+   1) console.firebase.google.com 에서 프로젝트 생성
+   2) Authentication → 이메일/비밀번호, Google 사용 설정
+   3) Firestore Database 생성 후 규칙을 아래처럼 (본인 문서만 읽고 쓰기)
+        match /users/{uid} { allow read, write: if request.auth.uid == uid; }
+   4) 프로젝트 설정 → 웹 앱 추가 → 나온 값을 그대로 옮겨 적기
+   ══════════════════════════════════════════════════════════════ */
+const FIREBASE={ apiKey:"", authDomain:"", projectId:"", appId:"" };
+const CLOUD_ON=!!(FIREBASE.apiKey&&FIREBASE.projectId);
+const GUESTKEY="aivo-guest";
+
+function loadScript(src){ return new Promise((ok,no)=>{
+  const el=document.createElement("script"); el.src=src; el.onload=ok; el.onerror=()=>no(new Error(src));
+  document.head.appendChild(el); }); }
+let FB=null, fbErr=null;
+async function initCloud(){
+  if(FB) return FB;
+  if(!CLOUD_ON) throw new Error("cloud-off");
+  const base="https://www.gstatic.com/firebasejs/10.12.2/";
+  await loadScript(base+"firebase-app-compat.js");
+  await Promise.all([loadScript(base+"firebase-auth-compat.js"),loadScript(base+"firebase-firestore-compat.js")]);
+  const f=window.firebase;
+  if(!f.apps.length) f.initializeApp(FIREBASE);
+  FB={f,auth:f.auth(),db:f.firestore()};
+  try{ await FB.db.enablePersistence({synchronizeTabs:true}); }catch(e){}
+  return FB;
+}
+const authMsg=e=>{ const c=(e&&e.code)||"";
+  if(c.indexOf("email-already-in-use")>=0) return "이미 가입된 이메일이에요. 로그인해 주세요.";
+  if(c.indexOf("invalid-email")>=0) return "이메일 주소를 다시 확인해 주세요.";
+  if(c.indexOf("weak-password")>=0) return "비밀번호는 6자 이상으로 정해주세요.";
+  if(c.indexOf("wrong-password")>=0||c.indexOf("invalid-credential")>=0) return "이메일이나 비밀번호가 맞지 않아요.";
+  if(c.indexOf("user-not-found")>=0) return "가입되지 않은 이메일이에요. 먼저 가입해 주세요.";
+  if(c.indexOf("too-many-requests")>=0) return "잠시 뒤에 다시 시도해 주세요.";
+  if(c.indexOf("popup-closed")>=0) return "";
+  if(c.indexOf("network")>=0) return "인터넷 연결을 확인해 주세요.";
+  return "지금은 연결이 어려워요. 잠시 뒤 다시 시도해 주세요."; };
+const cloud={
+  async signUp(email,pw){ const {auth}=await initCloud(); return auth.createUserWithEmailAndPassword(email,pw); },
+  async signIn(email,pw){ const {auth}=await initCloud(); return auth.signInWithEmailAndPassword(email,pw); },
+  async google(){ const {f,auth}=await initCloud();
+    return auth.signInWithPopup(new f.auth.GoogleAuthProvider()); },
+  async reset(email){ const {auth}=await initCloud(); return auth.sendPasswordResetEmail(email); },
+  async signOut(){ if(FB) await FB.auth.signOut(); },
+  async watch(cb){ try{ const {auth}=await initCloud(); auth.onAuthStateChanged(cb); }
+    catch(e){ fbErr=e; cb(null); } },
+  async pull(uid){ const {db}=await initCloud();
+    const doc=await db.collection("users").doc(uid).get();
+    if(!doc.exists) return null;
+    const d=doc.data()||{};
+    try{ return {state:JSON.parse(d.stateJson||"null"),updatedAt:d.updatedAt||0}; }catch(e){ return null; } },
+  async push(uid,state,email){ const {db}=await initCloud();
+    await db.collection("users").doc(uid).set({stateJson:JSON.stringify(state),
+      updatedAt:Date.now(),email:email||"",app:"aivo"},{merge:true}); }
 };
 
 /* 태그 누적 */
@@ -923,18 +985,56 @@ function App(){
   const [inter,setInter]=useState(false);
   const [quick,setQuick]=useState(false);
   const [dark,setDark]=useState(false);
+  const [user,setUser]=useState(CLOUD_ON?undefined:null);
+  const [guest,setGuest]=useState(()=>{ try{return !!localStorage.getItem(GUESTKEY);}catch(e){return false;} });
+  const [sync,setSync]=useState("");
+  const uidRef=useRef(null), pushT=useRef(null), mergedRef=useRef(false);
+
+  const applyTheme=st=>{ const th=(st.profile&&st.profile.theme)||"light";
+    const isDark=th==="dark"||(th==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
+    setDark(isDark); document.documentElement.dataset.theme=isDark?"dark":"light"; };
 
   useEffect(()=>{ store.get(KEY).then(v=>{ let d=null; try{d=v?JSON.parse(v):null;}catch(e){}
     const s=d?{...emptyState(),...d,profile:{...emptyState().profile,...(d.profile||{})}}:emptyState();
     if(s.usage.date!==today()) s.usage={date:today(),ai:0,bonus:0,steps:0};
-    const th=s.profile.theme||"light";
-    const isDark=th==="dark"||(th==="auto"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches);
-    setDark(isDark); document.documentElement.dataset.theme=isDark?"dark":"light";
+    applyTheme(s);
     setDb(s); if(!s.profile.onboarded) setView({n:"onboard"});
   }); },[]);
 
-  const save=useCallback(n=>{ setDb(n); store.set(KEY,JSON.stringify(n)); },[]);
+  /* 로그인 상태 감시 */
+  useEffect(()=>{ if(!CLOUD_ON) return; cloud.watch(u=>setUser(u||null)); },[]);
+
   const notify=useCallback(m=>{ setToast(m); setTimeout(()=>setToast(""),2400); },[]);
+  const persist=useCallback((n,uid,email)=>{ store.set(KEY,JSON.stringify(n));
+    const id=uid||uidRef.current; if(!id) return;
+    clearTimeout(pushT.current); setSync("saving");
+    pushT.current=setTimeout(()=>{ cloud.push(id,n,email||"")
+      .then(()=>setSync("saved")).catch(()=>setSync("err")); },1200); },[]);
+  const save=useCallback(n=>{ const x={...n,updatedAt:Date.now()}; setDb(x); persist(x); },[persist]);
+
+  /* 로그인 직후: 클라우드 기록과 합치기 */
+  useEffect(()=>{ if(!CLOUD_ON||!user||!db||mergedRef.current) return;
+    mergedRef.current=true; uidRef.current=user.uid; setSync("saving");
+    const localHas=db.customers.length||db.records.length||db.profile.onboarded;
+    cloud.pull(user.uid).then(remote=>{
+      if(!remote||!remote.state){ return cloud.push(user.uid,db,user.email).then(()=>setSync("saved")); }
+      const r=remote.state, rt=remote.updatedAt||0, lt=db.updatedAt||0;
+      if(!localHas||rt>lt){
+        const merged={...emptyState(),...r,profile:{...emptyState().profile,...(r.profile||{})}};
+        if(merged.usage.date!==today()) merged.usage={date:today(),ai:0,bonus:0,steps:0};
+        setDb(merged); store.set(KEY,JSON.stringify(merged)); applyTheme(merged);
+        setView(merged.profile.onboarded?{n:"home"}:{n:"onboard"});
+        setSync("saved"); if(localHas) notify("클라우드에 저장된 기록을 불러왔어요");
+      } else { cloud.push(user.uid,db,user.email).then(()=>setSync("saved")); }
+    }).catch(()=>setSync("err"));
+  },[user,db,notify]);
+
+  const signOut=async()=>{ try{ await cloud.signOut(); }catch(e){}
+    clearTimeout(pushT.current); uidRef.current=null; mergedRef.current=false;
+    try{ localStorage.removeItem(GUESTKEY); }catch(e){}
+    const fresh=emptyState(); setDb(fresh); store.set(KEY,JSON.stringify(fresh));
+    applyTheme(fresh); setGuest(false); setUser(null); setSync(""); setView({n:"home"}); };
+  const startGuest=()=>{ try{ localStorage.setItem(GUESTKEY,"1"); }catch(e){} setGuest(true); };
   const nav=useCallback(v=>{ setView(v); window.scrollTo(0,0); },[]);
   const toggleTheme=()=>{ const nx=!dark; setDark(nx);
     document.documentElement.dataset.theme=nx?"dark":"light";
@@ -956,6 +1056,8 @@ function App(){
   },[db]);
   const upgrade=r=>setPay(r||true);
   if(!db) return <div className="app"><div className="loading">잠시만요…</div></div>;
+  if(CLOUD_ON&&user===undefined) return <div className="app"><div className="loading">계정을 확인하고 있어요…</div></div>;
+  if(CLOUD_ON&&!user&&!guest) return <div className="app"><Login onGuest={startGuest} notify={notify}/></div>;
 
   const pro=db.profile.plan==="pro";
   const lim=pro?PLAN.pro:PLAN.free;
@@ -963,7 +1065,7 @@ function App(){
   const canAI=()=>{ if(pro)return true;
     if(aiLeft<=0){ upgrade("오늘 AI 사용을 다 쓰셨어요"); return false; } return true; };
   const spendAI=()=>{ if(!pro) save2(d=>({...d,usage:{...d.usage,ai:(d.usage.ai||0)+1}})); };
-  const save2=fn=>{ setDb(prev=>{ const n=fn(prev); store.set(KEY,JSON.stringify(n)); return n; }); };
+  const save2=fn=>{ setDb(prev=>{ const n={...fn(prev),updatedAt:Date.now()}; persist(n); return n; }); };
   const rewardAd=()=>{ setInter(true);
     save2(d=>({...d,usage:{...d.usage,bonus:(d.usage.bonus||0)+ADS.rewardAiCalls}}));
     notify(`AI ${ADS.rewardAiCalls}회를 충전했어요`); };
@@ -982,7 +1084,7 @@ function App(){
   const skipStep=k=>save2(d=>({...d,skipped:[...(d.skipped||[]).filter(s=>s.d===today()),{d:today(),k}]}));
 
   const S={db,save,save2,notify,nav,pro,lim,aiLeft,canAI,spendAI,upgrade,pushHist,bumpStep,skipStep,rewardAd,
-    dark,toggleTheme};
+    dark,toggleTheme,user,guest,sync,signOut};
   const queue=buildQueue(db);
   const tabs=["home","run","schedule","customers","growth"];
   const showTabs=tabs.indexOf(view.n)>=0;
@@ -1005,6 +1107,7 @@ function App(){
     case "schedule":  body=<Schedule {...S} queue={queue}/>; break;
     case "import":    body=<ImportPeople {...S}/>; break;
     case "report":    body=<Report {...S}/>; break;
+    case "guide":     body=<Guide {...S}/>; break;
     case "revenue":   body=<Revenue {...S}/>; break;
     case "settings":  body=<Settings {...S}/>; break;
     default:          body=<Growth {...S} queue={queue}/>;
@@ -1031,6 +1134,7 @@ function App(){
           ["record","mic","오늘 있었던 일 기록","말하면 AI가 정리해요"],
           ["coach","msg","AI 코치에게 묻기","막힌 곳을 바로 풀어요"],
           ["content","pen","콘텐츠 만들기","SNS·메시지·제안서"],
+          ["guide","note","사용법 보기","예시로 배우는 활용서"],
           ["import","upload","연락처 일괄 등록","이름을 붙여넣으면 한 번에 등록"],
           ["revenue","coin","매출 기록하기","성사 금액과 이번 달 목표"],
           ["plays","book","상황별 대본 보기","그대로 복사해서 쓰세요"]].map(([n,ic,t,s])=>(
@@ -1100,7 +1204,8 @@ function Onboard({db,save,nav}){
     <input className="inp" value={name} placeholder="예) 김성호" onChange={e=>setName(e.target.value)}/>
     <button className="btn dark" style={{marginTop:14}} onClick={done}>AIVO 시작하기</button>
     <p className="tiny" style={{textAlign:"center",lineHeight:1.7}}>
-      모든 기록은 이 기기에만 저장돼요.<br/>무료로 {PLAN.free.customers}명까지 관리할 수 있습니다.</p>
+      {CLOUD_ON?"로그인 계정에 안전하게 저장돼요.":"모든 기록은 이 기기에만 저장돼요."}<br/>
+      무료로 {PLAN.free.customers}명까지 관리할 수 있습니다.</p>
   </div>);
   return (<div className="pad" style={{paddingBottom:40}}>
     {s>0&&(<div className="flowtop">
@@ -1113,7 +1218,7 @@ function Onboard({db,save,nav}){
 /* ══════════════════════════════════════════════════════════════
    11. 홈 — 집중(한 번에 하나) / 전체(대시보드) 전환
    ══════════════════════════════════════════════════════════════ */
-function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd,dark,toggleTheme}){
+function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd,dark,toggleTheme,user,guest,sync}){
   const [mode,setMode]=useState(()=>{ try{return localStorage.getItem("aivo-mode")||"focus";}catch(e){return "focus";} });
   const setM=m=>{ setMode(m); try{localStorage.setItem("aivo-mode",m);}catch(e){} };
   const cs=db.customers.map(enrich);
@@ -1131,9 +1236,13 @@ function Home({db,nav,queue,pro,upgrade,aiLeft,rewardAd,dark,toggleTheme}){
         <div className="brand">
           <span className="mark">A</span>
           <div><div className="nm">AIVO</div>
-            <div className="tagline">{greet}{db.profile.name?`, ${db.profile.name}님`:""}</div></div>
+            <div className="tagline">{greet}{db.profile.name?`, ${db.profile.name}님`:""}
+              {CLOUD_ON&&user&&<span style={{marginLeft:6,opacity:.8}}>· {sync==="saving"?"저장 중":"클라우드 저장됨"}</span>}
+              {CLOUD_ON&&!user&&<span style={{marginLeft:6,opacity:.8}}>· 체험 모드</span>}</div></div>
         </div>
         <div className="hbtns">
+          <button className="iconbtn" onClick={()=>nav({n:"guide"})} aria-label="사용법">
+            <I n="note" s={17}/></button>
           <button className="iconbtn" onClick={toggleTheme} aria-label="화면 밝기">
             <I n={dark?"sun":"moon"} s={17}/></button>
           <button className={pro?"plan pro":"plan"} onClick={()=>upgrade()}>
@@ -1214,7 +1323,8 @@ function FocusHome({db,nav,queue,pct,doneToday,unit,pro,upgrade,aiLeft,rewardAd}
       {[["record","mic","오늘 있었던 일 기록","말하면 AI가 정리하고 다음 할 일까지 만들어요"],
         ["coach","msg","AI 코치에게 묻기",pro?"무제한":`오늘 ${aiLeft}회 남음`],
         ["plays","book","상황별 대본","첫 연락 · 거절 · 가격 · 소개"],
-        ["learn","seed","오늘의 배움",`${db.learned.length} / ${LESSON_TOTAL}과 완료`]].map(([n,ic,t,s])=>(
+        ["learn","seed","오늘의 배움",`${db.learned.length} / ${LESSON_TOTAL}과 완료`],
+        ["guide","note","사용법 · 활용서","예시를 보며 바로 따라 하기"]].map(([n,ic,t,s])=>(
         <button key={n} className="item" onClick={()=>nav({n})}>
           <span className="av" style={{background:"var(--line2)",color:"var(--ink2)"}}><I n={ic} s={19}/></span>
           <span className="mid"><b>{t}</b><span className="l2">{s}</span></span>
@@ -2240,7 +2350,8 @@ function Growth({db,nav,pro,upgrade,queue}){
 
     <div className="h2"><span>더 보기</span></div>
     <div className="list">
-      {[["revenue","coin","매출 관리",`이번 달 ${won2(revenueOf(db,today().slice(0,7)))}`],
+      {[["guide","book","사용법 · 활용서","예시를 보며 바로 따라 하기"],
+        ["revenue","coin","매출 관리",`이번 달 ${won2(revenueOf(db,today().slice(0,7)))}`],
         ["report","note","주간 리포트",pro?"한 주 요약 보기":"프로 기능"],
         ["schedule","cal","연락 일정","이번 주 계획"],
         ["learn","book","교육센터",`${db.learned.length}/${LESSON_TOTAL}과 완료`],
@@ -2312,7 +2423,7 @@ function Team({db,save2,nav,notify,pro,upgrade}){
   </div>);
 }
 
-function Settings({db,save,save2,nav,notify,pro,upgrade,dark}){
+function Settings({db,save,save2,nav,notify,pro,upgrade,dark,user,guest,sync,signOut}){
   const cs=db.customers.map(enrich);
   const [,setTheme]=useState(dark);
   const [noti,setNoti]=useState(typeof Notification!=="undefined"?Notification.permission:"unsupported");
@@ -2342,6 +2453,36 @@ function Settings({db,save,save2,nav,notify,pro,upgrade,dark}){
   return (<div className="pad" style={{paddingBottom:40}}>
     <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={18}/>성장</button>
     <h1 className="h1">설정</h1>
+    <div className="card">
+      <span className="eyebrow">계정</span>
+      {!CLOUD_ON?(<React.Fragment>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginTop:10}}>
+          <span className="av soft"><I n="users" s={19}/></span>
+          <div style={{flex:1}}><b style={{fontSize:15,fontWeight:800}}>이 기기에 저장 중</b>
+            <div className="tiny">기록은 이 브라우저에만 있어요. 아래에서 백업 파일을 받아두세요.</div></div>
+        </div>
+      </React.Fragment>):user?(<React.Fragment>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginTop:10}}>
+          <span className="av" style={avStyle(user.email||"A")}>{initial(user.email||"A")}</span>
+          <div style={{flex:1,minWidth:0}}>
+            <b style={{fontSize:15,fontWeight:800,wordBreak:"break-all"}}>{user.email||"로그인됨"}</b>
+            <div className="tiny">{sync==="saving"?"저장하는 중…":sync==="err"?"저장이 밀렸어요 · 연결을 확인해 주세요"
+              :"클라우드에 저장돼요 · 기기를 바꿔도 그대로"}</div></div>
+        </div>
+        <button className="btn line sm" style={{marginTop:14,width:"100%"}}
+          onClick={()=>{ if(confirm("로그아웃할까요? 이 기기의 기록은 지워지고, 다시 로그인하면 되돌아옵니다.")) signOut(); }}>
+          로그아웃</button>
+      </React.Fragment>):(<React.Fragment>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginTop:10}}>
+          <span className="av soft"><I n="lock" s={19}/></span>
+          <div style={{flex:1}}><b style={{fontSize:15,fontWeight:800}}>체험 모드</b>
+            <div className="tiny">이 브라우저에만 저장돼요. 로그인하면 그때부터 클라우드에 쌓입니다.</div></div>
+        </div>
+        <button className="btn dark sm" style={{marginTop:14,width:"100%"}}
+          onClick={()=>{ try{localStorage.removeItem(GUESTKEY);}catch(e){} window.location.reload(); }}>
+          로그인하고 기록 이어가기</button>
+      </React.Fragment>)}
+    </div>
     <div className={pro?"card gold":"card"}>
       <div style={{display:"flex",alignItems:"center",gap:12}}>
         <span className="av" style={pro?{background:"linear-gradient(140deg,#E2C994,#AF8C39)",color:"#211809"}
@@ -2651,6 +2792,196 @@ function Report({db,nav,pro,upgrade}){
         <b style={{color:"var(--gold)"}}>고칠 것</b> — “{weak.tag}” {weak.count}번 반복. 다음 주엔 이것 하나만 신경 쓰세요.</p>}
     </div>)}
     <button className="btn line" onClick={()=>nav({n:"coach"})}><I n="msg" s={18}/>이번 주 어땠는지 코치와 이야기</button>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9-1. 로그인 — 계정을 만들면 기기가 바뀌어도 기록이 따라옵니다
+   ══════════════════════════════════════════════════════════════ */
+function Login({onGuest,notify}){
+  const [mode,setMode]=useState("in");      // in | up | reset
+  const [email,setEmail]=useState("");
+  const [pw,setPw]=useState("");
+  const [busy,setBusy]=useState(false);
+  const [err,setErr]=useState("");
+  const run=async fn=>{ setBusy(true); setErr("");
+    try{ await fn(); }catch(e){ const m=authMsg(e); if(m) setErr(m); }
+    finally{ setBusy(false); } };
+  const submit=()=>{
+    if(!email.trim()){ setErr("이메일을 적어주세요."); return; }
+    if(mode==="reset") return run(async()=>{ await cloud.reset(email.trim());
+      notify("비밀번호 재설정 메일을 보냈어요"); setMode("in"); });
+    if(pw.length<6){ setErr("비밀번호는 6자 이상이에요."); return; }
+    return run(()=>mode==="up"?cloud.signUp(email.trim(),pw):cloud.signIn(email.trim(),pw));
+  };
+  return (<div>
+    <header className="top" style={{borderRadius:0,paddingBottom:34}}>
+      <div className="brand">
+        <span className="mark">A</span>
+        <div><div className="nm">AIVO</div><div className="tagline">고객관리의 처음부터 끝까지</div></div>
+      </div>
+      <h1 style={{fontFamily:"var(--serif)",fontSize:26,fontWeight:600,letterSpacing:"-.03em",
+        lineHeight:1.4,margin:"26px 0 10px",whiteSpace:"pre-line"}}>
+        {mode==="up"?"계정을 만들면\n기록이 쌓입니다":mode==="reset"?"비밀번호를\n다시 정할게요":"다시 오셨네요"}</h1>
+      <p style={{fontSize:13.5,color:"var(--hdr-dim)",margin:0,lineHeight:1.7,whiteSpace:"pre-line"}}>
+        {mode==="reset"?"가입하신 이메일로 재설정 링크를 보내드려요."
+          :"휴대폰을 바꿔도, 컴퓨터에서 열어도\n고객 기록이 그대로 따라옵니다."}</p>
+    </header>
+    <div className="pad" style={{paddingTop:22,paddingBottom:40}}>
+      {err&&<div className="err">{err}</div>}
+      <div className="field">
+        <label className="label">이메일</label>
+        <input className="inp" type="email" inputMode="email" autoComplete="email" value={email}
+          onChange={e=>setEmail(e.target.value)} placeholder="name@example.com"/>
+      </div>
+      {mode!=="reset"&&(<div className="field">
+        <label className="label">비밀번호</label>
+        <input className="inp" type="password" value={pw} onChange={e=>setPw(e.target.value)}
+          autoComplete={mode==="up"?"new-password":"current-password"} placeholder="6자 이상"
+          onKeyDown={e=>{ if(e.key==="Enter") submit(); }}/>
+      </div>)}
+      <button className="btn dark" disabled={busy} onClick={submit}>
+        {busy?"잠시만요…":mode==="up"?"가입하고 시작하기":mode==="reset"?"재설정 메일 보내기":"로그인"}</button>
+      {mode!=="reset"&&(<button className="btn line" disabled={busy} onClick={()=>run(cloud.google)}>
+        <span style={{fontWeight:800,color:"#4285F4"}}>G</span>구글 계정으로 계속하기</button>)}
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+        <button className="ghostlink" style={{margin:0}}
+          onClick={()=>{setErr("");setMode(mode==="up"?"in":"up");}}>
+          {mode==="up"?"이미 계정이 있어요":"계정이 없어요 · 가입하기"}</button>
+        <button className="ghostlink" style={{margin:0}}
+          onClick={()=>{setErr("");setMode(mode==="reset"?"in":"reset");}}>
+          {mode==="reset"?"돌아가기":"비밀번호를 잊었어요"}</button>
+      </div>
+      <div style={{height:1,background:"var(--line)",margin:"26px 0 20px"}}/>
+      <button className="btn quiet" onClick={onGuest}>로그인 없이 이 기기에서만 쓰기</button>
+      <p className="tiny" style={{textAlign:"center",lineHeight:1.7}}>
+        체험 모드는 이 브라우저에만 저장돼요.<br/>나중에 로그인하면 그때부터 클라우드에 쌓입니다.</p>
+    </div>
+  </div>);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   24. 앱 안 활용서 — 예시로 배우기
+   ══════════════════════════════════════════════════════════════ */
+const GUIDE=[
+ {id:"g1",t:"3분이면 준비 끝",d:"처음 오신 분",ic:"spark",
+  body:[
+   {h:"이렇게 시작하세요",list:[
+    "하는 일을 고르면 부르는 말과 연락 주기가 그 업종에 맞게 바뀝니다.",
+    "진행 중인 고객 수는 5명으로 시작하세요. 이보다 적어지면 새로 만나라고 알려드려요.",
+    "이름 하나만 있어도 고객 등록이 됩니다. 나머지는 만나면서 채워집니다."]},
+   {h:"예시 — 이렇게 등록하면 충분해요",ex:"이름  박지훈\n소속  한빛물류 대표\n단계  연결\n필요한 것  직원 복지 예산을 찾는 중",
+    note:"연락처도 관심도도 나중에 채우면 됩니다."},
+  ],go:{n:"addcust"},goT:"지금 한 명 등록해보기"},
+
+ {id:"g2",t:"하루 5분 루틴",d:"매일 이렇게",ic:"target",
+  body:[
+   {h:"아침 3분",steps:["홈을 연다 — 오늘 할 일 개수와 지연 건수가 보입니다",
+     "‘하나씩 시작하기’를 누른다 — 가장 급한 것부터 한 장씩",
+     "보낼 문장을 복사해 카톡·문자로 보낸다",
+     "‘했어요’를 누른다 — 연락 기록과 다음 연락일이 자동으로 잡힙니다"]},
+   {h:"저녁 2분",steps:["사람을 만난 날은 ＋ → 오늘 있었던 일 기록",
+     "말로 편하게 남기면 요약·코칭·다음 할 일이 자동으로 만들어집니다"]},
+   {h:"버튼 세 개의 뜻",list:[
+    "했어요 — 완료 + 연락 기록 + 다음 연락일 자동 설정",
+    "내일로 / 3일 뒤로 — 날짜만 미루기 (기록은 남습니다)",
+    "오늘은 건너뛰기 — 오늘만 숨김, 내일 다시 나옵니다"]},
+  ],go:{n:"run"},goT:"오늘 것부터 시작하기"},
+
+ {id:"g3",t:"말하면 정리됩니다",d:"기록 · AI 코칭",ic:"mic",
+  body:[
+   {h:"이렇게 말해보세요",ex:"오늘 성호헬스케어 김성호 사장님 만났어요. 직원이 스무 명인데 비용이 부담된다고 하셔서 먼저 체험해보시기로 했고, 대표님 승인이 필요하다고 하셨어요. 연락처는 010-2211-3344예요.",
+    note:"순서 없이, 말하듯 남기면 됩니다."},
+   {h:"그러면 이렇게 정리됩니다",kv:[
+    ["요약","김성호님과 이야기를 나누셨어요. 비용 이야기가 있었고 먼저 체험해 보시기로 했습니다."],
+    ["자동 등록","김성호 · 성호헬스케어 · 010-2211-3344"],
+    ["잘한 점","부담된다는 말에 바로 체험을 제안하신 게 좋았어요."],
+    ["놓친 점","결정하시는 분이 따로 있다는 신호가 나왔는데 확인하지 않으셨어요."],
+    ["다음 멘트","이런 건 보통 어떤 분과 상의해서 정하세요?"],
+    ["할 일 2개","약속한 자료 보내기(오늘) · 결정하시는 분 여쭙기(2일 뒤)"]]},
+  ],go:{n:"record"},goT:"지금 기록해보기"},
+
+ {id:"g4",t:"6단계로 관리합니다",d:"파이프라인 · 연락 주기",ic:"flag",
+  body:[
+   {h:"단계마다 할 일과 주기가 다릅니다",stages:true},
+   {h:"이럴 때 이렇게",list:[
+    "거절당했다면 지우지 말고 보류로 — 45일 뒤 다시 노크할 때라고 알려드려요.",
+    "한 단계에 오래 멈춘 고객은 ‘멈춤’으로 표시됩니다. 밀거나 정리하세요.",
+    "접촉 게이지는 계약까지 평균 8회가 필요하다는 기준입니다. 3회에서 포기하지 마세요."]},
+  ],go:{n:"customers"},goT:"내 고객 단계 보기"},
+
+ {id:"g5",t:"무슨 말을 할지 막힐 때",d:"대본 · 코치",ic:"msg",
+  body:[
+   {h:"대본은 받는 분을 고르면 이름이 채워집니다",ex:"안녕하세요 박지훈님, 오랜만이에요! 요즘 어떻게 지내세요?\n문득 생각나서 안부 여쭤요. 조만간 얼굴 한번 봬요 :)",
+    note:"복사해서 그대로 보내도 되지만, 한 문장만 내 말투로 바꾸면 훨씬 좋습니다."},
+   {h:"코치에게는 이렇게 물으세요",list:[
+    "‘어떻게 해요?’ 보다 ‘이렇게 말했는데 뭐라고 답할까요?’",
+    "고객이 실제로 한 말을 그대로 적어주면 답이 정확해집니다.",
+    "고객 카드 안에서 열면 그 고객의 기록을 참고해 답합니다."]},
+  ],go:{n:"plays"},goT:"대본 보러 가기"},
+
+ {id:"g6",t:"주 1회 돌아보기",d:"일정 · 매출 · 리포트",ic:"chart",
+  body:[
+   {h:"이렇게 쓰면 매출이 저절로 쌓여요",steps:[
+    "고객 등록할 때 예상 금액을 넣어둡니다",
+    "계약되면 단계를 ‘성사’로 바꿉니다",
+    "그 순간 금액과 날짜가 확정되어 이번 달 매출에 잡힙니다",
+    "성장 → 매출 관리에서 이번 달 목표를 정하면 홈에도 진척이 표시됩니다"]},
+   {h:"두 모드를 이렇게",list:[
+    "평일 아침·저녁은 집중 모드로 — 생각하지 말고 시키는 것만",
+    "일요일 저녁은 전체 대시보드로 — 어디가 막혔는지 보고 다음 주 계획"]},
+  ],go:{n:"schedule"},goT:"이번 주 일정 보기"},
+];
+function Guide({db,nav,pro,upgrade,user,guest}){
+  const [open,setOpen]=useState("g1");
+  return (<div className="pad" style={{paddingBottom:40}}>
+    <button className="back" onClick={()=>nav({n:"growth"})}><I n="back" s={17}/>성장</button>
+    <span className="eyebrow">Guide</span>
+    <h1 className="h1">사용법</h1>
+    <div className="rule"/>
+    <p className="sub">예시를 보면서 바로 따라 해보세요. 각 항목 아래 버튼을 누르면 그 화면으로 갑니다.</p>
+    {CLOUD_ON&&guest&&!user&&(<div className="card gold" style={{marginBottom:14}}>
+      <h4 style={{margin:"0 0 6px",fontSize:14,fontWeight:800}}>지금은 체험 모드예요</h4>
+      <p className="tiny" style={{margin:0}}>이 브라우저에만 저장됩니다. 설정에서 로그인하면 그때부터 클라우드에 쌓여요.</p>
+    </div>)}
+    {GUIDE.map(g=>(<div className="track" key={g.id}>
+      <div className="trackh" onClick={()=>setOpen(open===g.id?null:g.id)}>
+        <span className="trackic" style={{background:"var(--goldbg)",color:"var(--gold)"}}><I n={g.ic} s={19}/></span>
+        <div style={{flex:1,minWidth:0}}><b>{g.t}</b><span>{g.d}</span></div>
+        <I n={open===g.id?"chevd":"chev"} s={17} c="var(--ink4)"/>
+      </div>
+      {open===g.id&&(<div style={{padding:"4px 17px 17px",borderTop:"1px solid var(--line2)"}}>
+        {g.body.map((b,i)=>(<div key={i} style={{marginTop:16}}>
+          <span className="eyebrow" style={{marginBottom:9}}>{b.h}</span>
+          {b.list&&<ul style={{margin:0,paddingLeft:17,fontSize:14.5,lineHeight:1.78,color:"var(--ink2)"}}>
+            {b.list.map((x,n)=><li key={n} style={{marginBottom:6}}>{x}</li>)}</ul>}
+          {b.steps&&b.steps.map((x,n)=><div className="point" key={n} style={{marginBottom:11}}>
+            <b>{n+1}</b><span style={{fontSize:14.5}}>{x}</span></div>)}
+          {b.ex&&(<div className="script" style={{marginTop:2}}>
+            <p style={{margin:0,fontSize:14.5}}>{b.ex}</p>
+            {b.note&&<div className="tiny" style={{marginTop:9}}>{b.note}</div>}</div>)}
+          {b.kv&&(<div style={{marginTop:2}}>{b.kv.map(([k,v],n)=>(
+            <div className="kv" key={n}><span>{k}</span><b style={{fontWeight:600,fontSize:14}}>{v}</b></div>))}</div>)}
+          {b.stages&&(<div style={{marginTop:2}}>{STAGES.map(st=>(
+            <div className="kv" key={st.k}>
+              <span style={{color:st.c,fontWeight:800}}>{st.n}</span>
+              <b style={{fontWeight:600,fontSize:14}}>{st.act}
+                <span className="tiny" style={{display:"block"}}>{st.cad}일마다 연락 · {st.d}</span></b></div>))}</div>)}
+        </div>))}
+        <button className="btn dark sm" style={{marginTop:18,width:"100%"}} onClick={()=>nav(g.go)}>
+          {g.goT}<I n="arrow" s={16}/></button>
+      </div>)}
+    </div>))}
+    <div className="card" style={{marginTop:14}}>
+      <span className="eyebrow">자주 묻는 것</span>
+      {[["기록이 사라질까 봐 걱정돼요",CLOUD_ON?"로그인하면 클라우드에 자동 저장돼요. 기기를 바꿔도 그대로 따라옵니다.":"설정 → 데이터 내보내기로 백업 파일을 받아두세요. 새 기기에서 불러오기로 복원됩니다."],
+        ["음성이 안 들려요","크롬이나 사파리 최신 버전에서 가장 잘 됩니다. 마이크 권한을 허용해 주세요. 안 되면 글로 쓰셔도 됩니다."],
+        ["고객이 너무 많아졌어요","고객 화면에서 단계별·지연별로 걸러 보세요. 급한 순서로 이미 정렬돼 있습니다."],
+        ["매일 알림을 받고 싶어요","설정에서 시각을 정하고 알림을 허용하세요."]].map(([q,a])=>(
+        <div key={q} style={{marginTop:12}}>
+          <b style={{fontSize:14.5,fontWeight:800,display:"block",marginBottom:4}}>{q}</b>
+          <span style={{fontSize:14,color:"var(--ink3)",lineHeight:1.7}}>{a}</span></div>))}
+    </div>
   </div>);
 }
 
